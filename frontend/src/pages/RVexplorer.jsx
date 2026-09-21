@@ -1,4 +1,6 @@
-function RVexplorer() {
+import React from 'react';
+
+function RVExplorer({ onSelectRV }) {
   return (
     <div className="bg-[#FFFFFF] text-green-800">
       {/* Navigation Bar */}
@@ -73,7 +75,7 @@ function RVexplorer() {
       </nav>
 
       {/* Categories Bar */}
-      <div className="border-b border-[#3B6222]/30 font-bold">
+      <div className="border-b border-[#386222]/30 font-bold">
         <ul className="flex">
           <li className="mx-2 cursor-pointer hover:font-extrabold">Campsites</li>
           <li className="mx-2 cursor-pointer hover:font-extrabold">RV</li>
@@ -84,23 +86,31 @@ function RVexplorer() {
       {/* Content Grid */}
       <div className="max-w-4xl mx-auto px-8 py-10">
         <div className="grid grid-cols-2 gap-x-16 gap-y-14">
-          <div className="flex flex-col items-center text-center">
-            <div className="w-[280px] h-[175px] rounded-[40%] overflow-hidden">
+          {/* Card 1: Class A */}
+          <div
+            onClick={() => onSelectRV('class-a')}
+            className="cursor-pointer flex flex-col items-center text-center"
+          >
+            <div className="w-[280px] h-[175px] rounded-[80px] overflow-hidden">
               <img
                 src="image1.png"
                 alt="Class A Motorhome"
                 className="w-full h-full object-cover"
               />
             </div>
-            <h3 className="mt-5 text-[19px] font-serif font-bold text-[#1a1a1a] tracking-tight">
+            <p className="mt-5 text-[19px] font-serif font-bold text-[#1a1a1a] tracking-tight">
               Class A Motorhomes RV
-            </h3>
+            </p>
             <p className="mt-1 text-[#3f7d3a] font-semibold text-[13px]">
               High luxury RV
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center">
+          {/* Card 2: Class B */}
+          <div
+            onClick={() => onSelectRV('class-b')}
+            className="cursor-pointer flex flex-col items-center text-center"
+          >
             <div className="w-[280px] h-[175px] rounded-[80px] overflow-hidden">
               <img
                 src="image 2.png"
@@ -116,7 +126,11 @@ function RVexplorer() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center">
+          {/* Card 3: Class C */}
+          <div
+            onClick={() => onSelectRV('class-c')}
+            className="cursor-pointer flex flex-col items-center text-center"
+          >
             <div className="w-[280px] h-[175px] rounded-[80px] overflow-hidden">
               <img
                 src="image 3.png"
@@ -198,4 +212,4 @@ function RVexplorer() {
   );
 }
 
-export default RVexplorer;
+export default RVExplorer;
