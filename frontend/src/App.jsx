@@ -1,8 +1,7 @@
-import RvPage from './RvPage.jsx'
-
+import RVexplorer from './pages/RVexplorer';
 function App() {
   return (
-    <RvPage />
+    <RVexplorer />
   );
 }
 
