@@ -1,9 +1,8 @@
-import Header from './Header.jsx'
+import RvPage from './RvPage.jsx'
 
 function App() {
-   
-  return(
-       <Header></Header>
+  return (
+    <RvPage />
   );
 }
 
