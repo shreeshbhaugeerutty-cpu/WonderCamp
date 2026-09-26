@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}WonderCamp — Discover Your Next Adventure in Mauritius{% endblock %}
+
+{% block content %}
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <img src="{% static 'images/lookingout.png' %}" alt="Camper sitting in a tent overlooking the mountains" class="hero__img">
+    <div class="hero__overlay"></div>
+    <div class="hero__content container">
+      <h1>Discover your next<br>adventure in Mauritius</h1>
+      <p>Explore beautiful campsites, book camping RV's, and unforgettable outdoor experiences with Wonder Camp.</p>
+    </div>
+  </section>
+
+  <!-- ============ WELCOME ============ -->
+  <section class="welcome container">
+    <h2>Welcome to WonderCamp</h2>
+    <p class="welcome__lead">
+      WonderCamp is your next booking destination for camping in Mauritius. Explore the website
+      to find your ideal campsite, book a camping van (RV) and check out nearby sightseeing spots.
+      Our integrated map will allow you to see locations of campsites, sightseeing spots and hikes
+      for you to explore.
+    </p>
+
+    <ul class="feature-list">
+      <li>
+        <img src="{% static 'images/icon-tent.svg' %}" alt="" class="feature-list__icon">
+        <span>Cozy Camping Grounds</span>
+      </li>
+      <li>
+        <img src="{% static 'images/icon-rv.svg' %}" alt="" class="feature-list__icon">
+        <span>Fully Equipped RVs</span>
+      </li>
+      <li>
+        <img src="{% static 'images/icon-map.svg' %}" alt="" class="feature-list__icon">
+        <span>Functional Map</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ EXPLORE CAMPSITES ============ -->
+  <section class="explore container">
+    <a href="#" class="explore__heading">Explore Campsites <span aria-hidden="true">&gt;</span></a>
+    <div class="card-grid">
+      {% for site in featured_campsites %}
+      <a href="#" class="card">
+        <img src="{{ site.image.url }}" alt="{{ site.name }}">
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============ EXPLORE CAMPING RVs ============ -->
+  <section class="explore container">
+    <a href="#" class="explore__heading">Explore Camping RVs <span aria-hidden="true">&gt;</span></a>
+    <div class="card-grid card-grid--rv">
+      {% for rv in featured_rvs %}
+      <a href="#" class="rv-card">
+        <img src="{{ rv.image.url }}" alt="{{ rv.name }}">
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============ OUR MAP ============ -->
+  <section class="map-section">
+    <div class="map-section__inner container">
+      <div class="map-section__text">
+        <h2>Our Map</h2>
+        <p>
+          Our interactive map on the website will allow you to look at nearby amenities such as
+          sightseeing spots, beaches, hiking trails and most importantly camping grounds for your
+          next explore stay.
+        </p>
+        <p>We also have an included compass for you to navigate throughout your adventures.</p>
+
+        <div class="stat-pills">
+          <div class="stat-pill">
+            <strong>{{ campsite_count }}</strong>
+            <span>of Campsites</span>
+          </div>
+          <div class="stat-pill">
+            <strong>{{ sight_count }}</strong>
+            <span>of sights to see</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-section__graphic">
+        <img src="{% static 'images/mauritius-map.svg' %}" alt="Illustrated map of Mauritius" class="map-graphic">
+        <img src="{% static 'images/pin-lake.jpg' %}" alt="Lake sightseeing spot" class="map-pin map-pin--1">
+        <img src="{% static 'images/pin-forest.jpg' %}" alt="Forest trail" class="map-pin map-pin--2">
+        <img src="{% static 'images/pin-hills.jpg' %}" alt="Hillside view" class="map-pin map-pin--3">
+        <img src="{% static 'images/pin-lagoon.jpg' %}" alt="Turquoise lagoon" class="map-pin map-pin--4">
+        <img src="{% static 'images/pin-field.jpg' %}" alt="Colored earth field" class="map-pin map-pin--5">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CAMP SAFELY ============ -->
+  <section class="safety container">
+    <div class="safety__text">
+      <h2>Camp Safely!</h2>
+      <p>
+        In case of an incident or emergency, our emergency helpline button will allow you to get
+        quick help to the scene using your live location.
+      </p>
+      <button type="button" class="btn btn--emergency">Emergency Help</button>
+    </div>
+
+    <div class="safety__art">
+      <img src="{% static 'images/illustration-tent.svg' %}" alt="" class="safety__tent">
+      <img src="{% static 'images/illustration-bear.svg' %}" alt="" class="safety__bear">
+    </div>
+  </section>
+
+{% endblock %}

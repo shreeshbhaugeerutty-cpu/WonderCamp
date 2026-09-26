@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}WonderCamp{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- ============ HEADER / NAV (shared on every page) ============ -->
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="{% url 'home' %}" class="logo">WonderCamp</a>
+      <ul class="nav-links">
+        <li><a href="#">Campsites</a></li>
+        <li><a href="#">Camping Vans</a></li>
+        <li><a href="#">Login/Register</a></li>
+      </ul>
+      <button class="icon-btn" aria-label="Notifications">
+        <span class="icon-btn__dot"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ============ PAGE CONTENT (each page fills this in) ============ -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ============ FOOTER (shared on every page) ============ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner container">
+      <div class="site-footer__brand">
+        <p class="logo logo--light">WonderCamp</p>
+        <p>Providing premium caravan hire, spectacular campsite guides, and beautiful sightseeing spots since 2017.</p>
+      </div>
+
+      <nav class="site-footer__links">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="#">Map</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Help</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-footer__social">
+        <h3>Follow Our Social</h3>
+        <ul class="social-icons">
+          <li><a href="#" aria-label="Instagram"><img src="{% static 'images/icon-instagram.svg' %}" alt=""></a></li>
+          <li><a href="#" aria-label="TikTok"><img src="{% static 'images/icon-tiktok.svg' %}" alt=""></a></li>
+          <li><a href="#" aria-label="LinkedIn"><img src="{% static 'images/icon-linkedin.svg' %}" alt=""></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom container">
+      <p>&copy; 2026 WonderCamp Adventure Group Ltd. All rights reserved.</p>
+      <div class="site-footer__legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
