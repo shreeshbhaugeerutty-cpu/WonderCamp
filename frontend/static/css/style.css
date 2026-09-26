@@ -399,7 +399,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   margin-block: auto;
 }
 .auth-page__social { gap: 16px !important; }
-.auth-page__social img { width: 22px; height: 22px; filter: invert(1); }
+.auth-page__social img { width: 22px; height: 22px; filter: invert(0); }
 
 .auth-page__form-panel {
   background: var(--cream);
