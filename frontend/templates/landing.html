@@ -43,7 +43,7 @@
 
   <!-- ============ EXPLORE CAMPSITES ============ -->
   <section class="explore container">
-    <a href="#" class="explore__heading">Explore Campsites <span aria-hidden="true">&gt;</span></a>
+    <a href="{% url 'campsites' %}" class="explore__heading">Explore Campsites <span aria-hidden="true">&gt;</span></a>
     <div class="card-grid">
       {% for site in featured_campsites %}
       <a href="#" class="card">

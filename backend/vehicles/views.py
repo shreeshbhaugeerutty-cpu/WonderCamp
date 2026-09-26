@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def camping_vans(request):
+    return render(request, 'RV/rvexplorer.html')

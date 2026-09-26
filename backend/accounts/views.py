@@ -1,3 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        # TODO: validate and process the registration form data
+        pass
+    return render(request, 'register.html')

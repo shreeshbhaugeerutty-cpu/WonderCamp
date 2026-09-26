@@ -16,9 +16,9 @@
       <a href="{% url 'home' %}" class="logo">WonderCamp</a>
       <ul class="nav-links">
         <li><a href="{% url 'campsites' %}">Campsites</a></li>
-        <li><a href="#">Camping Vans</a></li>
+        <li><a href="{% url 'camping_vans' %}">Camping Vans</a></li>
         <li><a href="#">Lodgings</a></li>
-        <li><a href="#">Login/Register</a></li>
+        <li><a href="{% url 'register' %}">Login/Register</a></li>
       </ul>
       <button class="icon-btn" aria-label="Notifications">
         <span class="icon-btn__dot"></span>
