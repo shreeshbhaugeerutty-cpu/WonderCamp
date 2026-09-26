@@ -3,6 +3,20 @@
    ========================================================= */
 
 /* ---------- Tokens ---------- */
+@font-face {
+    font-family: 'Cheriaregular';
+    src: url('../fonts/Cheria DEMO.otf') format('opentype');
+    font-weight: 100;
+    font-style: light;
+}
+
+@font-face {
+    font-family: 'Gefika';
+    src: url('../fonts/Gefika-rvpBx.otf') format('opentype');
+    font-weight: 100;
+    font-style: regular;
+}
+
 :root {
   --cream:        #F5F1DE;
   --forest:       #3F5A34;
@@ -13,7 +27,8 @@
   --orange:       #F15A24;
   --orange-dark:  #D94E1C;
 
-  --font-display: "Fraunces", "Georgia", serif;
+  --font-display: "Cheriaregular", "Georgia", serif;
+  --font-gefika: "Gefika", "Georgia", serif;
   --font-body:    "Inter", -apple-system, "Segoe UI", sans-serif;
 
   --container-w: 1180px;
@@ -34,10 +49,20 @@ body {
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; margin: 0; padding: 0; }
-h1, h2, h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
+h1, h3 {
+  font-family: var(--font-gefika);
+  font-weight: 100;
   margin: 0 0 0.5em;
+  color: var(--cream);
+
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-weight: 100;
+  margin: 0 0 0.5em;
+  color: var(--cream);
+
 }
 button { font-family: inherit; cursor: pointer; border: none; }
 
@@ -62,10 +87,13 @@ button { font-family: inherit; cursor: pointer; border: none; }
   gap: 24px;
 }
 .logo {
+  position: relative;
+  margin-inline: 0;
+  margin-left: -70px;
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--white);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--cream);
 }
 .nav-links {
   display: flex;
@@ -118,6 +146,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 .hero__content {
   position: relative;
+  margin-inline: 0;
+  margin-left: 24px;
   padding-bottom: 60px;
   max-width: 640px;
 }
