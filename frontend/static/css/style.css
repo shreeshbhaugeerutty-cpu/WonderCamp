@@ -74,11 +74,18 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 /* ---------- Header / Nav ---------- */
 .site-header {
-  position: absolute;
+  position: fixed;
   inset-inline: 0;
   top: 0;
   z-index: 10;
-  padding-block: 28px;
+  padding-block: 20px;
+  background: transparent;
+  transition: background-color 0.25s ease, padding-block 0.25s ease;
+}
+.site-header.is-scrolled {
+  background: var(--forest);
+  padding-block: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 .nav {
   display: flex;
@@ -89,7 +96,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .logo {
   position: relative;
   margin-inline: 0;
-  margin-left: -70px;
+  margin-left: -50px;
   font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 400;
@@ -99,12 +106,12 @@ button { font-family: inherit; cursor: pointer; border: none; }
   display: flex;
   gap: 32px;
   flex: 1;
-  justify-content: center;
+  justify-content: right;
 }
 .nav-links a {
-  color: var(--white);
-  font-weight: 600;
-  font-size: 0.95rem;
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 1rem;
 }
 .icon-btn {
   position: relative;
@@ -120,7 +127,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--forest-mid);
+  background: var(--cream);
   border: 2px solid var(--cream);
 }
 
@@ -272,17 +279,16 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 .map-pin {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--cream);
 }
 .map-pin--1 { top: 2%;  left: 55%; }
 .map-pin--2 { top: 28%; left: 15%; }
 .map-pin--3 { top: 42%; left: 75%; }
 .map-pin--4 { top: 62%; left: 5%;  }
-.map-pin--5 { top: 78%; left: 60%; }
+.map-pin--5 { top: 70%; left: 50%; }
 
 /* ---------- Camp Safely ---------- */
 .safety {
@@ -303,9 +309,10 @@ button { font-family: inherit; cursor: pointer; border: none; }
   margin-bottom: 32px;
 }
 .btn--emergency {
+  font-family: var(--font-gefika);
   background: var(--orange);
   color: var(--white);
-  font-weight: 700;
+  font-weight: 400;
   font-size: 1.1rem;
   padding: 20px 48px;
   border-radius: var(--radius-lg);
@@ -317,7 +324,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 .safety__art { position: relative; min-height: 320px; }
 .safety__tent { position: absolute; top: 0; right: 0; width: 60%; }
-.safety__bear { position: absolute; bottom: 0; left: 0; width: 45%; }
+.safety__bear { position: absolute; bottom: 0; left: 0; width: 60%; }
 
 /* ---------- Footer ---------- */
 .site-footer {
@@ -327,20 +334,24 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 .site-footer__inner {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns: 1.6fr 1fr 1.2fr;
   gap: 32px;
+  align-items: flex-start;
   padding-block: 56px 32px;
 }
-.logo--light { color: var(--white); font-size: 1.7rem; margin-bottom: 12px; }
+.logo--light { color: var(--cream); font-size: 2rem; margin-bottom: 12px; }
 .site-footer h3 {
   font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--white);
   margin-bottom: 14px;
+  text-align: left;
+  margin-left: 200px;
+  white-space: nowrap;
 }
-.site-footer__links ul,
+.site-footer__links ul {margin-left: 200px;}
 .site-footer__social ul { display: flex; flex-direction: column; gap: 10px; }
-.social-icons { flex-direction: row !important; gap: 12px !important; }
+.social-icons { flex-direction: row !important; gap: 12px !important; margin-top: 4px; margin-left: 200px; }
 .social-icons img { width: 20px; height: 20px; }
 
 .site-footer__bottom {
