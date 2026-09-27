@@ -24,4 +24,7 @@ urlpatterns = [
     path('', include('backend.campsites.urls')),
     path('', include('backend.vehicles.urls')),
     path('', include('backend.accounts.urls')),
+    path('', include('backend.bookings.urls')),
+    
 ]
+

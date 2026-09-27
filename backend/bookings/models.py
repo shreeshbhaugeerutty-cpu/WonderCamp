@@ -4,7 +4,6 @@ from django.db import models
 class Booking(models.Model):
     reference_no = models.CharField(max_length=50)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)
-    channel = models.CharField(max_length=50)
     arrival_date = models.DateField()
     status = models.CharField(max_length=50)
     no_of_adults = models.IntegerField()
