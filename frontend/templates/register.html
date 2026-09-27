@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — WonderCamp</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <!-- ============ LEFT PANEL (green, illustration) ============ -->
+    <div class="auth-page__art">
+      <a href="{% url 'home' %}" class="logo">WonderCamp</a>
+
+      <img src="{% static 'images/bearwhite.png' %}" alt="" class="auth-page__bear">
+
+      <ul class="social-icons auth-page__social">
+        <li><a href="#" aria-label="LinkedIn"><img src="{% static 'images/b_linkedin.png' %}" alt=""></a></li>
+        <li><a href="#" aria-label="Instagram"><img src="{% static 'images/bi_instagram.png' %}" alt=""></a></li>
+        <li><a href="#" aria-label="TikTok"><img src="{% static 'images/b_tiktok.png' %}" alt=""></a></li>
+      </ul>
+    </div>
+
+    <!-- ============ RIGHT PANEL (cream, form) ============ -->
+    <div class="auth-page__form-panel">
+      <h1>Sign Up</h1>
+
+      <form method="post" action="{% url 'register' %}" class="auth-form">
+        {% csrf_token %}
+
+        <input type="text" name="first_name" placeholder="First Name" class="auth-form__input" required>
+        <input type="text" name="last_name" placeholder="Last Name" class="auth-form__input" required>
+        <input type="email" name="email" placeholder="Email Address" class="auth-form__input" required>
+        <input type="password" name="password" placeholder="Password" class="auth-form__input" required>
+
+        <button type="submit" class="btn btn--create-account">Create Account</button>
+
+        <label class="auth-form__checkbox">
+          <input type="checkbox" name="terms_accepted" required>
+          <span>I acknowledge the Terms &amp; Conditions</span>
+        </label>
+      </form>
+
+      <div class="auth-form__divider"><span>OR</span></div>
+
+      <a href="#" class="btn btn--google">
+        <img src="{% static 'images/icon-google.svg' %}" alt="">
+        Sign In with Google.
+      </a>
+
+      <p class="auth-form__footer-link">
+        Already have an account? <a href="#"><strong>Log In</strong></a>
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

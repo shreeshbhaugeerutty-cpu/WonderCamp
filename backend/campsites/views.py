@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def campsites(request):
+    return render(request, 'campsites/explorer.html')
+
