@@ -20,6 +20,7 @@
 :root {
   --cream:        #F5F1DE;
   --forest:       #3F5A34;
+  --forest-light: #78a362;
   --forest-dark:  #2E4327;
   --forest-mid:   #4C6B40;
   --white:        #FFFFFF;
@@ -37,6 +38,49 @@
 }
 
 /* ---------- Reset ---------- */
+
+/* Width and height */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: var(--forest);
+}
+
+/* Track (background) */
+::-webkit-scrollbar-track {
+  background: var(--forest);
+  border-radius: 10px;
+}
+
+/* Thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+  background: var(--cream);
+  border-radius: 10px;
+}
+
+/* Thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #dbd6bc;
+}
+
+/* Corner (where horizontal and vertical scrollbars meet) */
+::-webkit-scrollbar-corner {
+  background: var(--forest);
+}
+
+.my-box {
+  overflow-y: scroll;
+}
+
+.my-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.my-box::-webkit-scrollbar-thumb {
+  background: var(--forest);
+  border-radius: 4px;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
