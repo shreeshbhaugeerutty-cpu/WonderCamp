@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Bookings | WonderCamp{% endblock %}
+{% block body_class %}bookings-body{% endblock %}
+
+{% block content %}
+	<section class="bookings-page">
+		<section class="bookings-heading" aria-labelledby="bookings-title">
+			<h1 id="bookings-title">My Bookings</h1>
+			<p>View and manage your campsite reservations.</p>
+
+			<div class="booking-filters" role="tablist" aria-label="Filter bookings">
+				<button class="booking-filter is-selected" type="button" role="tab" aria-selected="true" data-filter="all">All Bookings</button>
+				<button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="upcoming">Upcoming</button>
+				<button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="completed">Completed</button>
+				<button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="cancelled">Cancelled</button>
+			</div>
+		</section>
+
+		<section class="booking-list" aria-label="Your bookings">
+			<article class="booking-card" data-status="upcoming">
+				<img class="booking-card__image" src="{% static 'images/couleur.webp' %}" alt="Green hills and colourful landscape in Mauritius">
+				<div class="booking-card__content">
+					<div class="booking-card__topline">
+						<div>
+							<h2>Bois Chéri Forest Camp</h2>
+							<p class="booking-card__location"><span aria-hidden="true">⌖</span> Bois Chéri, Savanne District, Mauritius</p>
+						</div>
+						<span class="booking-status">Confirmed</span>
+					</div>
+
+					<div class="booking-reference">
+						<span>Booking Reference</span>
+						<strong>WR-2026-00125</strong>
+					</div>
+
+					<p class="booking-pitch"><span aria-hidden="true">⛺</span> Glamping Pitch — Pitch G-07 — Hillside</p>
+
+					<div class="booking-facts">
+						<div class="booking-fact"><span aria-hidden="true">▦</span><span>Check-in<strong>12 Sep 2026</strong></span></div>
+						<div class="booking-fact"><span aria-hidden="true">▦</span><span>Check-out<strong>15 Sep 2026</strong></span></div>
+						<div class="booking-fact"><span aria-hidden="true">◷</span><span>Duration<strong>3 nights</strong></span></div>
+						<div class="booking-fact"><span aria-hidden="true">♟</span><span>Campers<strong>2 persons</strong></span></div>
+						<div class="booking-fact"><span aria-hidden="true">▰</span><span>Vehicles<strong>1 vehicle</strong></span></div>
+					</div>
+
+					<div class="booking-payment">
+						<div><span>Payment</span><strong>Paid</strong></div>
+						<div class="booking-payment__amount"><span>Amount Paid</span><strong>Rs 9,150</strong><span class="booking-payment__method">MCB Juice</span></div>
+					</div>
+
+					<div class="booking-actions">
+						<a href="{% url 'bookings:booking_summary' %}" class="booking-action booking-action--primary">View Details</a>
+						<button class="booking-action" type="button">Modify Booking</button>
+						<button class="booking-action booking-action--cancel" type="button">Cancel Booking</button>
+					</div>
+
+					<p class="booking-policy">Changes and cancellations are subject to the <a href="#policy">Booking &amp; Cancellation Policy</a>.</p>
+				</div>
+			</article>
+			<p class="booking-empty" hidden>No bookings in this category.</p>
+		</section>
+	</section>
+
+	{% endblock %}
+
+	{% block extra_scripts %}
+	<script>
+		const filterButtons = document.querySelectorAll('.booking-filter');
+		const bookingCards = document.querySelectorAll('.booking-card');
+		const emptyMessage = document.querySelector('.booking-empty');
+
+		filterButtons.forEach((button) => {
+			button.addEventListener('click', () => {
+				const filter = button.dataset.filter;
+				let visibleBookings = 0;
+
+				filterButtons.forEach((item) => {
+					const isSelected = item === button;
+					item.classList.toggle('is-selected', isSelected);
+					item.setAttribute('aria-selected', isSelected);
+				});
+
+				bookingCards.forEach((card) => {
+					const shouldShow = filter === 'all' || card.dataset.status === filter;
+					card.hidden = !shouldShow;
+					if (shouldShow) visibleBookings += 1;
+				});
+
+				emptyMessage.hidden = visibleBookings > 0;
+			});
+		});
+	</script>
+	{% endblock %}

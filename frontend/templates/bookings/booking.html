@@ -1,1182 +1,1969 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Create Booking | WonderCamp{% endblock %}
+{% block body_class %}create-booking-body{% endblock %}
 
 {% block content %}
 
-<section class="booking-page">
-  <div class="booking-container">
+<main class="create-booking-page">
 
-    <!-- INTRO -->
-    <div class="booking-intro">
-      <p class="booking-breadcrumb">
-        Bois Chéri Private Camp &gt; Book your stay
-      </p>
+    <!-- PAGE HEADING -->
+    <section class="create-booking-heading">
 
-      <h1>Plan Your Stay at Bois Chéri</h1>
+        <p class="booking-breadcrumb">
+            Bois Chéri Private Camp &gt; Book your stay
+        </p>
 
-      <p class="booking-subtitle">
-        Choose your dates, party size, pitch, and any extras.
-        You can review everything before payment.
-      </p>
-    </div>
+        <h1>Plan Your Stay at Bois Chéri</h1>
 
+        <p class="booking-intro">
+            Choose your dates, pitch, party size, and any extras.
+            You can review everything before payment.
+        </p>
 
-    <!-- PROGRESS -->
-    <div class="booking-progress">
-
-      <div class="progress-step progress-step--active">
-        <span class="progress-circle">✓</span>
-        <span>Booking Details</span>
-      </div>
-
-      <div class="progress-line"></div>
-
-      <div class="progress-step">
-        <span class="progress-circle">2</span>
-        <span>Review</span>
-      </div>
-
-      <div class="progress-line"></div>
-
-      <div class="progress-step">
-        <span class="progress-circle">3</span>
-        <span>Payment</span>
-      </div>
-
-      <div class="progress-line"></div>
-
-      <div class="progress-step">
-        <span class="progress-circle">4</span>
-        <span>Confirmation</span>
-      </div>
-
-    </div>
+    </section>
 
 
-    <form method="POST" class="booking-form">
-      {% csrf_token %}
+    <!-- PROGRESS BAR -->
+    <section class="booking-progress">
 
-      <div class="booking-layout">
+        <div class="progress-item active">
+            <span>✓</span>
+            <strong>Booking Details</strong>
+        </div>
 
-        <!-- =========================================
-             LEFT SIDE
-             ========================================= -->
+        <div class="progress-line"></div>
+
+        <div class="progress-item">
+            <span>2</span>
+            <strong>Review</strong>
+        </div>
+
+        <div class="progress-line"></div>
+
+        <div class="progress-item">
+            <span>3</span>
+            <strong>Payment</strong>
+        </div>
+
+        <div class="progress-line"></div>
+
+        <div class="progress-item">
+            <span>4</span>
+            <strong>Confirmation</strong>
+        </div>
+
+    </section>
+
+
+    <div class="booking-layout">
+
+        <!-- LEFT SIDE -->
         <div class="booking-main">
 
 
-          <!-- WHEN ARE YOU CAMPING? -->
-          <section class="booking-card">
+            <!-- =====================================================
+                 1. WHEN ARE YOU CAMPING?
+            ====================================================== -->
+            <section class="booking-box">
 
-            <div class="booking-card-heading">
-              <h2>♧ When are you camping?</h2>
-              <p>
-                Pick your arrival and departure dates.
-                Minimum stay is 3 nights.
-              </p>
-            </div>
+                <div class="section-heading">
 
+                    <h2>🍃 When are you camping?</h2>
 
-            <div class="date-selection">
-
-              <label class="date-box">
-                <span>CHECK-IN</span>
-
-                <input
-                  type="date"
-                  id="arrival_date"
-                  name="arrival_date"
-                  required
-                >
-              </label>
-
-
-              <label class="date-box">
-                <span>CHECK-OUT</span>
-
-                <input
-                  type="date"
-                  id="departure_date"
-                  name="departure_date"
-                  required
-                >
-              </label>
-
-
-              <span class="night-badge" id="night-badge">
-                3 nights
-              </span>
-
-            </div>
-
-
-            <!-- CALENDARS -->
-            <div class="calendar-grid">
-
-              <!-- SEPTEMBER -->
-              <div class="booking-calendar">
-
-                <h3>September 2026</h3>
-
-                <div class="calendar-weekdays">
-                  <span>M</span>
-                  <span>T</span>
-                  <span>W</span>
-                  <span>T</span>
-                  <span>F</span>
-                  <span>S</span>
-                  <span>S</span>
-                </div>
-
-
-                <div class="calendar-days">
-
-                  <span></span>
-                  <span>1</span>
-                  <span>2</span>
-                  <span>3</span>
-                  <span>4</span>
-                  <span>5</span>
-                  <span>6</span>
-
-                  <span>7</span>
-                  <span>8</span>
-                  <span>9</span>
-                  <span>10</span>
-                  <span>11</span>
-                  <span class="calendar-selected">12</span>
-                  <span class="calendar-range">13</span>
-
-                  <span class="calendar-range">14</span>
-                  <span class="calendar-selected">15</span>
-                  <span>16</span>
-                  <span>17</span>
-                  <span>18</span>
-                  <span>19</span>
-                  <span>20</span>
-
-                  <span>21</span>
-                  <span>22</span>
-                  <span>23</span>
-                  <span>24</span>
-                  <span>25</span>
-                  <span>26</span>
-                  <span>27</span>
-
-                  <span>28</span>
-                  <span>29</span>
-                  <span>30</span>
-
-                </div>
-
-              </div>
-
-
-              <!-- OCTOBER -->
-              <div class="booking-calendar">
-
-                <h3>October 2026</h3>
-
-                <div class="calendar-weekdays">
-                  <span>M</span>
-                  <span>T</span>
-                  <span>W</span>
-                  <span>T</span>
-                  <span>F</span>
-                  <span>S</span>
-                  <span>S</span>
-                </div>
-
-
-                <div class="calendar-days">
-
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span>1</span>
-                  <span>2</span>
-                  <span>3</span>
-                  <span>4</span>
-
-                  <span>5</span>
-                  <span>6</span>
-                  <span>7</span>
-                  <span>8</span>
-                  <span>9</span>
-                  <span>10</span>
-                  <span>11</span>
-
-                  <span>12</span>
-                  <span>13</span>
-                  <span>14</span>
-                  <span>15</span>
-                  <span>16</span>
-                  <span>17</span>
-                  <span>18</span>
-
-                  <span>19</span>
-                  <span>20</span>
-                  <span>21</span>
-                  <span>22</span>
-                  <span>23</span>
-                  <span>24</span>
-                  <span>25</span>
-
-                  <span>26</span>
-                  <span>27</span>
-                  <span>28</span>
-                  <span>29</span>
-                  <span>30</span>
-                  <span>31</span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-          <!-- WHO'S COMING -->
-          <section class="booking-card">
-
-            <div class="booking-card-heading">
-              <h2>♧ Who's coming along?</h2>
-
-              <p>
-                Tell us your camp companions and vehicles so we can
-                match you to the right pitch.
-              </p>
-            </div>
-
-
-            <div class="guest-grid">
-
-              <!-- CAMPERS -->
-              <div class="guest-option">
-
-                <div class="guest-info">
-
-                  <span class="guest-icon">♙</span>
-
-                  <div>
-                    <strong>Campers</strong>
-                    <small>Max capacity is 15 per pitch</small>
-                  </div>
+                    <p>
+                        Pick your arrival and departure dates.
+                        Minimum stay is 3 nights.
+                    </p>
 
                 </div>
 
 
-                <div class="counter">
+                <div class="date-row">
 
-                  <button type="button" class="minus-btn">−</button>
+                    <!-- CHECK-IN -->
+                    <label class="date-box selected-date-box">
 
-                  <input
-                    type="number"
-                    id="campers"
-                    name="no_of_adults"
-                    value="3"
-                    min="1"
-                    max="15"
-                    readonly
-                  >
+                        <span>CHECK-IN</span>
 
-                  <button type="button" class="plus-btn">+</button>
+                        <input
+                            type="date"
+                            id="check-in">
 
-                </div>
-
-              </div>
+                    </label>
 
 
-              <!-- VEHICLES -->
-              <div class="guest-option">
+                    <!-- CHECK-OUT -->
+                    <label class="date-box">
 
-                <div class="guest-info">
+                        <span>CHECK-OUT</span>
 
-                  <span class="guest-icon">●</span>
+                        <input
+                            type="date"
+                            id="check-out"
+                            disabled>
 
-                  <div>
-                    <strong>Vehicles</strong>
-                  </div>
-
-                </div>
-
-
-                <div class="counter">
-
-                  <button type="button" class="minus-btn">−</button>
-
-                  <input
-                    type="number"
-                    id="vehicles"
-                    name="vehicles"
-                    value="1"
-                    min="0"
-                    max="4"
-                    readonly
-                  >
-
-                  <button type="button" class="plus-btn">+</button>
-
-                </div>
-
-              </div>
+                    </label>
 
 
-              <!-- PETS -->
-              <div class="guest-option">
-
-                <div class="guest-info">
-
-                  <span class="guest-icon">☆</span>
-
-                  <div>
-                    <strong>Pets</strong>
-                    <small>Dog-friendly pitches only</small>
-                  </div>
-
-                </div>
-
-
-                <div class="counter">
-
-                  <button type="button" class="minus-btn">−</button>
-
-                  <input
-                    type="number"
-                    id="pets"
-                    name="pets"
-                    value="0"
-                    min="0"
-                    max="4"
-                    readonly
-                  >
-
-                  <button type="button" class="plus-btn">+</button>
-
-                </div>
-
-              </div>
-
-
-              <!-- TENTS -->
-              <div class="guest-option">
-
-                <div class="guest-info">
-
-                  <span class="guest-icon">△</span>
-
-                  <div>
-                    <strong>Tents / Grills</strong>
-                  </div>
-
-                </div>
-
-
-                <div class="counter">
-
-                  <button type="button" class="minus-btn">−</button>
-
-                  <input
-                    type="number"
-                    id="tents"
-                    name="tents"
-                    value="2"
-                    min="0"
-                    max="4"
-                    readonly
-                  >
-
-                  <button type="button" class="plus-btn">+</button>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div class="booking-message">
-              ♧ &nbsp;
-              Based on your choices: Midsize C-07 accommodation up to
-              4 persons, 1 vehicle, free within limits.
-            </div>
-
-          </section>
-
-
-          <!-- PICK YOUR PITCH -->
-          <section class="booking-card pitch-section">
-
-            <div class="booking-card-heading">
-
-              <h2>♧ Pick your pitch</h2>
-
-              <p>
-                8 pitches available for your dates.
-                All include a fire pit and fresh-water access.
-              </p>
-
-            </div>
-
-
-            <div class="pitch-grid">
-
-
-              <!-- PITCH 1 -->
-              <label class="pitch-card pitch-card--selected">
-
-                <div class="pitch-image pitch-image--placeholder">
-                  <span>Image coming soon</span>
-                </div>
-
-
-                <div class="pitch-content">
-
-                  <div class="pitch-top">
-
-                    <span class="pitch-tag">
-                      RIVERSIDE
+                    <span
+                        class="nights-badge"
+                        id="night-count">
+                        Select dates
                     </span>
 
-                    <input
-                      type="radio"
-                      name="pitch"
-                      value="Hillside G-07"
-                      data-price="2800"
-                      checked
-                    >
-
-                  </div>
-
-
-                  <h3>Hillside G-07</h3>
-
-                  <p>
-                    Stunning views of the valley with direct sunrise exposure.
-                  </p>
-
-
-                  <div class="pitch-bottom">
-
-                    <span class="rating">
-                      ☆☆☆☆☆
-                    </span>
-
-                    <strong>
-                      Rs 2,800
-                      <small>/nt</small>
-                    </strong>
-
-                  </div>
-
-                </div>
-
-              </label>
-
-
-              <!-- PITCH 2 -->
-              <label class="pitch-card">
-
-                <div class="pitch-image pitch-image--placeholder">
-                  <span>Image coming soon</span>
                 </div>
 
 
-                <div class="pitch-content">
-
-                  <div class="pitch-top">
-
-                    <span class="pitch-tag">
-                      FOREST
-                    </span>
-
-                    <input
-                      type="radio"
-                      name="pitch"
-                      value="Lakeside Loft"
-                      data-price="3500"
-                    >
-
-                  </div>
+                <p
+                    class="date-error"
+                    id="date-error">
+                </p>
 
 
-                  <h3>Lakeside Loft</h3>
-
-                  <p>
-                    Close to the dock, perfect for morning swims and canoeing.
-                  </p>
+                <!-- CALENDARS -->
+                <div class="calendar-wrapper">
 
 
-                  <div class="pitch-bottom">
+                    <!-- SEPTEMBER 2026 -->
+                    <div class="calendar">
 
-                    <span class="rating">
-                      ☆☆☆☆☆
-                    </span>
+                        <h3>September 2026</h3>
 
-                    <strong>
-                      Rs 3,500
-                      <small>/nt</small>
-                    </strong>
+                        <div class="calendar-weekdays">
 
-                  </div>
+                            <span>M</span>
+                            <span>T</span>
+                            <span>W</span>
+                            <span>T</span>
+                            <span>F</span>
+                            <span>S</span>
+                            <span>S</span>
 
-                </div>
-
-              </label>
-
-
-              <!-- PITCH 3 -->
-              <label class="pitch-card">
-
-                <div class="pitch-image pitch-image--placeholder">
-                  <span>Image coming soon</span>
-                </div>
+                        </div>
 
 
-                <div class="pitch-content">
+                        <div class="calendar-days">
 
-                  <div class="pitch-top">
+                            <span></span>
 
-                    <span class="pitch-tag">
-                      FOREST
-                    </span>
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                            <span>6</span>
 
-                    <input
-                      type="radio"
-                      name="pitch"
-                      value="Mountain Wild"
-                      data-price="2500"
-                    >
+                            <span>7</span>
+                            <span>8</span>
+                            <span>9</span>
+                            <span>10</span>
+                            <span>11</span>
+                            <span>12</span>
+                            <span>13</span>
 
-                  </div>
+                            <span>14</span>
+                            <span>15</span>
+                            <span>16</span>
+                            <span>17</span>
+                            <span>18</span>
+                            <span>19</span>
+                            <span>20</span>
 
+                            <span>21</span>
+                            <span>22</span>
+                            <span>23</span>
+                            <span>24</span>
+                            <span>25</span>
+                            <span>26</span>
+                            <span>27</span>
 
-                  <h3>Mountain Wild</h3>
+                            <span>28</span>
+                            <span>29</span>
+                            <span>30</span>
 
-                  <p>
-                    Secluded higher up, absolute peace and starry nights.
-                  </p>
+                        </div>
 
-
-                  <div class="pitch-bottom">
-
-                    <span class="rating">
-                      ☆☆☆☆☆
-                    </span>
-
-                    <strong>
-                      Rs 2,500
-                      <small>/nt</small>
-                    </strong>
-
-                  </div>
-
-                </div>
-
-              </label>
-
-
-              <!-- PITCH 4 -->
-              <label class="pitch-card">
-
-                <div class="pitch-image pitch-image--placeholder">
-                  <span>Image coming soon</span>
-                </div>
+                    </div>
 
 
-                <div class="pitch-content">
+                    <!-- OCTOBER 2026 -->
+                    <div class="calendar">
 
-                  <div class="pitch-top">
+                        <h3>October 2026</h3>
 
-                    <span class="pitch-tag">
-                      RIVERSIDE
-                    </span>
+                        <div class="calendar-weekdays">
 
-                    <input
-                      type="radio"
-                      name="pitch"
-                      value="Streamside Birch"
-                      data-price="4800"
-                    >
+                            <span>M</span>
+                            <span>T</span>
+                            <span>W</span>
+                            <span>T</span>
+                            <span>F</span>
+                            <span>S</span>
+                            <span>S</span>
 
-                  </div>
-
-
-                  <h3>Streamside Birch</h3>
-
-                  <p>
-                    Listen to the soft rustle of the stream. Highly shaded.
-                  </p>
+                        </div>
 
 
-                  <div class="pitch-bottom">
+                        <div class="calendar-days">
 
-                    <span class="rating">
-                      ☆☆☆☆☆
-                    </span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
 
-                    <strong>
-                      Rs 4,800
-                      <small>/nt</small>
-                    </strong>
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
 
-                  </div>
+                            <span>5</span>
+                            <span>6</span>
+                            <span>7</span>
+                            <span>8</span>
+                            <span>9</span>
+                            <span>10</span>
+                            <span>11</span>
+
+                            <span>12</span>
+                            <span>13</span>
+                            <span>14</span>
+                            <span>15</span>
+                            <span>16</span>
+                            <span>17</span>
+                            <span>18</span>
+
+                            <span>19</span>
+                            <span>20</span>
+                            <span>21</span>
+                            <span>22</span>
+                            <span>23</span>
+                            <span>24</span>
+                            <span>25</span>
+
+                            <span>26</span>
+                            <span>27</span>
+                            <span>28</span>
+                            <span>29</span>
+                            <span>30</span>
+                            <span>31</span>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-              </label>
+            </section>
+
+
+
+            <!-- =====================================================
+                 2. PICK YOUR PITCH
+            ====================================================== -->
+            <section class="booking-box">
+
+                <div class="section-heading">
+
+                    <h2>🍃 Pick your pitch</h2>
+
+                    <p>
+                        Choose the pitch that best suits your stay.
+                        All include a fire pit and fresh-water access.
+                    </p>
+
+                </div>
+
+
+                <div class="pitch-grid">
+
+
+                    <!-- PITCH 1 -->
+                    <div
+                        class="pitch-card"
+                        data-name="Hillside G-07"
+                        data-price="2800"
+                        data-campers="4"
+                        data-vehicles="1"
+                        data-pets="2"
+                        data-tents="2">
+
+                        <img
+                            src="{% static 'images/PHOTO-2026-09-27-09-58-01.jpeg' %}"
+                            alt="Hillside G-07 campsite">
+
+                        <div class="pitch-information">
+
+                            <div class="pitch-top">
+
+                                <span class="pitch-category">
+                                    RIVERSIDE
+                                </span>
+
+                                <span class="pitch-select"></span>
+
+                            </div>
+
+                            <h3>Hillside G-07</h3>
+
+                            <p>
+                                Stunning views of the valley with
+                                direct sunrise exposure.
+                            </p>
+
+                            <div class="pitch-bottom">
+
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+
+                                <strong>
+                                    Rs 2,800
+                                    <small>/nt</small>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PITCH 2 -->
+                    <div
+                        class="pitch-card"
+                        data-name="Lakeside Loft"
+                        data-price="3500"
+                        data-campers="6"
+                        data-vehicles="2"
+                        data-pets="0"
+                        data-tents="2">
+
+                        <img
+                            src="{% static 'images/Rectangle@2x.png' %}"
+                            alt="Lakeside Loft campsite">
+
+                        <div class="pitch-information">
+
+                            <div class="pitch-top">
+
+                                <span class="pitch-category">
+                                    FOREST
+                                </span>
+
+                                <span class="pitch-select"></span>
+
+                            </div>
+
+                            <h3>Lakeside Loft</h3>
+
+                            <p>
+                                Close to the dock, perfect for morning
+                                swims and canoe access.
+                            </p>
+
+                            <div class="pitch-bottom">
+
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+
+                                <strong>
+                                    Rs 3,500
+                                    <small>/nt</small>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PITCH 3 -->
+                    <div
+                        class="pitch-card"
+                        data-name="Mountain Wild"
+                        data-price="2500"
+                        data-campers="8"
+                        data-vehicles="2"
+                        data-pets="2"
+                        data-tents="3">
+
+                        <img
+                            src="{% static 'images/Rectangle.png' %}"
+                            alt="Mountain Wild campsite">
+
+                        <div class="pitch-information">
+
+                            <div class="pitch-top">
+
+                                <span class="pitch-category">
+                                    FOREST
+                                </span>
+
+                                <span class="pitch-select"></span>
+
+                            </div>
+
+                            <h3>Mountain Wild</h3>
+
+                            <p>
+                                Secluded higher up, absolute peace
+                                and starry nights.
+                            </p>
+
+                            <div class="pitch-bottom">
+
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+
+                                <strong>
+                                    Rs 2,500
+                                    <small>/nt</small>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PITCH 4 -->
+                    <div
+                        class="pitch-card"
+                        data-name="Streamside Birch"
+                        data-price="4800"
+                        data-campers="5"
+                        data-vehicles="1"
+                        data-pets="1"
+                        data-tents="2">
+
+                        <img
+                            src="{% static 'images/Rectangles.png' %}"
+                            alt="Streamside Birch campsite">
+
+                        <div class="pitch-information">
+
+                            <div class="pitch-top">
+
+                                <span class="pitch-category">
+                                    RIVERSIDE
+                                </span>
+
+                                <span class="pitch-select"></span>
+
+                            </div>
+
+                            <h3>Streamside Birch</h3>
+
+                            <p>
+                                Listen to the soft rustle of the stream.
+                                Highly shaded.
+                            </p>
+
+                            <div class="pitch-bottom">
+
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+
+                                <strong>
+                                    Rs 4,800
+                                    <small>/nt</small>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================================
+                 3. WHO'S COMING ALONG?
+                 NOW AFTER PITCH SELECTION
+            ====================================================== -->
+            <section class="booking-box">
+
+                <div class="section-heading">
+
+                    <h2>🍃 Who's coming along?</h2>
+
+                    <p>
+                        Add your campers, vehicles, pets and tents
+                        according to the capacity of your selected pitch.
+                    </p>
+
+                </div>
+
+
+                <div class="guest-grid">
+
+
+                    <!-- CAMPERS -->
+                    <div class="guest-option">
+
+                        <div class="guest-left">
+
+                            <span class="guest-icon">♙</span>
+
+                            <div>
+
+                                <strong>Campers</strong>
+
+                                <small id="campers-limit">
+                                    Select a pitch first
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="counter">
+
+                            <button
+                                type="button"
+                                class="minus"
+                                data-target="campers"
+                                disabled>
+                                −
+                            </button>
+
+                            <span id="campers">0</span>
+
+                            <button
+                                type="button"
+                                class="plus"
+                                data-target="campers"
+                                disabled>
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VEHICLES -->
+                    <div class="guest-option">
+
+                        <div class="guest-left">
+
+                            <span class="guest-icon">🚙</span>
+
+                            <div>
+
+                                <strong>Vehicles</strong>
+
+                                <small id="vehicles-limit">
+                                    Select a pitch first
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="counter">
+
+                            <button
+                                type="button"
+                                class="minus"
+                                data-target="vehicles"
+                                disabled>
+                                −
+                            </button>
+
+                            <span id="vehicles">0</span>
+
+                            <button
+                                type="button"
+                                class="plus"
+                                data-target="vehicles"
+                                disabled>
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PETS -->
+                    <div class="guest-option">
+
+                        <div class="guest-left">
+
+                            <span class="guest-icon">☆</span>
+
+                            <div>
+
+                                <strong>Pets</strong>
+
+                                <small id="pets-limit">
+                                    Select a pitch first
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="counter">
+
+                            <button
+                                type="button"
+                                class="minus"
+                                data-target="pets"
+                                disabled>
+                                −
+                            </button>
+
+                            <span id="pets">0</span>
+
+                            <button
+                                type="button"
+                                class="plus"
+                                data-target="pets"
+                                disabled>
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TENTS / GRILLS -->
+                    <div class="guest-option">
+
+                        <div class="guest-left">
+
+                            <span class="guest-icon">⛺</span>
+
+                            <div>
+
+                                <strong>Tents / Grills</strong>
+
+                                <small id="tents-limit">
+                                    Select a pitch first
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="counter">
+
+                            <button
+                                type="button"
+                                class="minus"
+                                data-target="tents"
+                                disabled>
+                                −
+                            </button>
+
+                            <span id="tents">0</span>
+
+                            <button
+                                type="button"
+                                class="plus"
+                                data-target="tents"
+                                disabled>
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CAPACITY MESSAGE -->
+                <div
+                    class="capacity-message"
+                    id="capacity-message">
+
+                    🍃 Select a pitch above to see its capacity.
+
+                </div>
+
+            </section>
+
+
+
+            <!-- BOTTOM -->
+            <div class="booking-bottom">
+
+                <a href="#" class="back-link">
+                    ← Back to campsite
+                </a>
+
+                <button
+                    type="button"
+                    class="bottom-review-button"
+                    id="bottom-review-button"
+                    disabled>
+
+                    Continue to Review →
+
+                </button>
 
             </div>
-
-          </section>
 
         </div>
 
 
-        <!-- =========================================
-             RIGHT SIDE - YOUR STAY
-             ========================================= -->
 
-        <aside class="booking-summary">
+        <!-- =====================================================
+             RIGHT SIDE — YOUR STAY
+        ====================================================== -->
+        <aside class="your-stay">
 
-          <h2>Your stay</h2>
+            <h2>Your stay</h2>
 
-          <p class="summary-camp">
-            Bois Chéri Private Camp
-          </p>
-
-
-          <div class="summary-details">
-
-            <p>
-              ♧ &nbsp; Pitch:
-              <strong id="summary-pitch">
-                Hillside G-07
-              </strong>
+            <p class="stay-place">
+                Bois Chéri Private Camp
             </p>
 
 
-            <p>
-              □ &nbsp; Dates:
-              <strong id="summary-dates">
-                Select your dates
-              </strong>
+            <div class="stay-information">
+
+                <p>
+                    🍃 Pitch:
+                    <strong id="summary-pitch">
+                        Select a pitch
+                    </strong>
+                </p>
+
+
+                <p>
+                    📅 Dates:
+                    <strong id="summary-dates">
+                        Select your dates
+                    </strong>
+                </p>
+
+
+                <p>
+                    ♙ Party:
+                    <strong>
+                        <span id="summary-campers">0</span>
+                        campers,
+                        <span id="summary-vehicles">0</span>
+                        vehicle(s)
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <!-- PRICE -->
+            <div class="stay-prices">
+
+                <div>
+
+                    <span>
+                        Pitch fee
+                        (<span id="summary-nights">0</span> nights)
+                    </span>
+
+                    <strong id="pitch-price">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span id="electricity-label">
+                        Electricity
+                    </span>
+
+                    <strong id="electricity-price">
+                        Rs 0
+                    </strong>
+
+                </div>
+
+
+                <div>
+                    <span>Water pack fee</span>
+                    <strong>Rs 420</strong>
+                </div>
+
+
+                <div>
+                    <span>Cleaning fee</span>
+                    <strong>Rs 188</strong>
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL -->
+            <div class="stay-total">
+
+                <strong>Total</strong>
+
+                <span id="total-price">
+                    Rs 0
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="review-button"
+                id="review-button"
+                disabled>
+
+                Continue to Review →
+
+            </button>
+
+
+            <button
+                type="button"
+                class="save-button">
+
+                Save for later
+
+            </button>
+
+
+            <p class="stay-note">
+                Full sum will be processed once you confirm
+                your booking details.
             </p>
-
-
-            <p>
-              ♙ &nbsp; Party:
-              <strong id="summary-party">
-                3 campers, 1 vehicle
-              </strong>
-            </p>
-
-          </div>
-
-
-          <div class="summary-prices">
-
-            <div>
-              <span id="pitch-fee-label">
-                Pitch fee
-              </span>
-
-              <strong id="pitch-fee">
-                Rs 0
-              </strong>
-            </div>
-
-
-            <div>
-              <span id="electricity-label">
-                Electricity
-              </span>
-
-              <strong id="electricity-fee">
-                Rs 0
-              </strong>
-            </div>
-
-
-            <div>
-              <span>
-                Water pack fee
-              </span>
-
-              <strong>
-                Rs 420
-              </strong>
-            </div>
-
-
-            <div>
-              <span>
-                Cleaning fee
-              </span>
-
-              <strong>
-                Rs 188
-              </strong>
-            </div>
-
-          </div>
-
-
-          <div class="summary-total">
-
-            <span>
-              Total
-            </span>
-
-            <strong id="summary-total">
-              Rs 608
-            </strong>
-
-          </div>
-
-
-          <button
-            type="submit"
-            class="summary-primary-btn"
-          >
-            Continue to Review →
-          </button>
-
-
-          <button
-            type="button"
-            class="summary-secondary-btn"
-          >
-            Save for later
-          </button>
-
-
-          <p class="summary-note">
-            Full sum will be processed once you chat with a camp rep
-            regarding logistics and confirm.
-          </p>
 
         </aside>
 
-      </div>
+    </div>
 
+</main>
 
-      <!-- BOTTOM BAR -->
-      <div class="booking-bottom-actions">
-
-        <a
-          href="{% url 'campsites' %}"
-          class="back-link"
-        >
-          ← Back to campsite
-        </a>
-
-
-        <button
-          type="submit"
-          class="bottom-review-btn"
-        >
-          Continue to Review →
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-</section>
-
-{% endblock content %}
+{% endblock %}
 
 
 
 {% block extra_scripts %}
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-  /* ==========================================
-     PLUS AND MINUS COUNTERS
-     ========================================== */
+/* ==========================================================
+   ELEMENTS
+========================================================== */
 
-  const counters = document.querySelectorAll(".counter");
+const pitchCards =
+    document.querySelectorAll(".pitch-card");
 
-  counters.forEach(function (counter) {
+const counterButtons =
+    document.querySelectorAll(".counter button");
 
-    const input = counter.querySelector("input");
-    const minusButton = counter.querySelector(".minus-btn");
-    const plusButton = counter.querySelector(".plus-btn");
+const checkIn =
+    document.getElementById("check-in");
 
-    minusButton.addEventListener("click", function () {
+const checkOut =
+    document.getElementById("check-out");
 
-      let currentValue = parseInt(input.value) || 0;
-      let minimumValue = parseInt(input.min) || 0;
-
-      if (currentValue > minimumValue) {
-        input.value = currentValue - 1;
-      }
-
-      updatePartySummary();
-
-    });
+const dateError =
+    document.getElementById("date-error");
 
 
-    plusButton.addEventListener("click", function () {
-
-      let currentValue = parseInt(input.value) || 0;
-
-      if (input.max) {
-
-        let maximumValue = parseInt(input.max);
-
-        if (currentValue < maximumValue) {
-          input.value = currentValue + 1;
-        }
-
-      } else {
-
-        input.value = currentValue + 1;
-
-      }
-
-      updatePartySummary();
-
-    });
-
-  });
+const values = {
+    campers: 0,
+    vehicles: 0,
+    pets: 0,
+    tents: 0
+};
 
 
-  /* ==========================================
-     UPDATE PARTY SUMMARY
-     ========================================== */
-
-  const campersInput = document.getElementById("campers");
-  const vehiclesInput = document.getElementById("vehicles");
-  const summaryParty = document.getElementById("summary-party");
-
-
-  function updatePartySummary() {
-
-    const campers = parseInt(campersInput.value) || 0;
-    const vehicles = parseInt(vehiclesInput.value) || 0;
-
-    let camperWord = "campers";
-    let vehicleWord = "vehicles";
-
-    if (campers === 1) {
-      camperWord = "camper";
-    }
-
-    if (vehicles === 1) {
-      vehicleWord = "vehicle";
-    }
-
-    summaryParty.textContent =
-      campers + " " + camperWord +
-      ", " +
-      vehicles + " " + vehicleWord;
-
-  }
+let limits = {
+    campers: 0,
+    vehicles: 0,
+    pets: 0,
+    tents: 0
+};
 
 
-  /* ==========================================
-     DATES
-     ========================================== */
-
-  const arrivalInput = document.getElementById("arrival_date");
-  const departureInput = document.getElementById("departure_date");
-
-  const nightBadge = document.getElementById("night-badge");
-  const summaryDates = document.getElementById("summary-dates");
+let selectedPitch = null;
 
 
-  let numberOfNights = 0;
+
+/* ==========================================================
+   DATE HELPERS
+========================================================== */
+
+function makeDate(value) {
+
+    return new Date(
+        value + "T00:00:00"
+    );
+
+}
 
 
-  arrivalInput.addEventListener("change", function () {
+function formatInputDate(date) {
 
-    if (arrivalInput.value) {
+    const year =
+        date.getFullYear();
 
-      const arrival = new Date(arrivalInput.value + "T00:00:00");
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
 
-      const minimumDeparture = new Date(arrival);
-      minimumDeparture.setDate(minimumDeparture.getDate() + 3);
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
 
-      departureInput.min =
-        formatDateForInput(minimumDeparture);
+    return `${year}-${month}-${day}`;
 
-
-      if (
-        departureInput.value &&
-        new Date(departureInput.value + "T00:00:00") < minimumDeparture
-      ) {
-        departureInput.value = "";
-      }
-
-    }
-
-    updateDates();
-
-  });
+}
 
 
-  departureInput.addEventListener("change", function () {
-    updateDates();
-  });
 
+/* ==========================================================
+   CALCULATE NUMBER OF NIGHTS
+========================================================== */
 
-  function updateDates() {
+function getNights() {
 
-    if (!arrivalInput.value || !departureInput.value) {
-
-      numberOfNights = 0;
-
-      nightBadge.textContent = "Select dates";
-      summaryDates.textContent = "Select your dates";
-
-      updatePrice();
-
-      return;
-
+    if (
+        !checkIn.value ||
+        !checkOut.value
+    ) {
+        return 0;
     }
 
 
     const arrival =
-      new Date(arrivalInput.value + "T00:00:00");
+        makeDate(checkIn.value);
 
     const departure =
-      new Date(departureInput.value + "T00:00:00");
+        makeDate(checkOut.value);
 
 
     const difference =
-      departure.getTime() - arrival.getTime();
+        departure - arrival;
 
 
-    numberOfNights =
-      Math.round(
-        difference / (1000 * 60 * 60 * 24)
-      );
+    return Math.round(
+        difference /
+        (1000 * 60 * 60 * 24)
+    );
+
+}
 
 
-    if (numberOfNights < 3) {
 
-      nightBadge.textContent =
-        "Minimum 3 nights";
+/* ==========================================================
+   CHECK-IN
+========================================================== */
 
-      summaryDates.textContent =
-        "Minimum stay is 3 nights";
+checkIn.addEventListener(
+    "change",
+    function () {
 
-      numberOfNights = 0;
+        if (!checkIn.value) {
 
-      updatePrice();
+            checkOut.disabled = true;
+            checkOut.value = "";
 
-      return;
+            resetDateDisplay();
+
+            return;
+
+        }
+
+
+        /*
+         Checkout becomes available only
+         after check-in is selected.
+        */
+
+        checkOut.disabled = false;
+
+
+        /*
+         Minimum checkout =
+         check-in + 3 nights.
+        */
+
+        const arrival =
+            makeDate(checkIn.value);
+
+
+        const minimumCheckout =
+            new Date(arrival);
+
+
+        minimumCheckout.setDate(
+            minimumCheckout.getDate() + 3
+        );
+
+
+        checkOut.min =
+            formatInputDate(
+                minimumCheckout
+            );
+
+
+        /*
+         Clear checkout if it is no
+         longer valid.
+        */
+
+        if (
+            checkOut.value &&
+            makeDate(checkOut.value) <
+            minimumCheckout
+        ) {
+
+            checkOut.value = "";
+
+        }
+
+
+        updateDates();
+
+    }
+);
+
+
+
+/* ==========================================================
+   CHECK-OUT
+========================================================== */
+
+checkOut.addEventListener(
+    "change",
+    function () {
+
+        updateDates();
+
+    }
+);
+
+
+
+/* ==========================================================
+   RESET DATE DISPLAY
+========================================================== */
+
+function resetDateDisplay() {
+
+    document.getElementById(
+        "night-count"
+    ).textContent =
+        "Select dates";
+
+
+    document.getElementById(
+        "summary-dates"
+    ).textContent =
+        "Select your dates";
+
+
+    document.getElementById(
+        "summary-nights"
+    ).textContent =
+        "0";
+
+
+    document.getElementById(
+        "electricity-label"
+    ).textContent =
+        "Electricity";
+
+
+    document.getElementById(
+        "electricity-price"
+    ).textContent =
+        "Rs 0";
+
+
+    dateError.textContent = "";
+
+
+    clearCalendarHighlight();
+
+    updatePrices();
+
+}
+
+
+
+/* ==========================================================
+   UPDATE DATE INFORMATION
+========================================================== */
+
+function updateDates() {
+
+    /*
+     Only check-in selected
+    */
+
+    if (
+        !checkIn.value ||
+        !checkOut.value
+    ) {
+
+        document.getElementById(
+            "night-count"
+        ).textContent =
+            "Select dates";
+
+
+        document.getElementById(
+            "summary-nights"
+        ).textContent =
+            "0";
+
+
+        if (checkIn.value) {
+
+            const arrival =
+                makeDate(checkIn.value);
+
+
+            const options = {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            };
+
+
+            document.getElementById(
+                "summary-dates"
+            ).textContent =
+
+                arrival.toLocaleDateString(
+                    "en-GB",
+                    options
+                )
+
+                + " – Select check-out";
+
+        }
+
+
+        updateCalendarHighlight();
+
+        updatePrices();
+
+        updateReviewButtons();
+
+        return;
 
     }
 
 
-    nightBadge.textContent =
-      numberOfNights +
-      (numberOfNights === 1 ? " night" : " nights");
+    const nights =
+        getNights();
 
 
-    summaryDates.textContent =
-      formatDisplayDate(arrival) +
-      " – " +
-      formatDisplayDate(departure);
+    if (nights < 3) {
+
+        dateError.textContent =
+            "Minimum stay is 3 nights.";
+
+        updateReviewButtons();
+
+        return;
+
+    }
 
 
-    updatePrice();
-
-  }
+    dateError.textContent = "";
 
 
-  function formatDateForInput(date) {
+    document.getElementById(
+        "night-count"
+    ).textContent =
 
-    const year = date.getFullYear();
-
-    const month =
-      String(date.getMonth() + 1).padStart(2, "0");
-
-    const day =
-      String(date.getDate()).padStart(2, "0");
-
-    return year + "-" + month + "-" + day;
-
-  }
+        nights +
+        (nights === 1
+            ? " night"
+            : " nights");
 
 
-  function formatDisplayDate(date) {
-
-    const day = date.getDate();
-
-    const month =
-      date.toLocaleString("en-GB", {
-        month: "short"
-      });
-
-    const year = date.getFullYear();
-
-    return day + " " + month + " " + year;
-
-  }
+    document.getElementById(
+        "summary-nights"
+    ).textContent =
+        nights;
 
 
-  /* ==========================================
-     PITCH SELECTION
-     ========================================== */
+    const arrival =
+        makeDate(checkIn.value);
 
-  const pitchInputs =
-    document.querySelectorAll('input[name="pitch"]');
-
-  const pitchCards =
-    document.querySelectorAll(".pitch-card");
-
-  const summaryPitch =
-    document.getElementById("summary-pitch");
+    const departure =
+        makeDate(checkOut.value);
 
 
-  pitchInputs.forEach(function (pitchInput) {
-
-    pitchInput.addEventListener("change", function () {
-
-      pitchCards.forEach(function (card) {
-        card.classList.remove("pitch-card--selected");
-      });
+    const options = {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    };
 
 
-      const selectedCard =
-        pitchInput.closest(".pitch-card");
+    document.getElementById(
+        "summary-dates"
+    ).textContent =
 
-      selectedCard.classList.add(
-        "pitch-card--selected"
-      );
+        arrival.toLocaleDateString(
+            "en-GB",
+            options
+        )
+
+        + " – " +
+
+        departure.toLocaleDateString(
+            "en-GB",
+            options
+        );
 
 
-      summaryPitch.textContent =
-        pitchInput.value;
+    document.getElementById(
+        "electricity-label"
+    ).textContent =
+
+        "Electricity (Rs 120 × " +
+        nights +
+        ")";
 
 
-      updatePrice();
+    updateCalendarHighlight();
+
+    updatePrices();
+
+    updateReviewButtons();
+
+}
+
+
+
+/* ==========================================================
+   CLEAR CALENDAR
+========================================================== */
+
+function clearCalendarHighlight() {
+
+    const calendarDays =
+        document.querySelectorAll(
+            ".calendar-days span"
+        );
+
+
+    calendarDays.forEach(day => {
+
+        day.classList.remove(
+            "calendar-start",
+            "calendar-range",
+            "calendar-end"
+        );
 
     });
 
-  });
+}
 
 
-  /* ==========================================
-     PRICE
-     ========================================== */
 
-  const pitchFeeLabel =
-    document.getElementById("pitch-fee-label");
+/* ==========================================================
+   UPDATE CALENDAR HIGHLIGHT
+========================================================== */
 
-  const pitchFee =
-    document.getElementById("pitch-fee");
+function updateCalendarHighlight() {
 
-  const electricityLabel =
-    document.getElementById("electricity-label");
-
-  const electricityFee =
-    document.getElementById("electricity-fee");
-
-  const summaryTotal =
-    document.getElementById("summary-total");
+    clearCalendarHighlight();
 
 
-  function updatePrice() {
-
-    const selectedPitch =
-      document.querySelector(
-        'input[name="pitch"]:checked'
-      );
+    if (!checkIn.value) {
+        return;
+    }
 
 
-    if (!selectedPitch || numberOfNights <= 0) {
+    const arrival =
+        makeDate(checkIn.value);
 
-      pitchFeeLabel.textContent =
-        "Pitch fee";
 
-      pitchFee.textContent =
-        "Rs 0";
+    let departure = null;
 
-      electricityLabel.textContent =
-        "Electricity";
 
-      electricityFee.textContent =
-        "Rs 0";
+    if (checkOut.value) {
 
-      summaryTotal.textContent =
-        "Rs 608";
+        departure =
+            makeDate(checkOut.value);
 
-      return;
+    }
 
+
+    const monthNames = [
+
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+
+    ];
+
+
+    const calendars =
+        document.querySelectorAll(
+            ".calendar"
+        );
+
+
+    calendars.forEach(calendar => {
+
+        const title =
+            calendar
+                .querySelector("h3")
+                .textContent
+                .trim();
+
+
+        const parts =
+            title.split(" ");
+
+
+        const monthName =
+            parts[0];
+
+
+        const year =
+            Number(parts[1]);
+
+
+        const month =
+            monthNames.indexOf(
+                monthName
+            );
+
+
+        const days =
+            calendar.querySelectorAll(
+                ".calendar-days span"
+            );
+
+
+        days.forEach(day => {
+
+            const text =
+                day.textContent.trim();
+
+
+            if (text === "") {
+                return;
+            }
+
+
+            const dayNumber =
+                Number(text);
+
+
+            const currentDate =
+                new Date(
+                    year,
+                    month,
+                    dayNumber
+                );
+
+
+            currentDate.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+
+            /*
+             CHECK-IN
+            */
+
+            if (
+                currentDate.getTime() ===
+                arrival.getTime()
+            ) {
+
+                day.classList.add(
+                    "calendar-start"
+                );
+
+                return;
+
+            }
+
+
+            /*
+             Wait for checkout before
+             highlighting the range.
+            */
+
+            if (!departure) {
+                return;
+            }
+
+
+            /*
+             CHECK-OUT
+            */
+
+            if (
+                currentDate.getTime() ===
+                departure.getTime()
+            ) {
+
+                day.classList.add(
+                    "calendar-end"
+                );
+
+            }
+
+
+            /*
+             BETWEEN CHECK-IN AND CHECK-OUT
+            */
+
+            else if (
+                currentDate > arrival &&
+                currentDate < departure
+            ) {
+
+                day.classList.add(
+                    "calendar-range"
+                );
+
+            }
+
+        });
+
+    });
+
+}
+
+
+
+/* ==========================================================
+   SELECT PITCH
+========================================================== */
+
+pitchCards.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        function () {
+
+
+            pitchCards.forEach(item => {
+
+                item.classList.remove(
+                    "selected"
+                );
+
+            });
+
+
+            card.classList.add(
+                "selected"
+            );
+
+
+            selectedPitch = card;
+
+
+            /*
+             Get capacity of the
+             selected pitch.
+            */
+
+            limits.campers =
+                Number(
+                    card.dataset.campers
+                );
+
+
+            limits.vehicles =
+                Number(
+                    card.dataset.vehicles
+                );
+
+
+            limits.pets =
+                Number(
+                    card.dataset.pets
+                );
+
+
+            limits.tents =
+                Number(
+                    card.dataset.tents
+                );
+
+
+            /*
+             Reset numbers when user
+             changes pitch.
+            */
+
+            values.campers = 0;
+            values.vehicles = 0;
+            values.pets = 0;
+            values.tents = 0;
+
+
+            /*
+             Enable + and - after
+             pitch selection.
+            */
+
+            counterButtons.forEach(
+                button => {
+
+                    button.disabled = false;
+
+                }
+            );
+
+
+            updateLimits();
+
+            updateCounters();
+
+            updateSummary();
+
+            updatePrices();
+
+            updateReviewButtons();
+
+        }
+    );
+
+});
+
+
+
+/* ==========================================================
+   SHOW SELECTED PITCH LIMITS
+========================================================== */
+
+function updateLimits() {
+
+    document.getElementById(
+        "campers-limit"
+    ).textContent =
+
+        "Maximum " +
+        limits.campers +
+        " campers";
+
+
+    document.getElementById(
+        "vehicles-limit"
+    ).textContent =
+
+        "Maximum " +
+        limits.vehicles +
+
+        (
+            limits.vehicles === 1
+                ? " vehicle"
+                : " vehicles"
+        );
+
+
+    document.getElementById(
+        "pets-limit"
+    ).textContent =
+
+        limits.pets === 0
+
+            ? "Pets not allowed"
+
+            : "Maximum " +
+              limits.pets +
+
+              (
+                  limits.pets === 1
+                      ? " pet"
+                      : " pets"
+              );
+
+
+    document.getElementById(
+        "tents-limit"
+    ).textContent =
+
+        "Maximum " +
+        limits.tents;
+
+
+    const name =
+        selectedPitch.dataset.name;
+
+
+    document.getElementById(
+        "capacity-message"
+    ).innerHTML =
+
+        "🍃 Based on your selected pitch: " +
+
+        "<strong>" +
+        name +
+        "</strong> accommodates up to " +
+
+        "<strong>" +
+        limits.campers +
+        " persons</strong>, " +
+
+        "<strong>" +
+        limits.vehicles +
+
+        (
+            limits.vehicles === 1
+                ? " vehicle"
+                : " vehicles"
+        )
+
+        + "</strong>, " +
+
+        (
+            limits.pets === 0
+
+                ? "<strong>no pets</strong>, "
+
+                : "<strong>" +
+                  limits.pets +
+
+                  (
+                      limits.pets === 1
+                          ? " pet"
+                          : " pets"
+                  )
+
+                  + "</strong>, "
+        )
+
+        + "and <strong>" +
+        limits.tents +
+        " tents/grills</strong>.";
+
+}
+
+
+
+/* ==========================================================
+   PLUS / MINUS
+========================================================== */
+
+counterButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        function () {
+
+
+            if (!selectedPitch) {
+                return;
+            }
+
+
+            const target =
+                button.dataset.target;
+
+
+            /*
+             PLUS
+            */
+
+            if (
+                button.classList.contains(
+                    "plus"
+                )
+
+                &&
+
+                values[target] <
+                limits[target]
+            ) {
+
+                values[target]++;
+
+            }
+
+
+            /*
+             MINUS
+            */
+
+            if (
+                button.classList.contains(
+                    "minus"
+                )
+
+                &&
+
+                values[target] > 0
+            ) {
+
+                values[target]--;
+
+            }
+
+
+            updateCounters();
+
+            updateSummary();
+
+        }
+    );
+
+});
+
+
+
+/* ==========================================================
+   UPDATE COUNTERS
+========================================================== */
+
+function updateCounters() {
+
+    document.getElementById(
+        "campers"
+    ).textContent =
+        values.campers;
+
+
+    document.getElementById(
+        "vehicles"
+    ).textContent =
+        values.vehicles;
+
+
+    document.getElementById(
+        "pets"
+    ).textContent =
+        values.pets;
+
+
+    document.getElementById(
+        "tents"
+    ).textContent =
+        values.tents;
+
+}
+
+
+
+/* ==========================================================
+   UPDATE SUMMARY
+========================================================== */
+
+function updateSummary() {
+
+    if (!selectedPitch) {
+        return;
+    }
+
+
+    document.getElementById(
+        "summary-pitch"
+    ).textContent =
+        selectedPitch.dataset.name;
+
+
+    document.getElementById(
+        "summary-campers"
+    ).textContent =
+        values.campers;
+
+
+    document.getElementById(
+        "summary-vehicles"
+    ).textContent =
+        values.vehicles;
+
+}
+
+
+
+/* ==========================================================
+   MONEY
+========================================================== */
+
+function money(number) {
+
+    return "Rs " +
+        Number(number).toLocaleString();
+
+}
+
+
+
+/* ==========================================================
+   PRICE
+========================================================== */
+
+function updatePrices() {
+
+    /*
+     No pitch or incomplete dates:
+     price remains zero.
+    */
+
+    if (
+        !selectedPitch ||
+        !checkIn.value ||
+        !checkOut.value
+    ) {
+
+        document.getElementById(
+            "pitch-price"
+        ).textContent =
+            "Rs 0";
+
+
+        document.getElementById(
+            "electricity-price"
+        ).textContent =
+            "Rs 0";
+
+
+        document.getElementById(
+            "total-price"
+        ).textContent =
+            "Rs 0";
+
+
+        return;
+
+    }
+
+
+    const nights =
+        getNights();
+
+
+    if (nights < 3) {
+        return;
     }
 
 
     const nightlyPrice =
-      parseInt(selectedPitch.dataset.price) || 0;
+        Number(
+            selectedPitch.dataset.price
+        );
 
 
-    const pitchTotal =
-      nightlyPrice * numberOfNights;
+    const pitchPrice =
+        nightlyPrice * nights;
 
 
-    const electricityTotal =
-      120 * numberOfNights;
+    const electricity =
+        120 * nights;
 
 
-    const waterFee = 420;
-    const cleaningFee = 188;
+    const water =
+        420;
+
+
+    const cleaning =
+        188;
 
 
     const total =
-      pitchTotal +
-      electricityTotal +
-      waterFee +
-      cleaningFee;
+        pitchPrice +
+        electricity +
+        water +
+        cleaning;
 
 
-    pitchFeeLabel.textContent =
-      "Pitch fee (" +
-      numberOfNights +
-      " nights)";
+    document.getElementById(
+        "pitch-price"
+    ).textContent =
+        money(pitchPrice);
 
 
-    pitchFee.textContent =
-      "Rs " +
-      pitchTotal.toLocaleString();
+    document.getElementById(
+        "electricity-price"
+    ).textContent =
+        money(electricity);
 
 
-    electricityLabel.textContent =
-      "Electricity (Rs 120 × " +
-      numberOfNights +
-      ")";
+    document.getElementById(
+        "total-price"
+    ).textContent =
+        money(total);
+
+}
 
 
-    electricityFee.textContent =
-      "Rs " +
-      electricityTotal.toLocaleString();
+
+/* ==========================================================
+   CONTINUE BUTTONS
+========================================================== */
+
+function updateReviewButtons() {
+
+    const validDates =
+        checkIn.value &&
+        checkOut.value &&
+        getNights() >= 3;
 
 
-    summaryTotal.textContent =
-      "Rs " +
-      total.toLocaleString();
-
-  }
+    const ready =
+        selectedPitch !== null &&
+        validDates;
 
 
-  /* ==========================================
-     INITIAL DISPLAY
-     ========================================== */
+    document.getElementById(
+        "review-button"
+    ).disabled =
+        !ready;
 
-  updatePartySummary();
-  updateDates();
 
-});
+    document.getElementById(
+        "bottom-review-button"
+    ).disabled =
+        !ready;
+
+}
+
+
+
+/* ==========================================================
+   INITIAL PAGE
+========================================================== */
+
+clearCalendarHighlight();
+
+updateReviewButtons();
+
 </script>
 
-{% endblock extra_scripts %}
+{% endblock %}
