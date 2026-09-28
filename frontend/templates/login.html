@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — WonderCamp</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <div class="auth-page__art">
+      <a href="{% url 'home' %}" class="logo">WonderCamp</a>
+      <img src="{% static 'images/bearguitar.png' %}" alt="" class="auth-page__bearlogin">
+    </div>
+
+    <div class="auth-page__form-panel">
+      <h1>Log In</h1>
+
+      {% if messages %}
+        {% for message in messages %}
+          <p class="auth-form__message">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="auth-form">
+        {% csrf_token %}
+
+        <input type="email" name="username" placeholder="Email Address" class="auth-form__input" required>
+        <input type="password" name="password" placeholder="Password" class="auth-form__input" required>
+
+        <button type="submit" class="btn btn--create-account">Login</button>
+      </form>
+
+      <div class="auth-form__divider"><span>OR</span></div>
+
+      <a href="#" class="btn btn--google">
+        <img src="{% static 'images/formkit_google.png' %}" alt="">
+        Sign In with Google.
+      </a>
+
+      <p class="auth-form__footer-link">
+        Don't have an account? <a href="{% url 'register' %}"><strong>Sign Up</strong></a>
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>
