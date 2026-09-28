@@ -1,4 +1,9 @@
 {% load static %}
+{% if messages %}
+  {% for message in messages %}
+    <p class="auth-form__message">{{ message }}</p>
+  {% endfor %}
+{% endif %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,11 +22,7 @@
 
       <img src="{% static 'images/bearwhite.png' %}" alt="" class="auth-page__bear">
 
-      <ul class="social-icons auth-page__social">
-        <li><a href="#" aria-label="LinkedIn"><img src="{% static 'images/b_linkedin.png' %}" alt=""></a></li>
-        <li><a href="#" aria-label="Instagram"><img src="{% static 'images/bi_instagram.png' %}" alt=""></a></li>
-        <li><a href="#" aria-label="TikTok"><img src="{% static 'images/b_tiktok.png' %}" alt=""></a></li>
-      </ul>
+      
     </div>
 
     <!-- ============ RIGHT PANEL (cream, form) ============ -->
@@ -38,21 +39,18 @@
 
         <button type="submit" class="btn btn--create-account">Create Account</button>
 
-        <label class="auth-form__checkbox">
-          <input type="checkbox" name="terms_accepted" required>
-          <span>I acknowledge the Terms &amp; Conditions</span>
-        </label>
+        
       </form>
 
       <div class="auth-form__divider"><span>OR</span></div>
 
       <a href="#" class="btn btn--google">
-        <img src="{% static 'images/icon-google.svg' %}" alt="">
+        <img src="{% static 'images/formkit_google.png' %}" alt="">
         Sign In with Google.
       </a>
 
       <p class="auth-form__footer-link">
-        Already have an account? <a href="#"><strong>Log In</strong></a>
+        Already have an account? <a href="{% url 'login' %}"><strong>Log In</strong></a>
       </p>
     </div>
 

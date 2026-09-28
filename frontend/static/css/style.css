@@ -137,10 +137,27 @@ button { font-family: inherit; cursor: pointer; border: none; }
   justify-content: space-between;
   gap: 24px;
 }
+
+.nav-logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.nav-icon__img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
 .logo {
   position: relative;
   margin-inline: 0;
-  margin-left: -50px;
+  margin-left: -40px;
   font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 400;
@@ -426,6 +443,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   display: grid;
   grid-template-columns: 1fr 1.3fr;
   min-height: 100vh;
+  margin-left: relative;
 }
 .auth-page__art {
   background: var(--forest);
@@ -438,12 +456,18 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 .auth-page__bear {
   width: 70%;
-  max-width: 340px;
+  max-width: 320px;
   align-self: center;
   margin-block: auto;
 }
-.auth-page__social { gap: 16px !important; }
-.auth-page__social img { width: 22px; height: 22px; filter: invert(0); }
+
+.auth-page__bearlogin{
+  width: 100%;
+  max-width: 800px;
+  align-self: center;
+  margin-block: auto;
+}
+
 
 .auth-page__form-panel {
   background: var(--cream);

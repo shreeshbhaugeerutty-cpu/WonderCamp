@@ -18,11 +18,31 @@
         <li><a href="{% url 'campsites' %}">Campsites</a></li>
         <li><a href="{% url 'camping_vans' %}">Camping Vans</a></li>
         <li><a href="#">Lodgings</a></li>
-        <li><a href="{% url 'register' %}">Login/Register</a></li>
+        {% if user.is_authenticated %}
+    <li><a href="#">Account</a></li>
+    <li>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="nav-logout-btn">Log Out</button>
+  </form>
+</li>
+{% else %}
+  <li><a href="{% url 'register' %}">Login/Register</a></li>
+{% endif %}
+<li>
+  {%if user.is_authenticated %}
+  <a href="#" aria-label="Account" class="nav-icon">
+    <img src="{% static 'images/user-profile.png' %}" alt="" class="nav-icon__img">
+  </a>
+
+{% endif %}
+</li>
+<li>
+  <a href="{% if user.is_authenticated %}#{% else %}{% url 'login' %}{% endif %}" aria-label="Notifications" class="nav-icon">
+    <img src="{% static 'images/notifss.png' %}" alt="" class="nav-icon__img">
+  </a>
+</li>
       </ul>
-      <button class="icon-btn" aria-label="Notifications">
-        <span class="icon-btn__dot"></span>
-      </button>
     </nav>
   </header>
 
