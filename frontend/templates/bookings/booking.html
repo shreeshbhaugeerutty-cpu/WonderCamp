@@ -8,9 +8,8 @@
 
 <main class="create-booking-page">
 
-    <!-- PAGE HEADING -->
+    <!-- PAGE INTRO -->
     <section class="create-booking-heading">
-
         <p class="booking-breadcrumb">
             Bois Chéri Private Camp &gt; Book your stay
         </p>
@@ -21,11 +20,10 @@
             Choose your dates, pitch, party size, and any extras.
             You can review everything before payment.
         </p>
-
     </section>
 
 
-    <!-- PROGRESS BAR -->
+    <!-- PROGRESS -->
     <section class="booking-progress">
 
         <div class="progress-item active">
@@ -62,77 +60,47 @@
         <!-- LEFT SIDE -->
         <div class="booking-main">
 
-
-            <!-- =====================================================
-                 1. WHEN ARE YOU CAMPING?
-            ====================================================== -->
+            <!-- DATES -->
             <section class="booking-box">
 
                 <div class="section-heading">
-
                     <h2>🍃 When are you camping?</h2>
-
                     <p>
                         Pick your arrival and departure dates.
                         Minimum stay is 3 nights.
                     </p>
-
                 </div>
-
 
                 <div class="date-row">
 
-                    <!-- CHECK-IN -->
-                    <label class="date-box selected-date-box">
-
-                        <span>CHECK-IN</span>
-
-                        <input
-                            type="date"
-                            id="check-in">
-
-                    </label>
-
-
-                    <!-- CHECK-OUT -->
                     <label class="date-box">
-
-                        <span>CHECK-OUT</span>
-
-                        <input
-                            type="date"
-                            id="check-out"
-                            disabled>
-
+                        <span>CHECK-IN</span>
+                        <input type="date" id="check-in">
                     </label>
 
+                    <label class="date-box">
+                        <span>CHECK-OUT</span>
+                        <input type="date" id="check-out" disabled>
+                    </label>
 
-                    <span
-                        class="nights-badge"
-                        id="night-count">
+                    <span class="nights-badge" id="night-count">
                         Select dates
                     </span>
 
                 </div>
 
-
-                <p
-                    class="date-error"
-                    id="date-error">
-                </p>
+                <p class="date-error" id="date-error"></p>
 
 
                 <!-- CALENDARS -->
                 <div class="calendar-wrapper">
 
-
-                    <!-- SEPTEMBER 2026 -->
-                    <div class="calendar">
+                    <!-- SEPTEMBER -->
+                    <div class="calendar" data-month="8" data-year="2026">
 
                         <h3>September 2026</h3>
 
                         <div class="calendar-weekdays">
-
                             <span>M</span>
                             <span>T</span>
                             <span>W</span>
@@ -140,61 +108,57 @@
                             <span>F</span>
                             <span>S</span>
                             <span>S</span>
-
                         </div>
-
 
                         <div class="calendar-days">
 
                             <span></span>
 
-                            <span>1</span>
-                            <span>2</span>
-                            <span>3</span>
-                            <span>4</span>
-                            <span>5</span>
-                            <span>6</span>
+                            <span data-day="1">1</span>
+                            <span data-day="2">2</span>
+                            <span data-day="3">3</span>
+                            <span data-day="4">4</span>
+                            <span data-day="5">5</span>
+                            <span data-day="6">6</span>
 
-                            <span>7</span>
-                            <span>8</span>
-                            <span>9</span>
-                            <span>10</span>
-                            <span>11</span>
-                            <span>12</span>
-                            <span>13</span>
+                            <span data-day="7">7</span>
+                            <span data-day="8">8</span>
+                            <span data-day="9">9</span>
+                            <span data-day="10">10</span>
+                            <span data-day="11">11</span>
+                            <span data-day="12">12</span>
+                            <span data-day="13">13</span>
 
-                            <span>14</span>
-                            <span>15</span>
-                            <span>16</span>
-                            <span>17</span>
-                            <span>18</span>
-                            <span>19</span>
-                            <span>20</span>
+                            <span data-day="14">14</span>
+                            <span data-day="15">15</span>
+                            <span data-day="16">16</span>
+                            <span data-day="17">17</span>
+                            <span data-day="18">18</span>
+                            <span data-day="19">19</span>
+                            <span data-day="20">20</span>
 
-                            <span>21</span>
-                            <span>22</span>
-                            <span>23</span>
-                            <span>24</span>
-                            <span>25</span>
-                            <span>26</span>
-                            <span>27</span>
+                            <span data-day="21">21</span>
+                            <span data-day="22">22</span>
+                            <span data-day="23">23</span>
+                            <span data-day="24">24</span>
+                            <span data-day="25">25</span>
+                            <span data-day="26">26</span>
+                            <span data-day="27">27</span>
 
-                            <span>28</span>
-                            <span>29</span>
-                            <span>30</span>
+                            <span data-day="28">28</span>
+                            <span data-day="29">29</span>
+                            <span data-day="30">30</span>
 
                         </div>
-
                     </div>
 
 
-                    <!-- OCTOBER 2026 -->
-                    <div class="calendar">
+                    <!-- OCTOBER -->
+                    <div class="calendar" data-month="9" data-year="2026">
 
                         <h3>October 2026</h3>
 
                         <div class="calendar-weekdays">
-
                             <span>M</span>
                             <span>T</span>
                             <span>W</span>
@@ -202,9 +166,7 @@
                             <span>F</span>
                             <span>S</span>
                             <span>S</span>
-
                         </div>
-
 
                         <div class="calendar-days">
 
@@ -212,44 +174,43 @@
                             <span></span>
                             <span></span>
 
-                            <span>1</span>
-                            <span>2</span>
-                            <span>3</span>
-                            <span>4</span>
+                            <span data-day="1">1</span>
+                            <span data-day="2">2</span>
+                            <span data-day="3">3</span>
+                            <span data-day="4">4</span>
 
-                            <span>5</span>
-                            <span>6</span>
-                            <span>7</span>
-                            <span>8</span>
-                            <span>9</span>
-                            <span>10</span>
-                            <span>11</span>
+                            <span data-day="5">5</span>
+                            <span data-day="6">6</span>
+                            <span data-day="7">7</span>
+                            <span data-day="8">8</span>
+                            <span data-day="9">9</span>
+                            <span data-day="10">10</span>
+                            <span data-day="11">11</span>
 
-                            <span>12</span>
-                            <span>13</span>
-                            <span>14</span>
-                            <span>15</span>
-                            <span>16</span>
-                            <span>17</span>
-                            <span>18</span>
+                            <span data-day="12">12</span>
+                            <span data-day="13">13</span>
+                            <span data-day="14">14</span>
+                            <span data-day="15">15</span>
+                            <span data-day="16">16</span>
+                            <span data-day="17">17</span>
+                            <span data-day="18">18</span>
 
-                            <span>19</span>
-                            <span>20</span>
-                            <span>21</span>
-                            <span>22</span>
-                            <span>23</span>
-                            <span>24</span>
-                            <span>25</span>
+                            <span data-day="19">19</span>
+                            <span data-day="20">20</span>
+                            <span data-day="21">21</span>
+                            <span data-day="22">22</span>
+                            <span data-day="23">23</span>
+                            <span data-day="24">24</span>
+                            <span data-day="25">25</span>
 
-                            <span>26</span>
-                            <span>27</span>
-                            <span>28</span>
-                            <span>29</span>
-                            <span>30</span>
-                            <span>31</span>
+                            <span data-day="26">26</span>
+                            <span data-day="27">27</span>
+                            <span data-day="28">28</span>
+                            <span data-day="29">29</span>
+                            <span data-day="30">30</span>
+                            <span data-day="31">31</span>
 
                         </div>
-
                     </div>
 
                 </div>
@@ -257,29 +218,21 @@
             </section>
 
 
-
-            <!-- =====================================================
-                 2. PICK YOUR PITCH
-            ====================================================== -->
+            <!-- PICK YOUR PITCH -->
             <section class="booking-box">
 
                 <div class="section-heading">
-
                     <h2>🍃 Pick your pitch</h2>
-
                     <p>
-                        Choose the pitch that best suits your stay.
-                        All include a fire pit and fresh-water access.
+                        Choose your pitch first.
+                        Your party limits will then be shown below.
                     </p>
-
                 </div>
-
 
                 <div class="pitch-grid">
 
-
-                    <!-- PITCH 1 -->
-                    <div
+                    <!-- HILLSIDE -->
+                    <article
                         class="pitch-card"
                         data-name="Hillside G-07"
                         data-price="2800"
@@ -295,42 +248,28 @@
                         <div class="pitch-information">
 
                             <div class="pitch-top">
-
-                                <span class="pitch-category">
-                                    RIVERSIDE
-                                </span>
-
+                                <span class="pitch-category">RIVERSIDE</span>
                                 <span class="pitch-select"></span>
-
                             </div>
 
-                            <h3>Hillside G-07</h3>
+                            <h3>HILLSIDE G-07</h3>
 
                             <p>
-                                Stunning views of the valley with
-                                direct sunrise exposure.
+                                Stunning views of the valley with direct
+                                sunrise exposure.
                             </p>
 
                             <div class="pitch-bottom">
-
-                                <span class="stars">
-                                    ★★★★★
-                                </span>
-
-                                <strong>
-                                    Rs 2,800
-                                    <small>/nt</small>
-                                </strong>
-
+                                <span class="rating">★★★★★</span>
+                                <strong>Rs 2,800 <small>/nt</small></strong>
                             </div>
 
                         </div>
+                    </article>
 
-                    </div>
 
-
-                    <!-- PITCH 2 -->
-                    <div
+                    <!-- LAKESIDE -->
+                    <article
                         class="pitch-card"
                         data-name="Lakeside Loft"
                         data-price="3500"
@@ -346,16 +285,11 @@
                         <div class="pitch-information">
 
                             <div class="pitch-top">
-
-                                <span class="pitch-category">
-                                    FOREST
-                                </span>
-
+                                <span class="pitch-category">FOREST</span>
                                 <span class="pitch-select"></span>
-
                             </div>
 
-                            <h3>Lakeside Loft</h3>
+                            <h3>LAKESIDE LOFT</h3>
 
                             <p>
                                 Close to the dock, perfect for morning
@@ -363,25 +297,16 @@
                             </p>
 
                             <div class="pitch-bottom">
-
-                                <span class="stars">
-                                    ★★★★★
-                                </span>
-
-                                <strong>
-                                    Rs 3,500
-                                    <small>/nt</small>
-                                </strong>
-
+                                <span class="rating">★★★★★</span>
+                                <strong>Rs 3,500 <small>/nt</small></strong>
                             </div>
 
                         </div>
+                    </article>
 
-                    </div>
 
-
-                    <!-- PITCH 3 -->
-                    <div
+                    <!-- MOUNTAIN -->
+                    <article
                         class="pitch-card"
                         data-name="Mountain Wild"
                         data-price="2500"
@@ -397,16 +322,11 @@
                         <div class="pitch-information">
 
                             <div class="pitch-top">
-
-                                <span class="pitch-category">
-                                    FOREST
-                                </span>
-
+                                <span class="pitch-category">FOREST</span>
                                 <span class="pitch-select"></span>
-
                             </div>
 
-                            <h3>Mountain Wild</h3>
+                            <h3>MOUNTAIN WILD</h3>
 
                             <p>
                                 Secluded higher up, absolute peace
@@ -414,25 +334,16 @@
                             </p>
 
                             <div class="pitch-bottom">
-
-                                <span class="stars">
-                                    ★★★★★
-                                </span>
-
-                                <strong>
-                                    Rs 2,500
-                                    <small>/nt</small>
-                                </strong>
-
+                                <span class="rating">★★★★★</span>
+                                <strong>Rs 2,500 <small>/nt</small></strong>
                             </div>
 
                         </div>
+                    </article>
 
-                    </div>
 
-
-                    <!-- PITCH 4 -->
-                    <div
+                    <!-- STREAMSIDE -->
+                    <article
                         class="pitch-card"
                         data-name="Streamside Birch"
                         data-price="4800"
@@ -448,16 +359,11 @@
                         <div class="pitch-information">
 
                             <div class="pitch-top">
-
-                                <span class="pitch-category">
-                                    RIVERSIDE
-                                </span>
-
+                                <span class="pitch-category">RIVERSIDE</span>
                                 <span class="pitch-select"></span>
-
                             </div>
 
-                            <h3>Streamside Birch</h3>
+                            <h3>STREAMSIDE BIRCH</h3>
 
                             <p>
                                 Listen to the soft rustle of the stream.
@@ -465,48 +371,32 @@
                             </p>
 
                             <div class="pitch-bottom">
-
-                                <span class="stars">
-                                    ★★★★★
-                                </span>
-
-                                <strong>
-                                    Rs 4,800
-                                    <small>/nt</small>
-                                </strong>
-
+                                <span class="rating">★★★★★</span>
+                                <strong>Rs 4,800 <small>/nt</small></strong>
                             </div>
 
                         </div>
-
-                    </div>
+                    </article>
 
                 </div>
 
             </section>
 
 
-
-            <!-- =====================================================
-                 3. WHO'S COMING ALONG?
-                 NOW AFTER PITCH SELECTION
-            ====================================================== -->
+            <!-- WHO IS COMING -->
             <section class="booking-box">
 
                 <div class="section-heading">
-
                     <h2>🍃 Who's coming along?</h2>
 
                     <p>
-                        Add your campers, vehicles, pets and tents
-                        according to the capacity of your selected pitch.
+                        Tell us your camp companions and vehicles.
+                        Limits depend on the pitch you selected.
                     </p>
-
                 </div>
 
 
                 <div class="guest-grid">
-
 
                     <!-- CAMPERS -->
                     <div class="guest-option">
@@ -516,17 +406,14 @@
                             <span class="guest-icon">♙</span>
 
                             <div>
-
                                 <strong>Campers</strong>
 
                                 <small id="campers-limit">
                                     Select a pitch first
                                 </small>
-
                             </div>
 
                         </div>
-
 
                         <div class="counter">
 
@@ -534,9 +421,7 @@
                                 type="button"
                                 class="minus"
                                 data-target="campers"
-                                disabled>
-                                −
-                            </button>
+                                disabled>−</button>
 
                             <span id="campers">0</span>
 
@@ -544,9 +429,7 @@
                                 type="button"
                                 class="plus"
                                 data-target="campers"
-                                disabled>
-                                +
-                            </button>
+                                disabled>+</button>
 
                         </div>
 
@@ -561,17 +444,14 @@
                             <span class="guest-icon">🚙</span>
 
                             <div>
-
                                 <strong>Vehicles</strong>
 
                                 <small id="vehicles-limit">
                                     Select a pitch first
                                 </small>
-
                             </div>
 
                         </div>
-
 
                         <div class="counter">
 
@@ -579,9 +459,7 @@
                                 type="button"
                                 class="minus"
                                 data-target="vehicles"
-                                disabled>
-                                −
-                            </button>
+                                disabled>−</button>
 
                             <span id="vehicles">0</span>
 
@@ -589,9 +467,7 @@
                                 type="button"
                                 class="plus"
                                 data-target="vehicles"
-                                disabled>
-                                +
-                            </button>
+                                disabled>+</button>
 
                         </div>
 
@@ -606,17 +482,14 @@
                             <span class="guest-icon">☆</span>
 
                             <div>
-
                                 <strong>Pets</strong>
 
                                 <small id="pets-limit">
                                     Select a pitch first
                                 </small>
-
                             </div>
 
                         </div>
-
 
                         <div class="counter">
 
@@ -624,9 +497,7 @@
                                 type="button"
                                 class="minus"
                                 data-target="pets"
-                                disabled>
-                                −
-                            </button>
+                                disabled>−</button>
 
                             <span id="pets">0</span>
 
@@ -634,16 +505,14 @@
                                 type="button"
                                 class="plus"
                                 data-target="pets"
-                                disabled>
-                                +
-                            </button>
+                                disabled>+</button>
 
                         </div>
 
                     </div>
 
 
-                    <!-- TENTS / GRILLS -->
+                    <!-- TENTS -->
                     <div class="guest-option">
 
                         <div class="guest-left">
@@ -651,17 +520,14 @@
                             <span class="guest-icon">⛺</span>
 
                             <div>
-
                                 <strong>Tents / Grills</strong>
 
                                 <small id="tents-limit">
                                     Select a pitch first
                                 </small>
-
                             </div>
 
                         </div>
-
 
                         <div class="counter">
 
@@ -669,9 +535,7 @@
                                 type="button"
                                 class="minus"
                                 data-target="tents"
-                                disabled>
-                                −
-                            </button>
+                                disabled>−</button>
 
                             <span id="tents">0</span>
 
@@ -679,9 +543,7 @@
                                 type="button"
                                 class="plus"
                                 data-target="tents"
-                                disabled>
-                                +
-                            </button>
+                                disabled>+</button>
 
                         </div>
 
@@ -690,7 +552,6 @@
                 </div>
 
 
-                <!-- CAPACITY MESSAGE -->
                 <div
                     class="capacity-message"
                     id="capacity-message">
@@ -700,7 +561,6 @@
                 </div>
 
             </section>
-
 
 
             <!-- BOTTOM -->
@@ -725,10 +585,7 @@
         </div>
 
 
-
-        <!-- =====================================================
-             RIGHT SIDE — YOUR STAY
-        ====================================================== -->
+        <!-- RIGHT SIDE -->
         <aside class="your-stay">
 
             <h2>Your stay</h2>
@@ -747,7 +604,6 @@
                     </strong>
                 </p>
 
-
                 <p>
                     📅 Dates:
                     <strong id="summary-dates">
@@ -755,25 +611,20 @@
                     </strong>
                 </p>
 
-
                 <p>
                     ♙ Party:
                     <strong>
-                        <span id="summary-campers">0</span>
-                        campers,
-                        <span id="summary-vehicles">0</span>
-                        vehicle(s)
+                        <span id="summary-campers">0</span> campers,
+                        <span id="summary-vehicles">0</span> vehicle(s)
                     </strong>
                 </p>
 
             </div>
 
 
-            <!-- PRICE -->
             <div class="stay-prices">
 
                 <div>
-
                     <span>
                         Pitch fee
                         (<span id="summary-nights">0</span> nights)
@@ -782,12 +633,10 @@
                     <strong id="pitch-price">
                         Rs 0
                     </strong>
-
                 </div>
 
 
                 <div>
-
                     <span id="electricity-label">
                         Electricity
                     </span>
@@ -795,7 +644,6 @@
                     <strong id="electricity-price">
                         Rs 0
                     </strong>
-
                 </div>
 
 
@@ -813,7 +661,6 @@
             </div>
 
 
-            <!-- TOTAL -->
             <div class="stay-total">
 
                 <strong>Total</strong>
@@ -859,677 +706,439 @@
 {% endblock %}
 
 
-
 {% block extra_scripts %}
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-/* ==========================================================
-   ELEMENTS
-========================================================== */
+    /* ==========================================
+       ELEMENTS
+    ========================================== */
 
-const pitchCards =
-    document.querySelectorAll(".pitch-card");
+    const checkIn = document.getElementById("check-in");
+    const checkOut = document.getElementById("check-out");
 
-const counterButtons =
-    document.querySelectorAll(".counter button");
+    const pitchCards = document.querySelectorAll(".pitch-card");
 
-const checkIn =
-    document.getElementById("check-in");
+    const nightCount = document.getElementById("night-count");
+    const dateError = document.getElementById("date-error");
 
-const checkOut =
-    document.getElementById("check-out");
+    const summaryPitch = document.getElementById("summary-pitch");
+    const summaryDates = document.getElementById("summary-dates");
+    const summaryNights = document.getElementById("summary-nights");
 
-const dateError =
-    document.getElementById("date-error");
+    const summaryCampers = document.getElementById("summary-campers");
+    const summaryVehicles = document.getElementById("summary-vehicles");
 
+    const pitchPrice = document.getElementById("pitch-price");
+    const electricityPrice = document.getElementById("electricity-price");
+    const electricityLabel = document.getElementById("electricity-label");
+    const totalPrice = document.getElementById("total-price");
 
-const values = {
-    campers: 0,
-    vehicles: 0,
-    pets: 0,
-    tents: 0
-};
+    const capacityMessage =
+        document.getElementById("capacity-message");
 
+    const reviewButton =
+        document.getElementById("review-button");
 
-let limits = {
-    campers: 0,
-    vehicles: 0,
-    pets: 0,
-    tents: 0
-};
-
-
-let selectedPitch = null;
+    const bottomReviewButton =
+        document.getElementById("bottom-review-button");
 
 
+    /* ==========================================
+       VALUES
+    ========================================== */
 
-/* ==========================================================
-   DATE HELPERS
-========================================================== */
+    let selectedPitch = null;
 
-function makeDate(value) {
+    let values = {
+        campers: 0,
+        vehicles: 0,
+        pets: 0,
+        tents: 0
+    };
 
-    return new Date(
-        value + "T00:00:00"
-    );
-
-}
-
-
-function formatInputDate(date) {
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-
-}
+    let limits = {
+        campers: 0,
+        vehicles: 0,
+        pets: 0,
+        tents: 0
+    };
 
 
+    /* ==========================================
+       DATE HELPERS
+    ========================================== */
 
-/* ==========================================================
-   CALCULATE NUMBER OF NIGHTS
-========================================================== */
+    function makeDate(value) {
 
-function getNights() {
+        if (!value) {
+            return null;
+        }
 
-    if (
-        !checkIn.value ||
-        !checkOut.value
-    ) {
-        return 0;
+        const parts = value.split("-");
+
+        return new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
     }
 
 
-    const arrival =
-        makeDate(checkIn.value);
+    function formatInputDate(date) {
 
-    const departure =
-        makeDate(checkOut.value);
+        const year = date.getFullYear();
 
+        const month =
+            String(date.getMonth() + 1)
+            .padStart(2, "0");
 
-    const difference =
-        departure - arrival;
+        const day =
+            String(date.getDate())
+            .padStart(2, "0");
 
-
-    return Math.round(
-        difference /
-        (1000 * 60 * 60 * 24)
-    );
-
-}
+        return `${year}-${month}-${day}`;
+    }
 
 
+    function getNights() {
 
-/* ==========================================================
-   CHECK-IN
-========================================================== */
+        if (!checkIn.value || !checkOut.value) {
+            return 0;
+        }
 
-checkIn.addEventListener(
-    "change",
-    function () {
+        const arrival = makeDate(checkIn.value);
+        const departure = makeDate(checkOut.value);
+
+        const difference = departure - arrival;
+
+        return Math.round(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+    }
+
+
+    /* ==========================================
+       CHECK-IN
+    ========================================== */
+
+    checkIn.addEventListener("change", function () {
+
+        dateError.textContent = "";
 
         if (!checkIn.value) {
 
-            checkOut.disabled = true;
             checkOut.value = "";
+            checkOut.disabled = true;
 
-            resetDateDisplay();
-
+            updateDates();
             return;
-
         }
 
-
-        /*
-         Checkout becomes available only
-         after check-in is selected.
-        */
-
-        checkOut.disabled = false;
-
-
-        /*
-         Minimum checkout =
-         check-in + 3 nights.
-        */
-
-        const arrival =
-            makeDate(checkIn.value);
-
+        const arrival = makeDate(checkIn.value);
 
         const minimumCheckout =
             new Date(arrival);
-
 
         minimumCheckout.setDate(
             minimumCheckout.getDate() + 3
         );
 
-
         checkOut.min =
-            formatInputDate(
-                minimumCheckout
-            );
+            formatInputDate(minimumCheckout);
+
+        checkOut.disabled = false;
 
 
-        /*
-         Clear checkout if it is no
-         longer valid.
-        */
+        if (checkOut.value) {
 
-        if (
-            checkOut.value &&
-            makeDate(checkOut.value) <
-            minimumCheckout
-        ) {
+            const existingCheckout =
+                makeDate(checkOut.value);
+
+            if (existingCheckout < minimumCheckout) {
+                checkOut.value = "";
+            }
+        }
+
+        updateDates();
+    });
+
+
+    /* ==========================================
+       CHECK-OUT
+    ========================================== */
+
+    checkOut.addEventListener("change", function () {
+
+        dateError.textContent = "";
+
+        if (!checkOut.value) {
+
+            updateDates();
+            return;
+        }
+
+        if (getNights() < 3) {
+
+            dateError.textContent =
+                "Minimum stay is 3 nights.";
 
             checkOut.value = "";
 
+            updateDates();
+
+            return;
+        }
+
+        updateDates();
+    });
+
+
+    /* ==========================================
+       UPDATE DATE DISPLAY
+    ========================================== */
+
+    function updateDates() {
+
+        const nights = getNights();
+
+
+        if (!checkIn.value) {
+
+            nightCount.textContent =
+                "Select dates";
+
+            summaryDates.textContent =
+                "Select your dates";
+
+            summaryNights.textContent =
+                "0";
+
+            electricityLabel.textContent =
+                "Electricity";
+
+            updateCalendarHighlight();
+            updatePrices();
+            updateReviewButtons();
+
+            return;
         }
 
 
-        updateDates();
+        const arrival =
+            makeDate(checkIn.value);
 
-    }
-);
-
-
-
-/* ==========================================================
-   CHECK-OUT
-========================================================== */
-
-checkOut.addEventListener(
-    "change",
-    function () {
-
-        updateDates();
-
-    }
-);
+        const options = {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        };
 
 
+        if (!checkOut.value) {
 
-/* ==========================================================
-   RESET DATE DISPLAY
-========================================================== */
+            nightCount.textContent =
+                "Select check-out";
 
-function resetDateDisplay() {
-
-    document.getElementById(
-        "night-count"
-    ).textContent =
-        "Select dates";
-
-
-    document.getElementById(
-        "summary-dates"
-    ).textContent =
-        "Select your dates";
-
-
-    document.getElementById(
-        "summary-nights"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "electricity-label"
-    ).textContent =
-        "Electricity";
-
-
-    document.getElementById(
-        "electricity-price"
-    ).textContent =
-        "Rs 0";
-
-
-    dateError.textContent = "";
-
-
-    clearCalendarHighlight();
-
-    updatePrices();
-
-}
-
-
-
-/* ==========================================================
-   UPDATE DATE INFORMATION
-========================================================== */
-
-function updateDates() {
-
-    /*
-     Only check-in selected
-    */
-
-    if (
-        !checkIn.value ||
-        !checkOut.value
-    ) {
-
-        document.getElementById(
-            "night-count"
-        ).textContent =
-            "Select dates";
-
-
-        document.getElementById(
-            "summary-nights"
-        ).textContent =
-            "0";
-
-
-        if (checkIn.value) {
-
-            const arrival =
-                makeDate(checkIn.value);
-
-
-            const options = {
-                day: "numeric",
-                month: "short",
-                year: "numeric"
-            };
-
-
-            document.getElementById(
-                "summary-dates"
-            ).textContent =
-
+            summaryDates.textContent =
                 arrival.toLocaleDateString(
                     "en-GB",
                     options
                 )
-
                 + " – Select check-out";
 
+            summaryNights.textContent =
+                "0";
+
+            electricityLabel.textContent =
+                "Electricity";
+
+            updateCalendarHighlight();
+            updatePrices();
+            updateReviewButtons();
+
+            return;
         }
 
 
-        updateCalendarHighlight();
-
-        updatePrices();
-
-        updateReviewButtons();
-
-        return;
-
-    }
-
-
-    const nights =
-        getNights();
-
-
-    if (nights < 3) {
-
-        dateError.textContent =
-            "Minimum stay is 3 nights.";
-
-        updateReviewButtons();
-
-        return;
-
-    }
-
-
-    dateError.textContent = "";
-
-
-    document.getElementById(
-        "night-count"
-    ).textContent =
-
-        nights +
-        (nights === 1
-            ? " night"
-            : " nights");
-
-
-    document.getElementById(
-        "summary-nights"
-    ).textContent =
-        nights;
-
-
-    const arrival =
-        makeDate(checkIn.value);
-
-    const departure =
-        makeDate(checkOut.value);
-
-
-    const options = {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    };
-
-
-    document.getElementById(
-        "summary-dates"
-    ).textContent =
-
-        arrival.toLocaleDateString(
-            "en-GB",
-            options
-        )
-
-        + " – " +
-
-        departure.toLocaleDateString(
-            "en-GB",
-            options
-        );
-
-
-    document.getElementById(
-        "electricity-label"
-    ).textContent =
-
-        "Electricity (Rs 120 × " +
-        nights +
-        ")";
-
-
-    updateCalendarHighlight();
-
-    updatePrices();
-
-    updateReviewButtons();
-
-}
-
-
-
-/* ==========================================================
-   CLEAR CALENDAR
-========================================================== */
-
-function clearCalendarHighlight() {
-
-    const calendarDays =
-        document.querySelectorAll(
-            ".calendar-days span"
-        );
-
-
-    calendarDays.forEach(day => {
-
-        day.classList.remove(
-            "calendar-start",
-            "calendar-range",
-            "calendar-end"
-        );
-
-    });
-
-}
-
-
-
-/* ==========================================================
-   UPDATE CALENDAR HIGHLIGHT
-========================================================== */
-
-function updateCalendarHighlight() {
-
-    clearCalendarHighlight();
-
-
-    if (!checkIn.value) {
-        return;
-    }
-
-
-    const arrival =
-        makeDate(checkIn.value);
-
-
-    let departure = null;
-
-
-    if (checkOut.value) {
-
-        departure =
+        const departure =
             makeDate(checkOut.value);
 
+
+        nightCount.textContent =
+            `${nights} ${nights === 1 ? "night" : "nights"}`;
+
+
+        summaryNights.textContent =
+            nights;
+
+
+        summaryDates.textContent =
+            arrival.toLocaleDateString(
+                "en-GB",
+                options
+            )
+            + " – "
+            + departure.toLocaleDateString(
+                "en-GB",
+                options
+            );
+
+
+        electricityLabel.textContent =
+            `Electricity (Rs 120 × ${nights})`;
+
+
+        updateCalendarHighlight();
+        updatePrices();
+        updateReviewButtons();
     }
 
 
-    const monthNames = [
+    /* ==========================================
+       CALENDAR
+    ========================================== */
 
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
+    function clearCalendarHighlight() {
 
-    ];
+        document
+            .querySelectorAll(
+                ".calendar-days [data-day]"
+            )
+            .forEach(function (day) {
 
-
-    const calendars =
-        document.querySelectorAll(
-            ".calendar"
-        );
-
-
-    calendars.forEach(calendar => {
-
-        const title =
-            calendar
-                .querySelector("h3")
-                .textContent
-                .trim();
-
-
-        const parts =
-            title.split(" ");
-
-
-        const monthName =
-            parts[0];
-
-
-        const year =
-            Number(parts[1]);
-
-
-        const month =
-            monthNames.indexOf(
-                monthName
-            );
-
-
-        const days =
-            calendar.querySelectorAll(
-                ".calendar-days span"
-            );
-
-
-        days.forEach(day => {
-
-            const text =
-                day.textContent.trim();
-
-
-            if (text === "") {
-                return;
-            }
-
-
-            const dayNumber =
-                Number(text);
-
-
-            const currentDate =
-                new Date(
-                    year,
-                    month,
-                    dayNumber
-                );
-
-
-            currentDate.setHours(
-                0,
-                0,
-                0,
-                0
-            );
-
-
-            /*
-             CHECK-IN
-            */
-
-            if (
-                currentDate.getTime() ===
-                arrival.getTime()
-            ) {
-
-                day.classList.add(
-                    "calendar-start"
-                );
-
-                return;
-
-            }
-
-
-            /*
-             Wait for checkout before
-             highlighting the range.
-            */
-
-            if (!departure) {
-                return;
-            }
-
-
-            /*
-             CHECK-OUT
-            */
-
-            if (
-                currentDate.getTime() ===
-                departure.getTime()
-            ) {
-
-                day.classList.add(
+                day.classList.remove(
+                    "calendar-start",
+                    "calendar-range",
                     "calendar-end"
                 );
 
-            }
+            });
+    }
 
 
-            /*
-             BETWEEN CHECK-IN AND CHECK-OUT
-            */
+    function updateCalendarHighlight() {
 
-            else if (
-                currentDate > arrival &&
-                currentDate < departure
-            ) {
+        clearCalendarHighlight();
 
-                day.classList.add(
-                    "calendar-range"
-                );
+        if (!checkIn.value) {
+            return;
+        }
 
-            }
+        const arrival =
+            makeDate(checkIn.value);
 
-        });
-
-    });
-
-}
+        const departure =
+            checkOut.value
+            ? makeDate(checkOut.value)
+            : null;
 
 
+        document
+            .querySelectorAll(".calendar")
+            .forEach(function (calendar) {
 
-/* ==========================================================
-   SELECT PITCH
-========================================================== */
+                const month =
+                    Number(calendar.dataset.month);
 
-pitchCards.forEach(card => {
-
-    card.addEventListener(
-        "click",
-        function () {
+                const year =
+                    Number(calendar.dataset.year);
 
 
-            pitchCards.forEach(item => {
+                calendar
+                    .querySelectorAll("[data-day]")
+                    .forEach(function (day) {
 
-                item.classList.remove(
-                    "selected"
-                );
+                        const currentDate =
+                            new Date(
+                                year,
+                                month,
+                                Number(day.dataset.day)
+                            );
+
+
+                        if (
+                            currentDate.getTime() ===
+                            arrival.getTime()
+                        ) {
+
+                            day.classList.add(
+                                "calendar-start"
+                            );
+                        }
+
+
+                        if (!departure) {
+                            return;
+                        }
+
+
+                        if (
+                            currentDate > arrival &&
+                            currentDate < departure
+                        ) {
+
+                            day.classList.add(
+                                "calendar-range"
+                            );
+                        }
+
+
+                        if (
+                            currentDate.getTime() ===
+                            departure.getTime()
+                        ) {
+
+                            day.classList.add(
+                                "calendar-end"
+                            );
+                        }
+
+                    });
 
             });
+    }
 
 
-            card.classList.add(
-                "selected"
+    /* ==========================================
+       SELECT PITCH
+    ========================================== */
+
+    pitchCards.forEach(function (card) {
+
+        card.addEventListener("click", function () {
+
+            pitchCards.forEach(
+                function (otherCard) {
+
+                    otherCard.classList.remove(
+                        "selected"
+                    );
+                }
             );
 
+
+            card.classList.add("selected");
 
             selectedPitch = card;
 
 
-            /*
-             Get capacity of the
-             selected pitch.
-            */
-
             limits.campers =
-                Number(
-                    card.dataset.campers
-                );
-
+                Number(card.dataset.campers);
 
             limits.vehicles =
-                Number(
-                    card.dataset.vehicles
-                );
-
+                Number(card.dataset.vehicles);
 
             limits.pets =
-                Number(
-                    card.dataset.pets
-                );
-
+                Number(card.dataset.pets);
 
             limits.tents =
-                Number(
-                    card.dataset.tents
-                );
+                Number(card.dataset.tents);
 
 
-            /*
-             Reset numbers when user
-             changes pitch.
-            */
+            /* Reset counters when pitch changes */
 
             values.campers = 0;
             values.vehicles = 0;
@@ -1537,433 +1146,374 @@ pitchCards.forEach(card => {
             values.tents = 0;
 
 
-            /*
-             Enable + and - after
-             pitch selection.
-            */
+            updateLimits();
+            updateCounters();
+            updateSummary();
+            updatePrices();
+            updateReviewButtons();
 
-            counterButtons.forEach(
-                button => {
+        });
 
-                    button.disabled = false;
+    });
+
+
+    /* ==========================================
+       LIMITS
+    ========================================== */
+
+    function updateLimits() {
+
+        if (!selectedPitch) {
+            return;
+        }
+
+
+        document.getElementById(
+            "campers-limit"
+        ).textContent =
+            `Maximum ${limits.campers} campers`;
+
+
+        document.getElementById(
+            "vehicles-limit"
+        ).textContent =
+            `Maximum ${limits.vehicles} ${
+                limits.vehicles === 1
+                ? "vehicle"
+                : "vehicles"
+            }`;
+
+
+        document.getElementById(
+            "pets-limit"
+        ).textContent =
+            limits.pets === 0
+            ? "Pets not allowed"
+            : `Maximum ${limits.pets} ${
+                limits.pets === 1
+                ? "pet"
+                : "pets"
+            }`;
+
+
+        document.getElementById(
+            "tents-limit"
+        ).textContent =
+            `Maximum ${limits.tents} tents / grills`;
+
+
+        capacityMessage.innerHTML =
+            `🍃 Based on your choice:
+            <strong>${selectedPitch.dataset.name}</strong>
+            accommodates up to
+            <strong>${limits.campers} persons</strong>,
+            <strong>${limits.vehicles} ${
+                limits.vehicles === 1
+                ? "vehicle"
+                : "vehicles"
+            }</strong>,
+            ${
+                limits.pets === 0
+                ? "<strong>no pets</strong>"
+                : `<strong>${limits.pets} ${
+                    limits.pets === 1
+                    ? "pet"
+                    : "pets"
+                }</strong>`
+            },
+            and
+            <strong>${limits.tents} tents/grills</strong>.`;
+    }
+
+
+    /* ==========================================
+       COUNTER BUTTONS
+    ========================================== */
+
+    document
+        .querySelectorAll(".counter button")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    if (!selectedPitch) {
+                        return;
+                    }
+
+                    const target =
+                        button.dataset.target;
+
+
+                    if (
+                        button.classList.contains("plus") &&
+                        values[target] < limits[target]
+                    ) {
+
+                        values[target]++;
+                    }
+
+
+                    if (
+                        button.classList.contains("minus") &&
+                        values[target] > 0
+                    ) {
+
+                        values[target]--;
+                    }
+
+
+                    updateCounters();
+                    updateSummary();
+                    updateReviewButtons();
 
                 }
             );
 
+        });
 
-            updateLimits();
 
-            updateCounters();
+    /* ==========================================
+       UPDATE COUNTERS
+    ========================================== */
 
-            updateSummary();
+    function updateCounters() {
 
-            updatePrices();
+        document.getElementById(
+            "campers"
+        ).textContent =
+            values.campers;
 
-            updateReviewButtons();
 
+        document.getElementById(
+            "vehicles"
+        ).textContent =
+            values.vehicles;
+
+
+        document.getElementById(
+            "pets"
+        ).textContent =
+            values.pets;
+
+
+        document.getElementById(
+            "tents"
+        ).textContent =
+            values.tents;
+
+
+        document
+            .querySelectorAll(".plus")
+            .forEach(function (button) {
+
+                const target =
+                    button.dataset.target;
+
+                button.disabled =
+                    !selectedPitch ||
+                    values[target] >=
+                    limits[target];
+
+            });
+
+
+        document
+            .querySelectorAll(".minus")
+            .forEach(function (button) {
+
+                const target =
+                    button.dataset.target;
+
+                button.disabled =
+                    !selectedPitch ||
+                    values[target] <= 0;
+
+            });
+    }
+
+
+    /* ==========================================
+       SUMMARY
+    ========================================== */
+
+    function updateSummary() {
+
+        if (!selectedPitch) {
+
+            summaryPitch.textContent =
+                "Select a pitch";
+
+        } else {
+
+            summaryPitch.textContent =
+                selectedPitch.dataset.name;
         }
-    );
-
-});
 
 
+        summaryCampers.textContent =
+            values.campers;
 
-/* ==========================================================
-   SHOW SELECTED PITCH LIMITS
-========================================================== */
-
-function updateLimits() {
-
-    document.getElementById(
-        "campers-limit"
-    ).textContent =
-
-        "Maximum " +
-        limits.campers +
-        " campers";
+        summaryVehicles.textContent =
+            values.vehicles;
+    }
 
 
-    document.getElementById(
-        "vehicles-limit"
-    ).textContent =
+    /* ==========================================
+       PRICE CALCULATION
+    ========================================== */
 
-        "Maximum " +
-        limits.vehicles +
+    function money(number) {
 
-        (
-            limits.vehicles === 1
-                ? " vehicle"
-                : " vehicles"
+        return "Rs " +
+            Number(number)
+            .toLocaleString("en-US");
+    }
+
+
+    function updatePrices() {
+
+        if (
+            !selectedPitch ||
+            !checkIn.value ||
+            !checkOut.value ||
+            getNights() < 3
+        ) {
+
+            pitchPrice.textContent =
+                "Rs 0";
+
+            electricityPrice.textContent =
+                "Rs 0";
+
+            totalPrice.textContent =
+                "Rs 0";
+
+            return;
+        }
+
+
+        const nights =
+            getNights();
+
+        const nightlyPrice =
+            Number(
+                selectedPitch.dataset.price
+            );
+
+
+        const pitchFee =
+            nightlyPrice * nights;
+
+        const electricity =
+            120 * nights;
+
+        const water =
+            420;
+
+        const cleaning =
+            188;
+
+
+        const total =
+            pitchFee +
+            electricity +
+            water +
+            cleaning;
+
+
+        pitchPrice.textContent =
+            money(pitchFee);
+
+        electricityPrice.textContent =
+            money(electricity);
+
+        totalPrice.textContent =
+            money(total);
+    }
+
+
+    /* ==========================================
+       CONTINUE BUTTON
+    ========================================== */
+
+    function updateReviewButtons() {
+
+        /*
+           Valid booking requires:
+           1. valid check-in
+           2. valid check-out
+           3. minimum 3 nights
+           4. selected pitch
+           5. at least 1 camper
+        */
+
+        const ready =
+            selectedPitch !== null &&
+            checkIn.value !== "" &&
+            checkOut.value !== "" &&
+            getNights() >= 3 &&
+            values.campers >= 1;
+
+
+        reviewButton.disabled =
+            !ready;
+
+        bottomReviewButton.disabled =
+            !ready;
+    }
+
+
+    /* ==========================================
+       CONTINUE TO REVIEW
+    ========================================== */
+
+    function continueToReview() {
+
+        if (reviewButton.disabled) {
+            return;
+        }
+
+        /*
+           We will connect this to the actual
+           Review page URL afterwards.
+
+           For now this confirms that the
+           button is working.
+        */
+
+        alert(
+            "Booking details are ready for review."
         );
+    }
 
 
-    document.getElementById(
-        "pets-limit"
-    ).textContent =
-
-        limits.pets === 0
-
-            ? "Pets not allowed"
-
-            : "Maximum " +
-              limits.pets +
-
-              (
-                  limits.pets === 1
-                      ? " pet"
-                      : " pets"
-              );
-
-
-    document.getElementById(
-        "tents-limit"
-    ).textContent =
-
-        "Maximum " +
-        limits.tents;
-
-
-    const name =
-        selectedPitch.dataset.name;
-
-
-    document.getElementById(
-        "capacity-message"
-    ).innerHTML =
-
-        "🍃 Based on your selected pitch: " +
-
-        "<strong>" +
-        name +
-        "</strong> accommodates up to " +
-
-        "<strong>" +
-        limits.campers +
-        " persons</strong>, " +
-
-        "<strong>" +
-        limits.vehicles +
-
-        (
-            limits.vehicles === 1
-                ? " vehicle"
-                : " vehicles"
-        )
-
-        + "</strong>, " +
-
-        (
-            limits.pets === 0
-
-                ? "<strong>no pets</strong>, "
-
-                : "<strong>" +
-                  limits.pets +
-
-                  (
-                      limits.pets === 1
-                          ? " pet"
-                          : " pets"
-                  )
-
-                  + "</strong>, "
-        )
-
-        + "and <strong>" +
-        limits.tents +
-        " tents/grills</strong>.";
-
-}
-
-
-
-/* ==========================================================
-   PLUS / MINUS
-========================================================== */
-
-counterButtons.forEach(button => {
-
-    button.addEventListener(
+    reviewButton.addEventListener(
         "click",
-        function () {
-
-
-            if (!selectedPitch) {
-                return;
-            }
-
-
-            const target =
-                button.dataset.target;
-
-
-            /*
-             PLUS
-            */
-
-            if (
-                button.classList.contains(
-                    "plus"
-                )
-
-                &&
-
-                values[target] <
-                limits[target]
-            ) {
-
-                values[target]++;
-
-            }
-
-
-            /*
-             MINUS
-            */
-
-            if (
-                button.classList.contains(
-                    "minus"
-                )
-
-                &&
-
-                values[target] > 0
-            ) {
-
-                values[target]--;
-
-            }
-
-
-            updateCounters();
-
-            updateSummary();
-
-        }
+        continueToReview
     );
 
+
+    bottomReviewButton.addEventListener(
+        "click",
+        continueToReview
+    );
+
+
+    /* ==========================================
+       INITIAL STATE
+    ========================================== */
+
+    checkOut.disabled = true;
+
+    updateCalendarHighlight();
+    updateCounters();
+    updateSummary();
+    updatePrices();
+    updateReviewButtons();
+
 });
-
-
-
-/* ==========================================================
-   UPDATE COUNTERS
-========================================================== */
-
-function updateCounters() {
-
-    document.getElementById(
-        "campers"
-    ).textContent =
-        values.campers;
-
-
-    document.getElementById(
-        "vehicles"
-    ).textContent =
-        values.vehicles;
-
-
-    document.getElementById(
-        "pets"
-    ).textContent =
-        values.pets;
-
-
-    document.getElementById(
-        "tents"
-    ).textContent =
-        values.tents;
-
-}
-
-
-
-/* ==========================================================
-   UPDATE SUMMARY
-========================================================== */
-
-function updateSummary() {
-
-    if (!selectedPitch) {
-        return;
-    }
-
-
-    document.getElementById(
-        "summary-pitch"
-    ).textContent =
-        selectedPitch.dataset.name;
-
-
-    document.getElementById(
-        "summary-campers"
-    ).textContent =
-        values.campers;
-
-
-    document.getElementById(
-        "summary-vehicles"
-    ).textContent =
-        values.vehicles;
-
-}
-
-
-
-/* ==========================================================
-   MONEY
-========================================================== */
-
-function money(number) {
-
-    return "Rs " +
-        Number(number).toLocaleString();
-
-}
-
-
-
-/* ==========================================================
-   PRICE
-========================================================== */
-
-function updatePrices() {
-
-    /*
-     No pitch or incomplete dates:
-     price remains zero.
-    */
-
-    if (
-        !selectedPitch ||
-        !checkIn.value ||
-        !checkOut.value
-    ) {
-
-        document.getElementById(
-            "pitch-price"
-        ).textContent =
-            "Rs 0";
-
-
-        document.getElementById(
-            "electricity-price"
-        ).textContent =
-            "Rs 0";
-
-
-        document.getElementById(
-            "total-price"
-        ).textContent =
-            "Rs 0";
-
-
-        return;
-
-    }
-
-
-    const nights =
-        getNights();
-
-
-    if (nights < 3) {
-        return;
-    }
-
-
-    const nightlyPrice =
-        Number(
-            selectedPitch.dataset.price
-        );
-
-
-    const pitchPrice =
-        nightlyPrice * nights;
-
-
-    const electricity =
-        120 * nights;
-
-
-    const water =
-        420;
-
-
-    const cleaning =
-        188;
-
-
-    const total =
-        pitchPrice +
-        electricity +
-        water +
-        cleaning;
-
-
-    document.getElementById(
-        "pitch-price"
-    ).textContent =
-        money(pitchPrice);
-
-
-    document.getElementById(
-        "electricity-price"
-    ).textContent =
-        money(electricity);
-
-
-    document.getElementById(
-        "total-price"
-    ).textContent =
-        money(total);
-
-}
-
-
-
-/* ==========================================================
-   CONTINUE BUTTONS
-========================================================== */
-
-function updateReviewButtons() {
-
-    const validDates =
-        checkIn.value &&
-        checkOut.value &&
-        getNights() >= 3;
-
-
-    const ready =
-        selectedPitch !== null &&
-        validDates;
-
-
-    document.getElementById(
-        "review-button"
-    ).disabled =
-        !ready;
-
-
-    document.getElementById(
-        "bottom-review-button"
-    ).disabled =
-        !ready;
-
-}
-
-
-
-/* ==========================================================
-   INITIAL PAGE
-========================================================== */
-
-clearCalendarHighlight();
-
-updateReviewButtons();
-
 </script>
 
 {% endblock %}

@@ -1130,12 +1130,21 @@ button { font-family: inherit; cursor: pointer; border: none; }
     margin-top: 8px;
 }
 
+
 .stars {
     color: #e68a16;
 
     font-size: 9px;
     letter-spacing: 1px;
 }
+
+.rating {
+   color: #e58b17;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+
+}
+
 
 .pitch-bottom strong {
     color: #315a27;
