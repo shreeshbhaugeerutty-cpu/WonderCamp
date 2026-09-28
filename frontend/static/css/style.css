@@ -561,3 +561,621 @@ button { font-family: inherit; cursor: pointer; border: none; }
   .auth-page__art { padding: 32px; }
   .auth-page__form-panel { padding: 48px 32px; }
 }
+
+/* =========================================================
+   CREATE BOOKING PAGE - FIGMA DESIGN
+   ========================================================= */
+
+.booking-page {
+  background: #F5F1E8;
+  padding: 55px 0 70px;
+  color: #1A2416;
+}
+
+.booking-container {
+  width: min(1180px, 90%);
+  margin: 0 auto;
+}
+
+
+/* ---------- INTRO ---------- */
+
+.booking-intro {
+  margin-bottom: 28px;
+}
+
+.booking-breadcrumb {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  letter-spacing: 5px;
+  color: #2D4A1E;
+}
+
+.booking-intro h1 {
+  margin: 0;
+  font-family: var(--font-gefika);
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #1A2416;
+}
+
+.booking-subtitle {
+  margin: 14px 0 0;
+  color: #6B7565;
+  font-size: 0.95rem;
+}
+
+
+/* ---------- PROGRESS ---------- */
+
+.booking-progress {
+  display: flex;
+  align-items: center;
+  margin: 35px 0 38px;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 90px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1A2416;
+}
+
+.progress-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E2DACB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.progress-step--active .progress-circle {
+  background: #99C280;
+  color: #FFFFFF;
+}
+
+.progress-line {
+  height: 1px;
+  background: #6B7565;
+  flex: 1;
+  margin: 0 5px 23px;
+}
+
+
+/* ---------- MAIN TWO-COLUMN LAYOUT ---------- */
+
+.booking-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 0.85fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.booking-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+
+/* ---------- WHITE CARDS ---------- */
+
+.booking-card {
+  background: #FFFFFF;
+  border: 1px solid #E2DACB;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.booking-card-heading {
+  margin-bottom: 20px;
+}
+
+.booking-card-heading h2 {
+  margin: 0 0 5px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1A2416;
+}
+
+.booking-card-heading p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #6B7565;
+}
+
+
+/* ---------- DATE BOXES ---------- */
+
+.date-selection {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.date-box {
+  width: 180px;
+  border: 1px solid #E2DACB;
+  border-radius: 8px;
+  padding: 9px 12px;
+  background: #FFFFFF;
+}
+
+.date-box:first-child {
+  border-color: #2D4A1E;
+}
+
+.date-box span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #6B7565;
+}
+
+.date-box input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  padding: 0;
+  background: transparent;
+  color: #1A2416;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.night-badge {
+  margin-left: auto;
+  margin-bottom: 7px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #2D4A1E;
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+
+/* ---------- CALENDAR ---------- */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+}
+
+.booking-calendar h3 {
+  margin: 0 0 15px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #1A2416;
+}
+
+.calendar-weekdays,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+
+.calendar-weekdays {
+  margin-bottom: 7px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #6B7565;
+}
+
+.calendar-days {
+  row-gap: 6px;
+}
+
+.calendar-days span {
+  width: 27px;
+  height: 27px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  color: #3B5A2B;
+}
+
+.calendar-selected {
+  background: #2D4A1E;
+  color: #FFFFFF !important;
+}
+
+.calendar-range {
+  background: #F0F5EE;
+  border-radius: 4px !important;
+}
+
+
+/* ---------- GUESTS ---------- */
+
+.guest-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.guest-option {
+  min-height: 65px;
+  padding: 10px 12px;
+  border: 1px solid #E2DACB;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.guest-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guest-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #F0F5EE;
+  color: #2D4A1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guest-info strong {
+  display: block;
+  font-size: 0.78rem;
+}
+
+.guest-info small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.58rem;
+  color: #6B7565;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.counter button {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 1px solid #E2DACB;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #2D4A1E;
+  cursor: pointer;
+}
+
+.counter button:last-child {
+  background: #2D4A1E;
+  color: #FFFFFF;
+  border-color: #2D4A1E;
+}
+
+.counter input {
+  width: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-weight: 600;
+  color: #1A2416;
+  appearance: textfield;
+}
+
+.counter input::-webkit-inner-spin-button,
+.counter input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.booking-message {
+  margin-top: 14px;
+  padding: 11px 14px;
+  border-radius: 7px;
+  background: #F0F5EE;
+  color: #3B5A2B;
+  font-size: 0.68rem;
+}
+
+
+/* ---------- PITCH CARDS ---------- */
+
+.pitch-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.pitch-card {
+  display: block;
+  overflow: hidden;
+  border: 1px solid #E2DACB;
+  border-radius: 12px;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+
+.pitch-card--selected {
+  border: 2px solid #2D4A1E;
+}
+
+.pitch-image {
+  height: 145px;
+}
+
+.pitch-image--placeholder {
+  background:
+    linear-gradient(45deg, #F5F1E8 25%, transparent 25%),
+    linear-gradient(-45deg, #F5F1E8 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #F5F1E8 75%),
+    linear-gradient(-45deg, transparent 75%, #F5F1E8 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 0 14px, 14px -14px, -14px 0;
+  background-color: #FFFFFF;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pitch-image--placeholder span {
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #6B7565;
+  font-size: 0.68rem;
+}
+
+.pitch-content {
+  padding: 12px;
+}
+
+.pitch-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pitch-tag {
+  padding: 4px 7px;
+  background: #F0F5EE;
+  color: #3B5A2B;
+  font-size: 0.55rem;
+  font-weight: 700;
+}
+
+.pitch-top input {
+  accent-color: #2D4A1E;
+}
+
+.pitch-content h3 {
+  margin: 8px 0 4px;
+  font-size: 0.85rem;
+  color: #1A2416;
+}
+
+.pitch-content p {
+  min-height: 32px;
+  margin: 0;
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: #6B7565;
+}
+
+.pitch-bottom {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rating {
+  color: #2D4A1E;
+  letter-spacing: 1px;
+}
+
+.pitch-bottom strong {
+  font-size: 0.78rem;
+  color: #2D4A1E;
+}
+
+.pitch-bottom small {
+  font-size: 0.55rem;
+  font-weight: 400;
+}
+
+
+/* ---------- YOUR STAY SUMMARY ---------- */
+
+.booking-summary {
+  position: sticky;
+  top: 25px;
+  padding: 25px;
+  border-radius: 14px;
+  background: #2D4A1E;
+  color: #FFFFFF;
+}
+
+.booking-summary h2 {
+  margin: 0 0 4px;
+  font-family: var(--font-gefika);
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: #FFFFFF;
+}
+
+.summary-camp {
+  margin: 0 0 22px;
+  color: #99C280;
+  font-size: 0.75rem;
+}
+
+.summary-details {
+  padding: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.summary-details p {
+  margin: 8px 0;
+  font-size: 0.72rem;
+}
+
+.summary-prices {
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.summary-prices div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 10px 0;
+  font-size: 0.7rem;
+}
+
+.summary-total {
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-total span {
+  font-weight: 700;
+}
+
+.summary-total strong {
+  font-family: var(--font-gefika);
+  color: #99C280;
+  font-size: 1.45rem;
+  font-weight: 400;
+}
+
+.summary-primary-btn,
+.bottom-review-btn {
+  border: 0;
+  border-radius: 8px;
+  background: #99C280;
+  color: #1A2416;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.summary-primary-btn {
+  width: 100%;
+  padding: 14px;
+}
+
+.summary-secondary-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px;
+  border: 1px solid #FFFFFF;
+  border-radius: 8px;
+  background: transparent;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.summary-note {
+  margin: 17px 0 0;
+  font-size: 0.6rem;
+  line-height: 1.5;
+  color: #E2DACB;
+}
+
+
+/* ---------- BOTTOM ACTION BAR ---------- */
+
+.booking-bottom-actions {
+  margin-top: 25px;
+  padding: 14px 20px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.back-link {
+  color: #2D4A1E;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.bottom-review-btn {
+  padding: 12px 22px;
+}
+
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 900px) {
+
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-summary {
+    position: static;
+  }
+
+}
+
+@media (max-width: 650px) {
+
+  .booking-intro h1 {
+    font-size: 2.2rem;
+  }
+
+  .calendar-grid,
+  .guest-grid,
+  .pitch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .date-selection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-box {
+    width: auto;
+  }
+
+  .night-badge {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+
+  .booking-progress {
+    overflow-x: auto;
+  }
+
+}
