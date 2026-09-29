@@ -11,3 +11,5 @@ def create_booking(request):
     return render(request, 'bookings/booking.html')
 
 
+def confirmation(request):
+    return render(request, 'bookings/confirmation.html')

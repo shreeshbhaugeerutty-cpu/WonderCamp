@@ -5,4 +5,5 @@ app_name = 'bookings'
 
 urlpatterns = [
     path('create-booking/', views.create_booking, name='create_booking'),
+    path('confirmation/', views.confirmation, name='confirmation'),
 ]
