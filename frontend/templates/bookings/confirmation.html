@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review Your Booking | WonderCamp{% endblock %}
+{% block body_class %}booking-summary-body{% endblock %}
+
+{% block content %}
+<section class="booking-summary-page">
+
+  <header class="summary-heading">
+    <p class="booking-breadcrumb">Bois Chéri Private Camp &gt; Review your booking</p>
+    <h1>Review Your Booking</h1>
+    <p>Check your stay details before you pay.</p>
+  </header>
+
+  <section class="summary-reference" aria-label="Booking reference and campsite">
+    <div><span>Booking Reference</span><strong id="review-reference">Generated after confirmation</strong></div>
+    <div><span>Campsite</span><strong>Bois Chéri Forest Camp</strong></div>
+    <span class="summary-status">Pending Payment</span>
+  </section>
+
+  <div class="summary-hold" role="status">
+    <span>◷</span>
+    <p><strong>Review your booking details.</strong><br>Please make sure everything is correct before proceeding.</p>
+  </div>
+
+  <div class="summary-layout">
+
+    <!-- LEFT -->
+    <div class="summary-main-column">
+
+      <section class="summary-campsite">
+        <div class="summary-gallery">
+          <img class="summary-gallery__main" src="{% static 'images/hillside1.png' %}" alt="Hillside campsite">
+          <img src="{% static 'images/hillside2.png' %}" alt="Hillside campsite">
+          <img src="{% static 'images/hillside3.png' %}" alt="Hillside campsite">
+          <img src="{% static 'images/hillside4.png' %}" alt="Hillside campsite">
+
+          <a class="summary-gallery__last" href="#campsite-details">
+            <img src="{% static 'images/hillside5.png' %}" alt="More campsite scenery">
+            <span>View All<br>Photos</span>
+          </a>
+        </div>
+
+        <div class="summary-campsite-info" id="campsite-details">
+          <div>
+            <h2>Bois Chéri Forest Camp</h2>
+            <p>⌖ Bois Chéri, Savanne District, Mauritius</p>
+          </div>
+
+          <span class="summary-tag">⛺ Camping Pitch</span>
+          <span class="summary-tag summary-tag--pitch" id="review-pitch-tag">⌖ Pitch not selected</span>
+          <p class="summary-availability">✓ Selected booking details</p>
+        </div>
+      </section>
+
+      <section class="summary-panel summary-amenities">
+        <h2 class="summary-panel__title">Included Amenities</h2>
+        <ul>
+          <li>⚡ Electricity</li>
+          <li>💧 Water Points</li>
+          <li>🚿 Shower Block</li>
+          <li>🔥 Fire Pit</li>
+          <li>📶 Wi-Fi</li>
+        </ul>
+      </section>
+
+      <section class="summary-panel summary-stay-details">
+        <div class="summary-panel__heading">
+          <h2 class="summary-panel__title">Stay Details</h2>
+          <a href="{% url 'bookings:create_booking' %}" class="summary-modify">Modify Booking</a>
+        </div>
+
+        <div class="summary-stay-grid">
+          <div><strong>📅 Arrival</strong><span id="review-arrival">Not selected</span></div>
+          <div><strong>📅 Departure</strong><span id="review-departure">Not selected</span></div>
+          <div><strong>🌙 Duration</strong><span><span id="review-duration">0</span> nights</span></div>
+          <div><strong>👥 Campers</strong><span><span id="review-campers">0</span> persons</span></div>
+          <div><strong>🚙 Vehicles</strong><span><span id="review-vehicles">0</span> vehicle(s)</span></div>
+          <div><strong>⛺ Pitch</strong><span id="review-pitch">Not selected</span></div>
+          <div><strong>🐾 Pets</strong><span id="review-pets">0</span></div>
+          <div><strong>⛺ Tents / Grills</strong><span id="review-tents">0</span></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT -->
+    <aside class="summary-side-column">
+
+      <section class="summary-panel summary-your-stay">
+        <h2 class="summary-panel__title">Your Stay</h2>
+        <ul>
+          <li>⛺ <span id="side-pitch">Pitch not selected</span></li>
+          <li>📅 <span id="side-dates">Dates not selected</span></li>
+          <li>🌙 <span id="side-nights">0</span> nights</li>
+          <li>👥 <span id="side-campers">0</span> campers</li>
+          <li>⌖ Bois Chéri Forest Camp</li>
+          <li>🚙 <span id="side-vehicles">0</span> vehicle(s)</li>
+        </ul>
+      </section>
+
+      <section class="summary-panel summary-price">
+        <h2 class="summary-panel__title">Price Breakdown</h2>
+
+        <div class="summary-price__row">
+          <span>Pitch Fee<br><small id="review-pitch-calculation">No pitch selected</small></span>
+          <strong id="review-pitch-price">Rs 0</strong>
+        </div>
+
+        <div class="summary-price__row">
+          <span>Electricity</span>
+          <strong id="review-electricity">Rs 0</strong>
+        </div>
+
+        <div class="summary-price__row">
+          <span>Water Pack Fee</span>
+          <strong id="review-water">Rs 0</strong>
+        </div>
+
+        <div class="summary-price__row">
+          <span>Cleaning Fee</span>
+          <strong id="review-cleaning">Rs 0</strong>
+        </div>
+
+        <div class="summary-price__total">
+          <span>Total Booking Cost</span>
+          <strong id="review-total">Rs 0</strong>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+
+  <details class="summary-policy">
+    <summary>
+      <span>ⓘ Booking &amp; Cancellation Policy</span>
+      <span>▼</span>
+    </summary>
+    <p>Please read the policy before you pay. It explains the cancellation rules and any applicable refund conditions.</p>
+  </details>
+
+  <label class="summary-agreement">
+    <input id="booking-agreement" type="checkbox">
+    <span>I have reviewed my booking details and agree to the Booking &amp; Cancellation Policy.</span>
+  </label>
+
+  <div class="summary-actions">
+    <a href="{% url 'bookings:create_booking' %}" class="summary-back">← Back / Modify Booking</a>
+    <button id="payment-button" class="summary-pay" type="button" disabled>Proceed to Payment →</button>
+  </div>
+
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = id => document.getElementById(id);
+  const saved = sessionStorage.getItem("wondercampBooking");
+
+  const money = amount =>
+    "Rs " + (Number(amount) || 0).toLocaleString("en-US");
+
+  const makeDate = value => {
+    if (!value) return null;
+    const [y, m, d] = value.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
+  const formatDate = value => {
+    const date = makeDate(value);
+    return date
+      ? date.toLocaleDateString("en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        })
+      : "Not selected";
+  };
+
+  const shortDate = value => {
+    const date = makeDate(value);
+    return date
+      ? date.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric"
+        })
+      : "Not selected";
+  };
+
+  function loadBooking(b) {
+    $("review-arrival").textContent = formatDate(b.checkIn);
+    $("review-departure").textContent = formatDate(b.checkOut);
+    $("review-duration").textContent = b.nights || 0;
+    $("review-campers").textContent = b.campers || 0;
+    $("review-vehicles").textContent = b.vehicles || 0;
+    $("review-pets").textContent = b.pets || 0;
+    $("review-tents").textContent = b.tents || 0;
+    $("review-pitch").textContent = b.pitch || "Not selected";
+
+    $("review-pitch-tag").textContent =
+      b.pitch ? "⌖ " + b.pitch : "⌖ Pitch not selected";
+
+    $("side-pitch").textContent = b.pitch || "Pitch not selected";
+    $("side-nights").textContent = b.nights || 0;
+    $("side-campers").textContent = b.campers || 0;
+    $("side-vehicles").textContent = b.vehicles || 0;
+
+    if (b.checkIn && b.checkOut) {
+      $("side-dates").textContent =
+        shortDate(b.checkIn) + " → " + shortDate(b.checkOut);
+    }
+
+    if (b.pricePerNight && b.nights) {
+      $("review-pitch-calculation").textContent =
+        money(b.pricePerNight) + " × " + b.nights + " nights";
+    }
+
+    $("review-pitch-price").textContent = money(b.pitchFee);
+    $("review-electricity").textContent = money(b.electricity);
+    $("review-water").textContent = money(b.water);
+    $("review-cleaning").textContent = money(b.cleaning);
+    $("review-total").textContent = money(b.total);
+  }
+
+  if (saved) {
+    try {
+      loadBooking(JSON.parse(saved));
+    } catch (error) {
+      console.error("Could not load booking details:", error);
+    }
+  }
+
+  const agreement = $("booking-agreement");
+  const paymentButton = $("payment-button");
+
+  agreement.addEventListener("change", () => {
+    paymentButton.disabled = !agreement.checked;
+  });
+});
+</script>
+{% endblock %}
