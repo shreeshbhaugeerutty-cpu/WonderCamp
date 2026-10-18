@@ -19,7 +19,7 @@
         <li><a href="{% url 'camping_vans' %}">Camping Vans</a></li>
         <li><a href="#">Lodgings</a></li>
         {% if user.is_authenticated %}
-    <li><a href="#">Account</a></li>
+    <li><a href="{% url 'profile' %}">Account</a></li>
     <li>
   <form action="{% url 'logout' %}" method="post" style="display:inline;">
     {% csrf_token %}

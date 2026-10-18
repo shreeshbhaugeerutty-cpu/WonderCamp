@@ -1,0 +1,198 @@
+.account {
+  --acc-green: #457311;
+  --acc-cream: #fdfbe6;
+  --acc-orange: #ff6338;
+
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+  background: var(--acc-cream);
+  color: var(--acc-green);
+  /* If your header is fixed/transparent, push content below it: */
+  padding-top: 0;
+}
+
+/* ---------- Sidebar ---------- */
+.account-sidebar {
+  background: var(--acc-green);
+  color: var(--acc-cream);
+  padding: 120px 32px 36px; /* top padding clears the site header; adjust to match it */
+}
+
+.account-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 8px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.account-sidebar a:hover,
+.account-sidebar a[aria-current="page"] {
+  background: rgba(253, 251, 230, 0.14);
+}
+
+.account-sidebar svg {
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+/* ---------- Main ---------- */
+.account-main {
+  width: 100%;
+  max-width: 960px;
+  padding: 130px 48px 70px;
+}
+
+.account-title {
+  margin: 0 0 60px;
+  padding: 0 0 6px 12px;
+  font-size: 1.6rem;
+  font-weight: 400;
+  border-bottom: 1px solid var(--acc-green);
+}
+
+.account-message {
+  margin: -30px 0 30px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(69, 115, 17, 0.12);
+}
+
+.account-profile {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.account-avatar {
+  width: 210px;
+  height: 210px;
+}
+
+.account-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px 24px;
+}
+
+.account-field { min-width: 0; }
+.account-field--wide { grid-column: 1 / -1; }
+
+.account-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.account-edit {
+  display: inline-flex;
+  padding: 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.account-edit svg { width: 20px; height: 20px; }
+
+.account-input {
+  width: 100%;
+  margin-top: 4px;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.5rem;
+}
+
+/* Once unlocked (no readonly), it looks like an editable field */
+.account-input:not([readonly]) {
+  border-color: var(--acc-green);
+  background: rgba(69, 115, 17, 0.08);
+}
+
+.account-input:focus { outline: none; }
+
+.account .errorlist {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #b3261e;
+  font-size: 0.95rem;
+}
+
+.account-save { grid-column: 1 / -1; justify-self: start; }
+
+/* ---------- Buttons ---------- */
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 80px;
+}
+
+.account-actions form { flex: 1 1 220px; display: flex; }
+.account-actions > a { flex: 1 1 220px; }
+
+.account-btn {
+  display: block;
+  width: 100%;
+  padding: 20px 24px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3);
+}
+
+.account-btn--green { background: var(--acc-green); }
+.account-btn--orange { background: var(--acc-orange); }
+
+.account-btn:focus-visible,
+.account-edit:focus-visible,
+.account-sidebar a:focus-visible {
+  outline: 3px solid var(--acc-orange);
+  outline-offset: 2px;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 820px) {
+  .account { grid-template-columns: 1fr; }
+
+  .account-sidebar { padding: 90px 16px 12px; }
+  .account-sidebar nav { flex-direction: row; overflow-x: auto; gap: 4px; }
+  .account-sidebar a { white-space: nowrap; padding: 8px 10px; }
+  .account-sidebar svg { width: 24px; height: 24px; }
+
+  .account-main { padding: 40px 20px; }
+
+  .account-profile { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
+  .account-fields { width: 100%; }
+  .account-avatar { width: 140px; height: 140px; }
+}
+
+@media (max-width: 480px) {
+  .account-fields { grid-template-columns: 1fr; }
+  .account-actions { gap: 16px; margin-top: 48px; }
+}

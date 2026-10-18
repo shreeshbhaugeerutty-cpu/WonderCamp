@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile – WonderCamp{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/account.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="account">
+  {% include "sidebar.html" %}
+
+  <section class="account-main">
+    <h1 class="account-title">Profile</h1>
+
+    {% for message in messages %}
+      <p class="account-message" role="status">{{ message }}</p>
+    {% endfor %}
+
+    <form method="post" id="profile-form" novalidate>
+      {% csrf_token %}
+
+      <div class="account-profile">
+        <svg class="account-avatar" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" role="img" aria-label="Profile picture placeholder">
+          <circle cx="50" cy="50" r="45"/>
+          <circle cx="50" cy="39" r="11" stroke-width="8"/>
+          <path d="M20 80c7-12 17-17 30-17s23 5 30 17" stroke-width="8"/>
+        </svg>
+
+        <div class="account-fields">
+          {% for field in form %}
+            <div class="account-field {% if field.name == 'email' or field.name == 'phone' %}account-field--wide{% endif %}">
+              <label class="account-label" for="{{ field.id_for_label }}">
+                {{ field.label }}
+                <button type="button" class="account-edit" aria-label="Edit {{ field.label|lower }}">
+                  <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.2V21h3.8L18 9.8 14.2 6 3 17.2zM20.7 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75z"/></svg>
+                </button>
+              </label>
+              {{ field }}
+              {{ field.errors }}
+            </div>
+          {% endfor %}
+
+          <button type="submit" class="account-btn account-btn--green account-save" id="save-btn" hidden>Save changes</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="account-actions">
+      <a href="#" class="account-btn account-btn--green">Change Password</a>
+
+      <form method="post" action="#" id="delete-form">
+        {% csrf_token %}
+        <button type="submit" class="account-btn account-btn--orange">Delete Account</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const saveBtn = document.getElementById('save-btn');
+
+  function unlock(input) {
+    input.removeAttribute('readonly');
+    input.focus();
+    input.select();
+    saveBtn.hidden = false;
+  }
+
+  document.querySelectorAll('.account-field').forEach(function (field) {
+    const input = field.querySelector('.account-input');
+    field.querySelector('.account-edit').addEventListener('click', function () {
+      unlock(input);
+    });
+    // If the server sent back an error for this field, leave it open for fixing
+    if (field.querySelector('.errorlist')) {
+      input.removeAttribute('readonly');
+      saveBtn.hidden = false;
+    }
+  });
+
+  document.getElementById('delete-form').addEventListener('submit', function (e) {
+    if (!confirm("Delete your account? This can't be undone.")) {
+      e.preventDefault();
+    }
+  });
+</script>
+{% endblock %}
