@@ -3,6 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.views.decorators.http import require_POST
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
 from .models import CustomUser
 from .forms import ProfileForm
 
@@ -30,6 +33,23 @@ def register(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+
+#Password change and reset functions
+
+class CustomPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    template_name = 'account/password_change.html'
+    success_url = reverse_lazy('profile')
+    success_message = 'Your password was changed successfully.'
+
+    def form_valid(self, form):
+        print("FORM VALID")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("FORM INVALID:", form.errors)
+        return super().form_invalid(form)
+#==========================
 
 @login_required
 def profile(request):

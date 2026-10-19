@@ -7,10 +7,13 @@
   <title>{% block title %}WonderCamp{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block extra_head %}{% endblock %}
+  {% block extra_css %}{% endblock %}
 </head>
+
 <body>
 
   <!-- ============ HEADER / NAV (shared on every page) ============ -->
+   {% block navbar %}
   <header class="site-header">
     <nav class="nav container">
       <a href="{% url 'home' %}" class="logo">WonderCamp</a>
@@ -45,6 +48,7 @@
       </ul>
     </nav>
   </header>
+  {% endblock %}
 
   <!-- ============ PAGE CONTENT (each page fills this in) ============ -->
   <main>
@@ -52,6 +56,7 @@
   </main>
 
   <!-- ============ FOOTER (shared on every page) ============ -->
+   {% block footer %}
   <footer class="site-footer">
     <div class="site-footer__inner container">
       <div class="site-footer__brand">
@@ -87,6 +92,7 @@
       </div>
     </div>
   </footer>
+  {% endblock %}
 
   <script>
   const siteHeader = document.querySelector('.site-header');
