@@ -1,5 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Notification
 
-# Create your views here.
-def notifications(request):
-    return render(request,'notifications/notifications.html')
+@login_required
+def notification_list(request):
+    # Fetch all notifications belonging to the logged-in user, newest first
+    notifications = Notification.objects.filter(recipient=request.user)
+    
+    return render(request, 'notifications/notifications.html', {
+        'notifications': notifications
+    })

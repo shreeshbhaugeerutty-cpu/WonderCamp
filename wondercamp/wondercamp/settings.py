@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend.bookings',
     'backend.accounts',
+    #'backend.notifications'
+    'backend.notifications.apps.NotificationsConfig'
 ]
 
 MIDDLEWARE = [
