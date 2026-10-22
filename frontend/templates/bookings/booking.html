@@ -38,7 +38,7 @@
           <label class="date-box"><span>CHECK-OUT</span><input type="date" id="check-out" disabled></label>
           <span class="nights-badge" id="night-count">Select dates</span>
         </div>
-        <p class="date-error" id="date-error"></p>
+        <p class="date-error" id="date-error">{{ error|default:"" }}</p>
 
         <div class="calendar-wrapper">
           <div class="calendar" data-month="8" data-year="2026">
@@ -151,6 +151,12 @@
 
         <div class="capacity-message" id="capacity-message">🍃 Select a pitch above to see its capacity.</div>
       </section>
+
+      <form id="booking-form" method="POST" hidden>
+         {% csrf_token %}
+         <input type="hidden" name="arrival_date" id="form-arrival-date">
+        <input type="hidden" name="departure_date" id="form-departure-date">
+      </form>
 
       <div class="booking-bottom">
         <a href="#" class="back-link">← Back to campsite</a>
@@ -299,24 +305,24 @@ document.addEventListener("DOMContentLoaded", () => {
     reviewButton.disabled=bottomReviewButton.disabled=!ready;
   }
 
-  function continueToReview(){
-    if(reviewButton.disabled) return;
-    const n=nights(), price=+selectedPitch.dataset.price;
-    const data={
-      pitch:selectedPitch.dataset.name, pricePerNight:price,
-      checkIn:checkIn.value, checkOut:checkOut.value, nights:n,
-      campers:values.campers, vehicles:values.vehicles, pets:values.pets, tents:values.tents,
-      electricity:120*n, water:420, cleaning:188
-    };
-    data.pitchFee=price*n;
-    data.total=data.pitchFee+data.electricity+data.water+data.cleaning;
-    sessionStorage.setItem("wondercampBooking",JSON.stringify(data));
-    window.location.href="{% url 'bookings:confirmation' %}";
-  }
+  
+ function continueToReview() {
+    if (reviewButton.disabled) return;
 
-  reviewButton.addEventListener("click",continueToReview);
-  bottomReviewButton.addEventListener("click",continueToReview);
-  updateCalendar(); updateCounters(); updateSummary(); updatePrices(); updateButtons();
+    $("form-arrival-date").value = checkIn.value;
+    $("form-departure-date").value = checkOut.value;
+
+    $("booking-form").requestSubmit();
+}
+
+reviewButton.addEventListener("click", continueToReview);
+bottomReviewButton.addEventListener("click", continueToReview);
+updateCalendar();
+updateCounters();
+updateSummary();
+updatePrices();
+updateButtons();
 });
+
 </script>
 {% endblock %}
