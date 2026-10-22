@@ -40,35 +40,28 @@
         </div>
         <p class="date-error" id="date-error">{{ error|default:"" }}</p>
 
-        <div class="calendar-wrapper">
-          <div class="calendar" data-month="8" data-year="2026">
-            <h3>September 2026</h3>
-            <div class="calendar-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-            <div class="calendar-days">
-              <span></span>
-              {% for day in "123456789" %}{% endfor %}
-              <span data-day="1">1</span><span data-day="2">2</span><span data-day="3">3</span><span data-day="4">4</span><span data-day="5">5</span><span data-day="6">6</span>
-              <span data-day="7">7</span><span data-day="8">8</span><span data-day="9">9</span><span data-day="10">10</span><span data-day="11">11</span><span data-day="12">12</span><span data-day="13">13</span>
-              <span data-day="14">14</span><span data-day="15">15</span><span data-day="16">16</span><span data-day="17">17</span><span data-day="18">18</span><span data-day="19">19</span><span data-day="20">20</span>
-              <span data-day="21">21</span><span data-day="22">22</span><span data-day="23">23</span><span data-day="24">24</span><span data-day="25">25</span><span data-day="26">26</span><span data-day="27">27</span>
-              <span data-day="28">28</span><span data-day="29">29</span><span data-day="30">30</span>
-            </div>
-          </div>
-
-          <div class="calendar" data-month="9" data-year="2026">
-            <h3>October 2026</h3>
-            <div class="calendar-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-            <div class="calendar-days">
-              <span></span><span></span><span></span>
-              <span data-day="1">1</span><span data-day="2">2</span><span data-day="3">3</span><span data-day="4">4</span>
-              <span data-day="5">5</span><span data-day="6">6</span><span data-day="7">7</span><span data-day="8">8</span><span data-day="9">9</span><span data-day="10">10</span><span data-day="11">11</span>
-              <span data-day="12">12</span><span data-day="13">13</span><span data-day="14">14</span><span data-day="15">15</span><span data-day="16">16</span><span data-day="17">17</span><span data-day="18">18</span>
-              <span data-day="19">19</span><span data-day="20">20</span><span data-day="21">21</span><span data-day="22">22</span><span data-day="23">23</span><span data-day="24">24</span><span data-day="25">25</span>
-              <span data-day="26">26</span><span data-day="27">27</span><span data-day="28">28</span><span data-day="29">29</span><span data-day="30">30</span><span data-day="31">31</span>
-            </div>
-          </div>
+       
+<div class="calendar-wrapper">
+    <div class="calendar" id="calendar-1">
+        <h3></h3>
+        <div class="calendar-weekdays">
+            <span>M</span><span>T</span><span>W</span>
+            <span>T</span><span>F</span><span>S</span><span>S</span>
         </div>
-      </section>
+        <div class="calendar-days"></div>
+    </div>
+
+    <div class="calendar" id="calendar-2">
+        <h3></h3>
+        <div class="calendar-weekdays">
+            <span>M</span><span>T</span><span>W</span>
+            <span>T</span><span>F</span><span>S</span><span>S</span>
+        </div>
+        <div class="calendar-days"></div>
+    </div>
+</div>
+
+</section>
 
       <!-- PITCH -->
       <section class="booking-box">
@@ -244,19 +237,83 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDates();
   });
 
-  function updateCalendar(){
-    document.querySelectorAll(".calendar-days [data-day]").forEach(d=>d.classList.remove("calendar-start","calendar-range","calendar-end"));
-    if(!checkIn.value) return;
-    const start=makeDate(checkIn.value), end=checkOut.value?makeDate(checkOut.value):null;
-    document.querySelectorAll(".calendar").forEach(cal=>{
-      cal.querySelectorAll("[data-day]").forEach(day=>{
-        const current=new Date(+cal.dataset.year,+cal.dataset.month,+day.dataset.day);
-        if(+current===+start) day.classList.add("calendar-start");
-        if(end && current>start && current<end) day.classList.add("calendar-range");
-        if(end && +current===+end) day.classList.add("calendar-end");
-      });
+function renderCalendar(calendarId, year, month) {
+    const calendar = document.getElementById(calendarId);
+    const title = calendar.querySelector("h3");
+    const daysContainer = calendar.querySelector(".calendar-days");
+
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    title.textContent = firstDay.toLocaleString("en-GB", {
+        month: "long",
+        year: "numeric"
     });
-  }
+
+    calendar.dataset.month = month;
+    calendar.dataset.year = year;
+
+    daysContainer.innerHTML = "";
+
+    const emptyDays = (firstDay.getDay() + 6) % 7;
+
+    for (let i = 0; i < emptyDays; i++) {
+        daysContainer.appendChild(document.createElement("span"));
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const span = document.createElement("span");
+        span.textContent = day;
+        span.dataset.day = day;
+        daysContainer.appendChild(span);
+    }
+}
+
+
+  
+function updateCalendar() {
+    const selectedDate = checkIn.value
+        ? makeDate(checkIn.value)
+        : new Date();
+
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+
+    // Display the selected month
+    renderCalendar("calendar-1", year, month);
+
+    // Display the following month
+    renderCalendar("calendar-2", year, month + 1);
+
+    // Highlight the selected dates
+    if (!checkIn.value) return;
+
+    const start = makeDate(checkIn.value);
+    const end = checkOut.value ? makeDate(checkOut.value) : null;
+
+    document.querySelectorAll(".calendar").forEach(cal => {
+        cal.querySelectorAll("[data-day]").forEach(day => {
+            const current = new Date(
+                +cal.dataset.year,
+                +cal.dataset.month,
+                +day.dataset.day
+            );
+
+            if (+current === +start) {
+                day.classList.add("calendar-start");
+            }
+
+            if (end && current > start && current < end) {
+                day.classList.add("calendar-range");
+            }
+
+            if (end && +current === +end) {
+                day.classList.add("calendar-end");
+            }
+        });
+    });
+}
+
 
   pitchCards.forEach(card=>card.addEventListener("click",()=>{
     pitchCards.forEach(c=>c.classList.remove("selected"));
