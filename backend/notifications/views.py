@@ -7,6 +7,6 @@ def notification_list(request):
     # Fetch all notifications belonging to the logged-in user, newest first
     notifications = Notification.objects.filter(recipient=request.user)
     
-    return render(request, 'notifications/notifications.html', {
+    return render(request, 'notifications/notif.html', {
         'notifications': notifications
-    })
+})
