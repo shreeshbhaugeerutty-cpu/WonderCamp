@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
 from datetime import timedelta
 from django.utils import timezone
+from .models import Booking, BookingLine
 # Temporary campsite data until Campsites backend is ready
 TEMP_CAMPSITES = {
     76: {
@@ -32,6 +33,54 @@ def validate_booking_dates(arrival_date, departure_date):
         return "Minimum stay is 3 nights."
 
     return None
+
+
+def is_pitch_available(campsite, pitch, arrival_date, departure_date):
+    existing_bookings = BookingLine.objects.filter(
+        line_type='pitch',
+        item_name=pitch,
+        booking__campsite_name=campsite['name'],
+        booking__status__in=['pending', 'confirmed'],
+        start_date__lt=departure_date,
+        end_date__gt=arrival_date,
+    )
+
+    return not existing_bookings.exists()
+
+@login_required(login_url='login')
+def check_pitch_availability(request, campsite_id):
+    campsite = TEMP_CAMPSITES.get(campsite_id)
+
+    if campsite is None:
+        raise Http404("Campsite not found")
+
+    try:
+        arrival_date = date.fromisoformat(request.GET.get('arrival_date', ''))
+        departure_date = date.fromisoformat(request.GET.get('departure_date', ''))
+    except ValueError:
+        return JsonResponse({'error': 'Invalid dates'}, status=400)
+
+    error = validate_booking_dates(arrival_date, departure_date)
+
+    if error:
+        return JsonResponse({'error': error}, status=400)
+
+    pitches = [
+        'Hillside G-07',
+        'Lakeside Loft',
+        'Mountain Wild',
+        'Streamside Birch',
+    ]
+
+    availability = {}
+
+    for pitch in pitches:
+        availability[pitch] = is_pitch_available(
+            campsite, pitch, arrival_date, departure_date
+        )
+
+    return JsonResponse(availability)
+
 
 
 
@@ -134,6 +183,14 @@ def create_booking(request, campsite_id):
                     'error': error,
                 }
             )
+        
+        # Check whether the selected pitch is available
+        if not is_pitch_available(campsite, pitch, arrival_date, departure_date):
+            return render(request, 'bookings/booking.html', {
+                'campsite': campsite,
+                'error': 'This pitch is already booked for the selected dates. Please choose another pitch or different dates.'
+            })
+
         
         # Dates are valid.
         # Booking will be saved in a later step.

@@ -227,20 +227,45 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCalendar(); updatePrices(); updateButtons();
   }
 
-  checkIn.addEventListener("change",()=>{
-    dateError.textContent="";
-    if(!checkIn.value){ checkOut.value=""; checkOut.disabled=true; updateDates(); return; }
-    const min=new Date(makeDate(checkIn.value)); min.setDate(min.getDate()+3);
-    checkOut.min=inputDate(min); checkOut.disabled=false;
-    if(checkOut.value && makeDate(checkOut.value)<min) checkOut.value="";
-    updateDates();
-  });
+  
+    checkIn.addEventListener("change", () => {
+      dateError.textContent = "";
 
-  checkOut.addEventListener("change",()=>{
-    dateError.textContent="";
-    if(checkOut.value && nights()<3){ dateError.textContent="Minimum stay is 3 nights."; checkOut.value=""; }
-    updateDates();
-  });
+      if (!checkIn.value) {
+        checkOut.value = "";
+        checkOut.disabled = true;
+        updateDates();
+        checkPitchAvailability();
+        return;
+       }
+
+       const min = new Date(makeDate(checkIn.value));
+       min.setDate(min.getDate() + 3);
+  
+       checkOut.min = inputDate(min);
+       checkOut.disabled = false;
+
+       if (checkOut.value && makeDate(checkOut.value) < min) {
+         checkOut.value = "";
+       }
+
+       updateDates();
+       checkPitchAvailability();
+     });
+
+    
+    checkOut.addEventListener("change", () => {
+      dateError.textContent = "";
+
+      if (checkOut.value && nights() < 3) {
+        dateError.textContent = "Minimum stay is 3 nights.";
+        checkOut.value = "";
+       }
+
+      updateDates();
+      checkPitchAvailability();
+     });
+
 
 function renderCalendar(calendarId, year, month) {
     const calendar = document.getElementById(calendarId);
@@ -321,11 +346,12 @@ function updateCalendar() {
 
 
   pitchCards.forEach(card=>card.addEventListener("click",()=>{
+    if (card.dataset.available === "false") return;
     pitchCards.forEach(c=>c.classList.remove("selected"));
     card.classList.add("selected"); selectedPitch=card;
     ["campers","vehicles","pets","tents"].forEach(k=>{ limits[k]=+card.dataset[k]; values[k]=0; });
-    updateLimits(); updateCounters(); updateSummary(); updatePrices(); updateButtons();
-  }));
+    updateLimits(); updateCounters(); updateSummary(); updatePrices(); updateButtons();}));
+    
 
   function updateLimits(){
     $("campers-limit").textContent=`Maximum ${limits.campers} campers`;
@@ -361,6 +387,62 @@ function updateCalendar() {
     pitchPrice.textContent=money(fee); electricityPrice.textContent=money(electricity);
     totalPrice.textContent=money(fee+electricity+420+188);
   }
+   
+    async function checkPitchAvailability() {
+    if (!checkIn.value || !checkOut.value || nights() < 3) {
+    pitchCards.forEach(card => {
+        card.dataset.available = "false";
+        card.style.opacity = "0.4";
+        card.style.cursor = "not-allowed";
+    });
+    pitchCards.forEach(card => card.classList.remove("selected"));
+    selectedPitch = null;
+
+    values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+    limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+
+    updateCounters();
+    updateSummary();
+    updatePrices();
+
+    reviewButton.disabled = true;
+    bottomReviewButton.disabled = true;
+    return;
+}
+    const url = "{% url 'bookings:check_pitch_availability' campsite_id=campsite.id %}";
+    const params = new URLSearchParams({
+        arrival_date: checkIn.value,
+        departure_date: checkOut.value
+    });
+
+    try {
+        const response = await fetch(`${url}?${params}`);
+        if (!response.ok) throw new Error("Availability check failed");
+
+        const availability = await response.json();
+
+        pitchCards.forEach(card => {
+            const available = availability[card.dataset.name] === true;
+
+            card.dataset.available = String(available);
+            card.style.opacity = available ? "1" : "0.4";
+            card.style.cursor = available ? "pointer" : "not-allowed";
+
+            if (!available && selectedPitch === card) {
+                card.classList.remove("selected");
+                selectedPitch = null;
+                values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+                limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+                updateCounters();
+                updateSummary();
+                updatePrices();
+                updateButtons();
+            }
+        });
+    } catch (error) {
+        console.error("Could not check pitch availability:", error);
+    }
+}
 
   function updateButtons(){
     const ready=selectedPitch && checkIn.value && checkOut.value && nights()>=3 && values.campers>=1;
