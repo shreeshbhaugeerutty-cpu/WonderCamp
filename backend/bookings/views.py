@@ -42,6 +42,7 @@ def create_booking(request, campsite_id):
 
     if campsite is None:
         raise Http404("Campsite not found")
+    campsite['id'] = campsite_id
 
     if request.method == 'POST':
         arrival = request.POST.get('arrival_date')
@@ -54,15 +55,19 @@ def create_booking(request, campsite_id):
         
         valid_pitches = {
           'Hillside G-07': {
+          'price': 2800,
           'campers': 4, 'vehicles': 1, 'pets': 2, 'tents': 2
           },
           'Lakeside Loft': {
+          'price': 3500,
           'campers': 6, 'vehicles': 2, 'pets': 0, 'tents': 2
           },
           'Mountain Wild': {
+          'price': 2500,
           'campers': 8, 'vehicles': 2, 'pets': 2, 'tents': 3
           },
           'Streamside Birch': {
+          'price': 4800,
           'campers': 5, 'vehicles': 1, 'pets': 1, 'tents': 2
           },
         }
@@ -129,15 +134,48 @@ def create_booking(request, campsite_id):
                     'error': error,
                 }
             )
-
+        
         # Dates are valid.
         # Booking will be saved in a later step.
 
-    return render(
-        request,
-        'bookings/booking.html',
-        {'campsite': campsite}
-    )
+        # Calculate number of nights
+        number_of_nights = (departure_date - arrival_date).days
+
+        # Get price of selected pitch
+        price_per_night = valid_pitches[pitch]['price']
+
+        # Calculate pitch cost
+        pitch_fee = price_per_night * number_of_nights
+
+        # Additional charges
+        electricity_fee = 120 * number_of_nights
+        water_fee = 420
+        cleaning_fee = 188
+
+        # Calculate total booking cost
+        total_cost = pitch_fee + electricity_fee + water_fee + cleaning_fee
+
+        print("Number of nights:", number_of_nights)
+        print("Selected pitch:", pitch)
+        print("Total booking cost: Rs", total_cost)
+       
+
+        return render(request, 'bookings/confirmation.html', {
+        'campsite': campsite,
+        'pitch': pitch,
+        'arrival_date': arrival_date,
+        'departure_date': departure_date,
+        'number_of_nights': number_of_nights,
+        'campers': campers,
+        'vehicles': vehicles,
+        'pets': pets,
+        'tents': tents,
+        'total_cost': total_cost,
+        })
+    
+    return render(request, 'bookings/booking.html', {
+        'campsite': campsite
+    })
 
 @login_required(login_url='login')
 def confirmation(request):
