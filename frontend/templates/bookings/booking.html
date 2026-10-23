@@ -38,37 +38,30 @@
           <label class="date-box"><span>CHECK-OUT</span><input type="date" id="check-out" disabled></label>
           <span class="nights-badge" id="night-count">Select dates</span>
         </div>
-        <p class="date-error" id="date-error"></p>
+        <p class="date-error" id="date-error">{{ error|default:"" }}</p>
 
-        <div class="calendar-wrapper">
-          <div class="calendar" data-month="8" data-year="2026">
-            <h3>September 2026</h3>
-            <div class="calendar-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-            <div class="calendar-days">
-              <span></span>
-              {% for day in "123456789" %}{% endfor %}
-              <span data-day="1">1</span><span data-day="2">2</span><span data-day="3">3</span><span data-day="4">4</span><span data-day="5">5</span><span data-day="6">6</span>
-              <span data-day="7">7</span><span data-day="8">8</span><span data-day="9">9</span><span data-day="10">10</span><span data-day="11">11</span><span data-day="12">12</span><span data-day="13">13</span>
-              <span data-day="14">14</span><span data-day="15">15</span><span data-day="16">16</span><span data-day="17">17</span><span data-day="18">18</span><span data-day="19">19</span><span data-day="20">20</span>
-              <span data-day="21">21</span><span data-day="22">22</span><span data-day="23">23</span><span data-day="24">24</span><span data-day="25">25</span><span data-day="26">26</span><span data-day="27">27</span>
-              <span data-day="28">28</span><span data-day="29">29</span><span data-day="30">30</span>
-            </div>
-          </div>
-
-          <div class="calendar" data-month="9" data-year="2026">
-            <h3>October 2026</h3>
-            <div class="calendar-weekdays"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
-            <div class="calendar-days">
-              <span></span><span></span><span></span>
-              <span data-day="1">1</span><span data-day="2">2</span><span data-day="3">3</span><span data-day="4">4</span>
-              <span data-day="5">5</span><span data-day="6">6</span><span data-day="7">7</span><span data-day="8">8</span><span data-day="9">9</span><span data-day="10">10</span><span data-day="11">11</span>
-              <span data-day="12">12</span><span data-day="13">13</span><span data-day="14">14</span><span data-day="15">15</span><span data-day="16">16</span><span data-day="17">17</span><span data-day="18">18</span>
-              <span data-day="19">19</span><span data-day="20">20</span><span data-day="21">21</span><span data-day="22">22</span><span data-day="23">23</span><span data-day="24">24</span><span data-day="25">25</span>
-              <span data-day="26">26</span><span data-day="27">27</span><span data-day="28">28</span><span data-day="29">29</span><span data-day="30">30</span><span data-day="31">31</span>
-            </div>
-          </div>
+       
+<div class="calendar-wrapper">
+    <div class="calendar" id="calendar-1">
+        <h3></h3>
+        <div class="calendar-weekdays">
+            <span>M</span><span>T</span><span>W</span>
+            <span>T</span><span>F</span><span>S</span><span>S</span>
         </div>
-      </section>
+        <div class="calendar-days"></div>
+    </div>
+
+    <div class="calendar" id="calendar-2">
+        <h3></h3>
+        <div class="calendar-weekdays">
+            <span>M</span><span>T</span><span>W</span>
+            <span>T</span><span>F</span><span>S</span><span>S</span>
+        </div>
+        <div class="calendar-days"></div>
+    </div>
+</div>
+
+</section>
 
       <!-- PITCH -->
       <section class="booking-box">
@@ -152,6 +145,17 @@
         <div class="capacity-message" id="capacity-message">🍃 Select a pitch above to see its capacity.</div>
       </section>
 
+      <form id="booking-form" method="POST" hidden>
+         {% csrf_token %}
+        <input type="hidden" name="arrival_date" id="form-arrival-date">
+        <input type="hidden" name="departure_date" id="form-departure-date">
+        <input type="hidden" name="pitch" id="form-pitch">
+        <input type="hidden" name="campers" id="form-campers">
+        <input type="hidden" name="vehicles" id="form-vehicles">
+        <input type="hidden" name="pets" id="form-pets">
+        <input type="hidden" name="tents" id="form-tents"> 
+      </form>
+
       <div class="booking-bottom">
         <a href="#" class="back-link">← Back to campsite</a>
         <button type="button" class="bottom-review-button" id="bottom-review-button" disabled>Continue to Review →</button>
@@ -223,41 +227,131 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCalendar(); updatePrices(); updateButtons();
   }
 
-  checkIn.addEventListener("change",()=>{
-    dateError.textContent="";
-    if(!checkIn.value){ checkOut.value=""; checkOut.disabled=true; updateDates(); return; }
-    const min=new Date(makeDate(checkIn.value)); min.setDate(min.getDate()+3);
-    checkOut.min=inputDate(min); checkOut.disabled=false;
-    if(checkOut.value && makeDate(checkOut.value)<min) checkOut.value="";
-    updateDates();
-  });
+  
+    checkIn.addEventListener("change", () => {
+      dateError.textContent = "";
 
-  checkOut.addEventListener("change",()=>{
-    dateError.textContent="";
-    if(checkOut.value && nights()<3){ dateError.textContent="Minimum stay is 3 nights."; checkOut.value=""; }
-    updateDates();
-  });
+      if (!checkIn.value) {
+        checkOut.value = "";
+        checkOut.disabled = true;
+        updateDates();
+        checkPitchAvailability();
+        return;
+       }
 
-  function updateCalendar(){
-    document.querySelectorAll(".calendar-days [data-day]").forEach(d=>d.classList.remove("calendar-start","calendar-range","calendar-end"));
-    if(!checkIn.value) return;
-    const start=makeDate(checkIn.value), end=checkOut.value?makeDate(checkOut.value):null;
-    document.querySelectorAll(".calendar").forEach(cal=>{
-      cal.querySelectorAll("[data-day]").forEach(day=>{
-        const current=new Date(+cal.dataset.year,+cal.dataset.month,+day.dataset.day);
-        if(+current===+start) day.classList.add("calendar-start");
-        if(end && current>start && current<end) day.classList.add("calendar-range");
-        if(end && +current===+end) day.classList.add("calendar-end");
-      });
+       const min = new Date(makeDate(checkIn.value));
+       min.setDate(min.getDate() + 3);
+  
+       checkOut.min = inputDate(min);
+       checkOut.disabled = false;
+
+       if (checkOut.value && makeDate(checkOut.value) < min) {
+         checkOut.value = "";
+       }
+
+       updateDates();
+       checkPitchAvailability();
+     });
+
+    
+    checkOut.addEventListener("change", () => {
+      dateError.textContent = "";
+
+      if (checkOut.value && nights() < 3) {
+        dateError.textContent = "Minimum stay is 3 nights.";
+        checkOut.value = "";
+       }
+
+      updateDates();
+      checkPitchAvailability();
+     });
+
+
+function renderCalendar(calendarId, year, month) {
+    const calendar = document.getElementById(calendarId);
+    const title = calendar.querySelector("h3");
+    const daysContainer = calendar.querySelector(".calendar-days");
+
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    title.textContent = firstDay.toLocaleString("en-GB", {
+        month: "long",
+        year: "numeric"
     });
-  }
+
+    calendar.dataset.month = month;
+    calendar.dataset.year = year;
+
+    daysContainer.innerHTML = "";
+
+    const emptyDays = (firstDay.getDay() + 6) % 7;
+
+    for (let i = 0; i < emptyDays; i++) {
+        daysContainer.appendChild(document.createElement("span"));
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const span = document.createElement("span");
+        span.textContent = day;
+        span.dataset.day = day;
+        daysContainer.appendChild(span);
+    }
+}
+
+
+  
+function updateCalendar() {
+    const selectedDate = checkIn.value
+        ? makeDate(checkIn.value)
+        : new Date();
+
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+
+    // Display the selected month
+    renderCalendar("calendar-1", year, month);
+
+    // Display the following month
+    renderCalendar("calendar-2", year, month + 1);
+
+    // Highlight the selected dates
+    if (!checkIn.value) return;
+
+    const start = makeDate(checkIn.value);
+    const end = checkOut.value ? makeDate(checkOut.value) : null;
+
+    document.querySelectorAll(".calendar").forEach(cal => {
+        cal.querySelectorAll("[data-day]").forEach(day => {
+            const current = new Date(
+                +cal.dataset.year,
+                +cal.dataset.month,
+                +day.dataset.day
+            );
+
+            if (+current === +start) {
+                day.classList.add("calendar-start");
+            }
+
+            if (end && current > start && current < end) {
+                day.classList.add("calendar-range");
+            }
+
+            if (end && +current === +end) {
+                day.classList.add("calendar-end");
+            }
+        });
+    });
+}
+
 
   pitchCards.forEach(card=>card.addEventListener("click",()=>{
+    if (card.dataset.available === "false") return;
     pitchCards.forEach(c=>c.classList.remove("selected"));
     card.classList.add("selected"); selectedPitch=card;
     ["campers","vehicles","pets","tents"].forEach(k=>{ limits[k]=+card.dataset[k]; values[k]=0; });
-    updateLimits(); updateCounters(); updateSummary(); updatePrices(); updateButtons();
-  }));
+    updateLimits(); updateCounters(); updateSummary(); updatePrices(); updateButtons();}));
+    
 
   function updateLimits(){
     $("campers-limit").textContent=`Maximum ${limits.campers} campers`;
@@ -293,30 +387,91 @@ document.addEventListener("DOMContentLoaded", () => {
     pitchPrice.textContent=money(fee); electricityPrice.textContent=money(electricity);
     totalPrice.textContent=money(fee+electricity+420+188);
   }
+   
+    async function checkPitchAvailability() {
+    if (!checkIn.value || !checkOut.value || nights() < 3) {
+    pitchCards.forEach(card => {
+        card.dataset.available = "false";
+        card.style.opacity = "0.4";
+        card.style.cursor = "not-allowed";
+    });
+    pitchCards.forEach(card => card.classList.remove("selected"));
+    selectedPitch = null;
+
+    values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+    limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+
+    updateCounters();
+    updateSummary();
+    updatePrices();
+
+    reviewButton.disabled = true;
+    bottomReviewButton.disabled = true;
+    return;
+}
+    const url = "{% url 'bookings:check_pitch_availability' campsite_id=campsite.id %}";
+    const params = new URLSearchParams({
+        arrival_date: checkIn.value,
+        departure_date: checkOut.value
+    });
+
+    try {
+        const response = await fetch(`${url}?${params}`);
+        if (!response.ok) throw new Error("Availability check failed");
+
+        const availability = await response.json();
+
+        pitchCards.forEach(card => {
+            const available = availability[card.dataset.name] === true;
+
+            card.dataset.available = String(available);
+            card.style.opacity = available ? "1" : "0.4";
+            card.style.cursor = available ? "pointer" : "not-allowed";
+
+            if (!available && selectedPitch === card) {
+                card.classList.remove("selected");
+                selectedPitch = null;
+                values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+                limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
+                updateCounters();
+                updateSummary();
+                updatePrices();
+                updateButtons();
+            }
+        });
+    } catch (error) {
+        console.error("Could not check pitch availability:", error);
+    }
+}
 
   function updateButtons(){
     const ready=selectedPitch && checkIn.value && checkOut.value && nights()>=3 && values.campers>=1;
     reviewButton.disabled=bottomReviewButton.disabled=!ready;
   }
 
-  function continueToReview(){
-    if(reviewButton.disabled) return;
-    const n=nights(), price=+selectedPitch.dataset.price;
-    const data={
-      pitch:selectedPitch.dataset.name, pricePerNight:price,
-      checkIn:checkIn.value, checkOut:checkOut.value, nights:n,
-      campers:values.campers, vehicles:values.vehicles, pets:values.pets, tents:values.tents,
-      electricity:120*n, water:420, cleaning:188
-    };
-    data.pitchFee=price*n;
-    data.total=data.pitchFee+data.electricity+data.water+data.cleaning;
-    sessionStorage.setItem("wondercampBooking",JSON.stringify(data));
-    window.location.href="{% url 'bookings:confirmation' %}";
-  }
+  
+ function continueToReview() {
+    if (reviewButton.disabled) return;
 
-  reviewButton.addEventListener("click",continueToReview);
-  bottomReviewButton.addEventListener("click",continueToReview);
-  updateCalendar(); updateCounters(); updateSummary(); updatePrices(); updateButtons();
+    $("form-arrival-date").value = checkIn.value;
+    $("form-departure-date").value = checkOut.value;
+    $("form-pitch").value = selectedPitch.dataset.name;
+    $("form-campers").value = values.campers;
+    $("form-vehicles").value = values.vehicles;
+    $("form-pets").value = values.pets;
+    $("form-tents").value = values.tents;
+
+    $("booking-form").requestSubmit();
+}
+
+reviewButton.addEventListener("click", continueToReview);
+bottomReviewButton.addEventListener("click", continueToReview);
+updateCalendar();
+updateCounters();
+updateSummary();
+updatePrices();
+updateButtons();
 });
+
 </script>
 {% endblock %}
