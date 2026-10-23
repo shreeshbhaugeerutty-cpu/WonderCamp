@@ -3,8 +3,23 @@
 
 {% block title %}Notifications - WonderCamp{% endblock %}
 
+<!-- ============ CUSTOM TOP BAR (Hides main nav, shows Home icon) ============ -->
+{% block navbar %}
+<header class="site-header">
+  <nav class="nav container" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0;">
+    <a href="{% url 'home' %}" aria-label="Return to Home" style="display: inline-flex; align-items: center; gap: 8px; color: #FEFBEB; text-decoration: none; font-weight: 600; font-size: 16px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Home</span>
+    </a>
+  </nav>
+</header>
+{% endblock %}
+
 {% block extra_head %}
-<!-- Google Fonts: Inter and Cheria alternative (Alfa Slab One / Serif) -->
+<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Alfa+Slab+One&display=swap" rel="stylesheet">
@@ -12,7 +27,6 @@
 
 {% block extra_css %}
 <style>
-  /* Custom Font Definition if Cheria Regular is stored locally */
   @font-face {
     font-family: 'Cheria';
     src: url("{% static 'fonts/Cheria-Regular.ttf' %}") format('truetype'),
@@ -22,7 +36,6 @@
     font-display: swap;
   }
 
-  /* Notifications Page Specific Styles */
   .notifications-page-wrapper {
     background: linear-gradient(180deg, #1f3d14 0%, #30581e 50%, #528c34 100%);
     min-height: 100vh;
@@ -44,11 +57,41 @@
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   }
 
-  /* Header Section */
+  /* Header Section & Back Button */
   .notifications-header {
     border-bottom: 1px solid rgba(254, 251, 235, 0.3);
     padding-bottom: 24px;
     margin-bottom: 36px;
+    position: relative;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #FEFBEB;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .back-link:hover {
+    opacity: 1;
+    transform: translateX(-4px);
+  }
+
+  .back-arrow-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #FEFBEB;
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .notifications-title {
@@ -70,11 +113,27 @@
     opacity: 0.95;
   }
 
-  /* List & Card Layout */
+  /* List & Card Layout with Scrollable Overflow */
   .notifications-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-height: 620px; /* Controls max expansion before scrolling kicks in */
+    overflow-y: auto;
+    padding-right: 8px; /* Room for scrollbar */
+  }
+
+  /* Custom Scrollbar Styling */
+  .notifications-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .notifications-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  .notifications-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
   }
 
   .notification-card {
@@ -85,6 +144,10 @@
     border-radius: 20px;
     padding: 24px 28px;
     transition: all 0.25s ease;
+  }
+
+  .notification-card.unread {
+    border-left: 4px solid #84cc16; /* Visual indicator for unread notifications */
   }
 
   .notification-card:hover {
@@ -141,44 +204,33 @@
     font-weight: 700;
     color: #FEFBEB;
     margin: 0;
-    padding-left: 42px; /* Aligns text cleanly with title icon */
+    padding-left: 42px;
     line-height: 1.35;
     opacity: 0.92;
   }
 
-  /* Responsive Adjustments */
   @media (max-width: 768px) {
     .notifications-container {
       padding: 28px 20px;
       border-radius: 20px;
     }
-
     .notifications-title {
       font-size: 42px;
     }
-
     .notifications-subtitle {
       font-size: 18px;
     }
-
     .notification-card {
       padding: 18px 20px;
     }
-
     .notification-card-title,
     .notification-time,
     .notification-body {
       font-size: 18px;
     }
-
     .notification-body {
       padding-left: 0;
       margin-top: 8px;
-    }
-
-    .notification-icon {
-      width: 22px;
-      height: 22px;
     }
   }
 </style>
@@ -190,6 +242,15 @@
     
     <!-- Top Header -->
     <header class="notifications-header">
+      <!-- Requirement #5: Back Arrow to Landing Page -->
+      <a href="{% url 'home' %}" class="back-link">
+        <svg class="back-arrow-icon" viewBox="0 0 24 24">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Home
+      </a>
+
       <h1 class="notifications-title">Notifications</h1>
       <p class="notifications-subtitle">All your camping alerts in one place.</p>
     </header>
@@ -198,11 +259,10 @@
     <div class="notifications-list">
       
       {% for notification in notifications %}
-        <article class="notification-card {% if notification.is_read %}read{% else %}unread{% endif %}">
+        <article class="notification-card {% if not notification.is_read %}unread{% endif %}">
           <div class="notification-header-row">
             <div class="notification-title-group">
               
-              <!-- Icon rendering -->
               {% if notification.icon_class %}
                 <i class="{{ notification.icon_class }} notification-icon"></i>
               {% else %}
@@ -212,21 +272,18 @@
                 </svg>
               {% endif %}
 
-              <!-- Dynamic Title -->
               <h2 class="notification-card-title">{{ notification.title }}</h2>
             </div>
 
-            <!-- Dynamic Timestamp -->
             <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
           </div>
 
-          <!-- Dynamic Message Body -->
           <p class="notification-body">{{ notification.message }}</p>
         </article>
       {% empty %}
-        <!-- Displays gracefully if the logged-in user has 0 notifications -->
+        <!-- Requirement #1: Clean Empty State for New Users -->
         <div class="notification-card" style="text-align: center; padding: 40px;">
-          <p class="notification-body" style="padding-left: 0; opacity: 0.8;">You have no notifications at this time.</p>
+          <p class="notification-body" style="padding-left: 0; opacity: 0.8;">You have no notifications right now.</p>
         </div>
       {% endfor %}
 
