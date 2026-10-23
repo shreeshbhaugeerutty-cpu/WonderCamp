@@ -147,8 +147,13 @@
 
       <form id="booking-form" method="POST" hidden>
          {% csrf_token %}
-         <input type="hidden" name="arrival_date" id="form-arrival-date">
+        <input type="hidden" name="arrival_date" id="form-arrival-date">
         <input type="hidden" name="departure_date" id="form-departure-date">
+        <input type="hidden" name="pitch" id="form-pitch">
+        <input type="hidden" name="campers" id="form-campers">
+        <input type="hidden" name="vehicles" id="form-vehicles">
+        <input type="hidden" name="pets" id="form-pets">
+        <input type="hidden" name="tents" id="form-tents"> 
       </form>
 
       <div class="booking-bottom">
@@ -368,6 +373,11 @@ function updateCalendar() {
 
     $("form-arrival-date").value = checkIn.value;
     $("form-departure-date").value = checkOut.value;
+    $("form-pitch").value = selectedPitch.dataset.name;
+    $("form-campers").value = values.campers;
+    $("form-vehicles").value = values.vehicles;
+    $("form-pets").value = values.pets;
+    $("form-tents").value = values.tents;
 
     $("booking-form").requestSubmit();
 }
