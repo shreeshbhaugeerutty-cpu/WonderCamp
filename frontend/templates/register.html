@@ -1,3 +1,4 @@
+{% load socialaccount %} 
 {% load static %}
 {% if messages %}
   {% for message in messages %}
@@ -44,7 +45,7 @@
 
       <div class="auth-form__divider"><span>OR</span></div>
 
-      <a href="#" class="btn btn--google">
+      <a href="{% provider_login_url 'google' %}" class="btn btn--google">
         <img src="{% static 'images/formkit_google.png' %}" alt="">
         Sign In with Google.
       </a>

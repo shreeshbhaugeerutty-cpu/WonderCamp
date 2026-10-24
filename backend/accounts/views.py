@@ -35,6 +35,21 @@ def register(request):
         return redirect('login')
 
     return render(request, 'register.html')
+from django.contrib.auth.views import LoginView
+from django.contrib import messages
+
+
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            'Incorrect email or password.'
+        )
+        return super().form_invalid(form)
+
+
 
 ##Notifications profile management
 @login_required
