@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'backend.accounts',
     #'backend.notifications'
     'backend.campsites',
+    'backend.admin_dashboard',
     'backend.notifications.apps.NotificationsConfig'
 ]
 
