@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'backend.bookings',
     'backend.accounts',
     #'backend.notifications'
-    'backend.notifications.apps.NotificationsConfig'
+    'backend.notifications.apps.NotificationsConfig',
+    'backend.admin_dashboard.apps.AdminDashboardConfig',
 ]
 
 MIDDLEWARE = [

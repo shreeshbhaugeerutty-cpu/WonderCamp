@@ -1,33 +1,27 @@
 """
-URL configuration for wondercamp project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+URL configuration for WonderCamp project.
 """
 from django.contrib import admin
 from django.urls import path, include
-from .import views
 from django.contrib.auth import views as auth_views
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # 1. Django standard admin (renamed to avoid prefix collision with custom admin)
+    path('django-admin/', admin.site.urls),
+
+    # 2. Main Landing & Auth
     path('', views.landing, name='home'),
-    path('', include('backend.campsites.urls')),
-    path('', include('backend.vehicles.urls')),
-    path('', include('backend.accounts.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
-    path('', include('backend.bookings.urls')),
-    path('notifications/',include ('backend.notifications.urls'))
-]
 
+    # 3. Custom Admin Dashboard (FR 6.1 - FR 6.6)
+    path('admin-dashboard/', include('backend.admin_dashboard.urls')),
+
+    # 4. Teammate App Routes (Untouched)
+    path('notifications/', include('backend.notifications.urls')),
+    path('campsites/', include('backend.campsites.urls')),
+    path('vehicles/', include('backend.vehicles.urls')),
+    path('accounts/', include('backend.accounts.urls')),
+    path('bookings/', include('backend.bookings.urls')),
+]
