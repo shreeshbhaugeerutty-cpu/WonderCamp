@@ -6,6 +6,8 @@ from django.views.decorators.http import require_POST
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView
+
+from backend.notifications.models import Notification
 from .models import CustomUser
 from .forms import ProfileForm
 
@@ -33,6 +35,12 @@ def register(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+##Notifications profile management
+@login_required
+def notifications_profile(request):
+    notifications = Notification.objects.filter(recipient=request.user).order_by("-created_at")
+    return render(request, "account/notif-profile.html", {"notifications": notifications})
 
 
 #Password change and reset functions
