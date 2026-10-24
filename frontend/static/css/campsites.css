@@ -24,13 +24,24 @@ body {
 }
  
 /* ---------- Header ---------- */
-/* Keeps the "site-header" class so the scroll script in base.html still works,
-   but overrides the base styles so it sits normally at the top of this page. */
+/* Keeps the "site-header" class so the scroll script in base.html still works.
+   "sticky" makes the header follow you as you scroll down the page. */
 .site-header.explorer-header {
-  position: static;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   background: var(--wc-cream);
   box-shadow: none;
-  padding: 32px 0 0;
+  padding: 24px 0 20px;
+  transition: box-shadow 0.25s ease, padding 0.25s ease;
+}
+ 
+/* base.html adds "is-scrolled" after you scroll 80px:
+   the header gets a bit slimmer and a soft shadow. */
+.site-header.explorer-header.is-scrolled {
+  background: var(--wc-cream);
+  padding: 12px 0;
+  box-shadow: 0 4px 16px rgba(42, 42, 30, 0.12);
 }
  
 .explorer-header__inner {
@@ -116,7 +127,7 @@ body {
 .explorer-tabs {
   display: flex;
   gap: 44px;
-  padding: 40px 8px 18px;
+  padding: 20px 8px 18px;
   margin-bottom: 50px;
   border-bottom: 1px solid var(--wc-green);
 }
