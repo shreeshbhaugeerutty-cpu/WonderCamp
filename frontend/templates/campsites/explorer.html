@@ -1,1 +1,79 @@
-<h1>Campsite Explorer</h1>
+{% extends "base.html" %}
+{% load static %}
+ 
+{% block title %}Campsite Explorer | WonderCamp{% endblock %}
+ 
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+{% endblock %}
+ 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/campsites.css' %}">
+{% endblock %}
+ 
+{# ============ HEADER: overrides the base navbar to match the Figma design ============ #}
+{% block navbar %}
+<header class="site-header explorer-header">
+  <div class="explorer-container explorer-header__inner">
+    <a href="{% url 'home' %}" class="explorer-logo">WonderCamp</a>
+ 
+    <form class="explorer-search" action="{% url 'campsites:explorer' %}" method="get" role="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="7"/>
+        <path d="M16 16l5 5"/>
+      </svg>
+      <input type="search" name="q" placeholder="Search" value="{{ request.GET.q|default:'' }}" aria-label="Search campsites">
+    </form>
+ 
+    <nav class="explorer-icons" aria-label="Quick links">
+      <a href="#" class="explorer-icon" aria-label="Map">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/>
+          <path d="M9 3v15M15 6v15"/>
+        </svg>
+      </a>
+      <a href="{% if user.is_authenticated %}#{% else %}{% url 'login' %}{% endif %}" class="explorer-icon" aria-label="Notifications">
+        <img src="{% static 'images/notifss.png' %}" alt="">
+      </a>
+      <a href="{% if user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" class="explorer-icon" aria-label="Account">
+        <img src="{% static 'images/user-profile.png' %}" alt="">
+      </a>
+    </nav>
+  </div>
+</header>
+{% endblock %}
+ 
+{# ============ PAGE CONTENT ============ #}
+{% block content %}
+<section class="explorer explorer-container">
+ 
+  <nav class="explorer-tabs" aria-label="Stay type">
+    <a href="{% url 'campsites:explorer' %}" class="explorer-tab is-active" aria-current="page">Campsites</a>
+    <a href="{% url 'camping_vans' %}" class="explorer-tab">RV</a>
+    <a href="#" class="explorer-tab">Lodging</a>
+  </nav>
+ 
+  <div class="campsite-grid">
+    {% for site in campsites %}
+      <article class="campsite-card">
+        <div class="campsite-card__image">
+          <img src="{% static site.image %}" alt="{{ site.name }}" loading="lazy">
+        </div>
+        <h2 class="campsite-card__name">{{ site.name }}</h2>
+        <p class="campsite-card__location">
+          <svg viewBox="0 0 14 20" aria-hidden="true">
+            <circle cx="7" cy="6" r="5" fill="currentColor"/>
+            <path d="M7 11v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>{{ site.location }}</span>
+        </p>
+      </article>
+    {% empty %}
+      <p class="explorer-empty">No campsites found.</p>
+    {% endfor %}
+  </div>
+ 
+</section>
+{% endblock %}

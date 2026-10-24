@@ -1,0 +1,232 @@
+@font-face {
+  font-family: "Cheria";
+  src: url("../fonts/Cheria.woff2") format("woff2"),
+       url("../fonts/Cheria.ttf") format("truetype");
+  font-display: swap;
+}
+ 
+:root {
+  --wc-cream: #FDFAE8;
+  --wc-green: #3F7424;
+  --wc-ink: #2A2A1E;
+  --wc-pin: #D93025;
+  --wc-placeholder: #DFE6CF;
+}
+ 
+body {
+  background: var(--wc-cream);
+}
+ 
+.explorer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+ 
+/* ---------- Header ---------- */
+/* Keeps the "site-header" class so the scroll script in base.html still works,
+   but overrides the base styles so it sits normally at the top of this page. */
+.site-header.explorer-header {
+  position: static;
+  background: var(--wc-cream);
+  box-shadow: none;
+  padding: 32px 0 0;
+}
+ 
+.explorer-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+ 
+.explorer-logo {
+  font-family: "Cheria", Georgia, serif;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--wc-green);
+  text-decoration: none;
+  white-space: nowrap;
+}
+ 
+.explorer-search {
+  flex: 1;
+  max-width: 540px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 28px;
+  border: 2px solid var(--wc-green);
+  border-radius: 999px;
+  color: var(--wc-green);
+}
+ 
+.explorer-search:focus-within {
+  box-shadow: 0 0 0 3px rgba(63, 116, 36, 0.2);
+}
+ 
+.explorer-search svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+ 
+.explorer-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+  font: 400 28px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.explorer-search input::placeholder {
+  color: var(--wc-green);
+  opacity: 0.75;
+}
+ 
+.explorer-icons {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+ 
+.explorer-icon {
+  display: inline-flex;
+  width: 64px;
+  height: 64px;
+  color: var(--wc-green);
+  transition: opacity 0.2s ease;
+}
+ 
+.explorer-icon:hover {
+  opacity: 0.75;
+}
+ 
+.explorer-icon img,
+.explorer-icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+ 
+/* ---------- Tabs: Campsites / RV / Lodging ---------- */
+.explorer-tabs {
+  display: flex;
+  gap: 44px;
+  padding: 40px 8px 18px;
+  margin-bottom: 50px;
+  border-bottom: 1px solid var(--wc-green);
+}
+ 
+.explorer-tab {
+  font: 700 32px/1.2 "Inter", sans-serif;
+  color: var(--wc-green);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+ 
+.explorer-tab:hover {
+  opacity: 0.75;
+}
+ 
+/* ---------- Campsite cards ---------- */
+.campsite-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 34px;
+  row-gap: 56px;
+  padding-bottom: 120px;
+}
+ 
+.campsite-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+ 
+.campsite-card:focus-visible {
+  outline: 3px solid var(--wc-green);
+  outline-offset: 6px;
+  border-radius: 24px;
+}
+ 
+.campsite-card__image {
+  aspect-ratio: 369 / 340;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--wc-placeholder); /* shows if a campsite has no image */
+}
+ 
+.campsite-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+ 
+.campsite-card:hover .campsite-card__image img {
+  transform: scale(1.04);
+}
+ 
+.campsite-card__name {
+  margin: 16px 12px 6px;
+  font: 700 30px/1.25 "Playfair Display", Georgia, serif;
+  color: var(--wc-ink);
+}
+ 
+.campsite-card__location {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 12px;
+  font: 500 16px/1.4 "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.campsite-card__location svg {
+  width: 12px;
+  height: 17px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: var(--wc-pin);
+}
+ 
+.explorer-empty {
+  grid-column: 1 / -1;
+  padding: 60px 0;
+  text-align: center;
+  font: 400 18px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .explorer-header__inner { gap: 24px; }
+  .explorer-logo { font-size: 38px; }
+  .explorer-search { height: 56px; padding: 0 20px; }
+  .explorer-search svg { width: 24px; height: 24px; }
+  .explorer-search input { font-size: 20px; }
+  .explorer-icons { gap: 20px; }
+  .explorer-icon { width: 44px; height: 44px; }
+  .explorer-tab { font-size: 26px; }
+  .campsite-grid { grid-template-columns: repeat(2, 1fr); }
+  .campsite-card__name { font-size: 26px; }
+}
+ 
+/* ---------- Phone ---------- */
+@media (max-width: 640px) {
+  .explorer-header__inner { flex-wrap: wrap; row-gap: 16px; }
+  .explorer-logo { font-size: 32px; }
+  .explorer-search { order: 3; flex-basis: 100%; max-width: none; height: 50px; }
+  .explorer-search input { font-size: 18px; }
+  .explorer-icons { gap: 14px; }
+  .explorer-icon { width: 36px; height: 36px; }
+  .explorer-tabs { gap: 24px; padding-top: 28px; margin-bottom: 32px; }
+  .explorer-tab { font-size: 20px; }
+  .campsite-grid { grid-template-columns: 1fr; row-gap: 40px; }
+  .campsite-card__name { font-size: 24px; }
+}
