@@ -1,3 +1,4 @@
+{% load socialaccount %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -19,12 +20,6 @@
     <div class="auth-page__form-panel">
       <h1>Log In</h1>
 
-      {% if messages %}
-        {% for message in messages %}
-          <p class="auth-form__message">{{ message }}</p>
-        {% endfor %}
-      {% endif %}
-
       <form method="post" class="auth-form">
         {% csrf_token %}
 
@@ -36,7 +31,7 @@
 
       <div class="auth-form__divider"><span>OR</span></div>
 
-      <a href="#" class="btn btn--google">
+      <a href="{% provider_login_url 'google' %}" class="btn btn--google">
         <img src="{% static 'images/formkit_google.png' %}" alt="">
         Sign In with Google.
       </a>
@@ -48,5 +43,96 @@
 
   </div>
 
+    {% block extra_scripts %}{% endblock %}
+
+  <!-- Toast Container for Pop-Up Notifications -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="toast-popup">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>{{ message }}</span>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+<!-- Toast Container for Pop-Up Notifications -->
+<div id="toast-container"
+     style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast-popup">
+                <svg width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<style>
+    .toast-popup {
+        background: rgba(30, 58, 20, 0.95);
+        color: #FEFBEB;
+        padding: 14px 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        animation: slideIn 0.4s ease forwards,
+                   fadeOut 0.5s ease 3.5s forwards;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toasts = document.querySelectorAll('.toast-popup');
+
+        toasts.forEach(function (toast) {
+            setTimeout(function () {
+                toast.remove();
+            }, 4000);
+        });
+    });
+</script>
 </body>
 </html>
