@@ -3,9 +3,12 @@
 
 {% block title %}Admin Dashboard - WonderCamp{% endblock %}
 
+{% comment %} Hide global base navbar to prevent overlap {% endcomment %}
+{% block navbar %}{% endblock %}
+
 {% block content %}
 <style>
-  /* Base reset for admin dashboard page */
+  /* Reset and base styles */
   body {
     background-color: #fbf8e7 !important;
     margin: 0;
@@ -13,6 +16,7 @@
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
 
+  /* Main flex layout */
   .admin-layout {
     display: flex;
     gap: 32px;
@@ -22,7 +26,7 @@
     box-sizing: border-box;
   }
 
-  /* Dark Green Sidebar */
+  /* Left Sidebar Navigation */
   .admin-sidebar {
     width: 270px;
     background-color: #32521e;
@@ -32,11 +36,12 @@
     flex-shrink: 0;
   }
 
-  .admin-sidebar h2 {
+  .sidebar-logo {
     font-size: 32px;
     font-weight: 800;
     margin: 0 0 36px 0;
     letter-spacing: -0.5px;
+    color: #ffffff;
   }
 
   .sidebar-section-title {
@@ -57,7 +62,7 @@
   .sidebar-nav a, .sidebar-nav button {
     color: #ffffff;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -66,9 +71,14 @@
     border: none;
     cursor: pointer;
     padding: 0;
+    transition: opacity 0.2s;
   }
 
-  /* Main Workspace Area */
+  .sidebar-nav a:hover, .sidebar-nav button:hover {
+    opacity: 0.8;
+  }
+
+  /* Main Dashboard Area */
   .admin-main {
     flex: 1;
     display: flex;
@@ -89,7 +99,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    width: 400px;
+    width: 380px;
   }
 
   .search-box input {
@@ -97,19 +107,19 @@
     border: none;
     outline: none;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     width: 100%;
   }
 
   .search-box input::placeholder {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .welcome-title {
-    font-size: 44px;
+    font-size: 40px;
     font-weight: 900;
     font-style: italic;
-    color: #658a4e;
+    color: #32521e;
     margin: 0 0 6px 0;
   }
 
@@ -144,32 +154,47 @@
     color: #333333;
   }
 
-  /* System Health List */
+  /* System Health Animated Gradient Bars */
   .health-metric-row {
     display: flex;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .health-metric-label {
-    width: 160px;
+    width: 170px;
     font-size: 13px;
     font-weight: 600;
     color: #ffffff;
     line-height: 1.2;
   }
 
+  .health-bar-container {
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 36px;
+  }
+
   .health-metric-bar {
-    background-color: #ffffff;
-    height: 38px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    height: 100%;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #ffffff 0%, #b8e2a1 50%, #ffffff 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    animation: fillBar 1.2s ease-out forwards;
+    transform-origin: left;
+  }
+
+  @keyframes fillBar {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
   }
 
   /* Audit Log Rows */
   .audit-item {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
   }
   .audit-item:last-child {
     border-bottom: none;
@@ -188,7 +213,7 @@
     display: inline-block;
     color: #32521e;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     margin-top: 10px;
   }
@@ -197,7 +222,7 @@
 <div class="admin-layout">
   <!-- Left Sidebar Navigation -->
   <aside class="admin-sidebar">
-    <h2>WonderCamp</h2>
+    <div class="sidebar-logo">WonderCamp</div>
     
     <div class="sidebar-section-title">General</div>
     <ul class="sidebar-nav">
@@ -247,22 +272,22 @@
     </ul>
   </aside>
 
-  <!-- Right Dashboard Content -->
+  <!-- Right Dashboard Main Area -->
   <main class="admin-main">
-    <!-- Top Search & Profile Bar -->
+    <!-- Top Header Bar -->
     <div class="admin-header">
       <div class="search-box">
         <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search">
+        <input type="text" id="globalSearch" placeholder="Search operational metrics...">
       </div>
       <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #658a4e; display: flex; align-items: center; justify-content: center; color: white;">
         <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
     </div>
 
-    <!-- Welcome Title -->
+    <!-- Personalized Welcome Banner -->
     <div>
-      <h1 class="welcome-title">Welcome, Admin</h1>
+      <h1 class="welcome-title">Welcome, {{ admin_name|default:"Admin" }}</h1>
       <p class="welcome-subtitle">Wishing you a productive day. Here are your system logistics.</p>
     </div>
 
@@ -280,23 +305,23 @@
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div class="health-metric-row">
           <div class="health-metric-label">Integration Status</div>
-          <div class="health-metric-bar" style="width: 75%;"></div>
+          <div class="health-bar-container"><div class="health-metric-bar" style="width: 75%;"></div></div>
         </div>
         <div class="health-metric-row">
           <div class="health-metric-label">Backup And Data Retention</div>
-          <div class="health-metric-bar" style="width: 55%;"></div>
+          <div class="health-bar-container"><div class="health-metric-bar" style="width: 55%;"></div></div>
         </div>
         <div class="health-metric-row">
           <div class="health-metric-label">Notification Delivery</div>
-          <div class="health-metric-bar" style="width: 50%;"></div>
+          <div class="health-bar-container"><div class="health-metric-bar" style="width: 50%;"></div></div>
         </div>
         <div class="health-metric-row">
           <div class="health-metric-label">Live Responsiveness</div>
-          <div class="health-metric-bar" style="width: 45%;"></div>
+          <div class="health-bar-container"><div class="health-metric-bar" style="width: 45%;"></div></div>
         </div>
         <div class="health-metric-row">
           <div class="health-metric-label">Failed Jobs</div>
-          <div class="health-metric-bar" style="width: 25%;"></div>
+          <div class="health-bar-container"><div class="health-metric-bar" style="width: 25%;"></div></div>
         </div>
       </div>
     </section>
@@ -306,9 +331,15 @@
       <h2 class="green-card-title">Audit & Compliance Log</h2>
       <div class="search-box" style="margin-bottom: 20px; width: 100%; box-sizing: border-box; background-color: rgba(255,255,255,0.25);">
         <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" placeholder="Search audit logs...">
+        <input type="text" id="auditSearchInput" placeholder="Search audit logs...">
       </div>
-      <div>
+      <div id="auditLogContainer">
+        {% for log in audit_logs %}
+        <div class="audit-item">
+          <div class="audit-item-header">{{ log.get_action_type_display }} / {{ log.actor.username|default:"System" }}</div>
+          <div class="audit-item-desc">{{ log.details }}</div>
+        </div>
+        {% empty %}
         <div class="audit-item">
           <div class="audit-item-header">Refund / John Applesmith</div>
           <div class="audit-item-desc">Mr John Applesmith refunded on 2nd September 2026</div>
@@ -321,6 +352,7 @@
           <div class="audit-item-header">Password Reset / Linda Gironzmon</div>
           <div class="audit-item-desc">Mrs Linda Gironzmon's password was reset on 1st September 2026.</div>
         </div>
+        {% endfor %}
       </div>
     </section>
 
@@ -335,14 +367,18 @@
 {% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // 1. Chart Rendering
   const ctx = document.getElementById('activitiesChart').getContext('2d');
-  new Chart(ctx, {
+  const chartLabels = ['Bookings', 'Bookings refunded', 'Bookings to Cancel', 'Booking Status To Update', 'Campsites available', 'Campsites suspended', 'Campsites booked', 'Bookings Paid', 'Users Booked'];
+  const chartData = [60, 15, 30, 20, 42, 10, 58, 14, 58];
+
+  const activitiesChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Bookings', 'Bookings refunded', 'Bookings to Cancel', 'Booking Status To Update', 'Campsites available', 'Campsites suspended', 'Campsites booked', 'Bookings Paid', 'Users Booked'],
+      labels: chartLabels,
       datasets: [{
         label: 'September 2026',
-        data: [60, 15, 30, 20, 42, 10, 58, 14, 58],
+        data: chartData,
         backgroundColor: '#658a4e',
         borderRadius: 4
       }]
@@ -350,13 +386,45 @@
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: true, max: 100 }
-      }
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, max: 100 } }
     }
+  });
+
+  // 2. Interactive Real-Time Search for Audit Logs
+  const auditSearchInput = document.getElementById('auditSearchInput');
+  const auditLogContainer = document.getElementById('auditLogContainer');
+
+  auditSearchInput.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase().trim();
+    const items = auditLogContainer.querySelectorAll('.audit-item');
+
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(term)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+
+  // 3. Global Search Bar Handler
+  const globalSearch = document.getElementById('globalSearch');
+  globalSearch.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase().trim();
+    if (!term) {
+      activitiesChart.data.labels = chartLabels;
+      activitiesChart.data.datasets[0].data = chartData;
+    } else {
+      const filteredIndices = chartLabels
+        .map((label, idx) => label.toLowerCase().includes(term) ? idx : -1)
+        .filter(idx => idx !== -1);
+      
+      activitiesChart.data.labels = filteredIndices.map(idx => chartLabels[idx]);
+      activitiesChart.data.datasets[0].data = filteredIndices.map(idx => chartData[idx]);
+    }
+    activitiesChart.update();
   });
 </script>
 {% endblock %}
