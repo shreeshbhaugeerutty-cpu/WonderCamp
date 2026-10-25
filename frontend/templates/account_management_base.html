@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/account.css' %}">
+  {% block account_head %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="account">
+  {% include "sidebar.html" %}
+
+  <section class="account-main">
+    <h1 class="account-title">{% block account_title %}{% endblock %}</h1>
+
+    {% for message in messages %}
+      <p class="account-message" role="status">{{ message }}</p>
+    {% endfor %}
+
+    {% block account_content %}{% endblock %}
+  </section>
+</div>
+{% endblock %}

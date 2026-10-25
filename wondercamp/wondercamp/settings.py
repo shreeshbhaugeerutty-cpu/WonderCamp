@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -34,6 +37,7 @@ INSTALLED_APPS = [
 
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -41,8 +45,17 @@ INSTALLED_APPS = [
     'backend.bookings',
     'backend.accounts',
     #'backend.notifications'
-    'backend.notifications.apps.NotificationsConfig'
+    'backend.campsites',
+    'backend.admin_dashboard',
+    'backend.notifications.apps.NotificationsConfig',
+    #google auth login
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,7 +65,22 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        ##google auth login
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+#google
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "APP": {
+            "client_id": os.environ["GOOGLE_CLIENT_ID"],
+            "secret": os.environ["GOOGLE_CLIENT_SECRET"],
+            "key": "",
+        },
+    }
+}
 
 ROOT_URLCONF = 'wondercamp.wondercamp.urls'
 
@@ -109,6 +137,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -131,3 +163,5 @@ STATICFILES_DIRS = [BASE_DIR / 'frontend' / 'static']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"

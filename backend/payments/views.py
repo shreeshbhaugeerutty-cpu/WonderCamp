@@ -1,37 +1,50 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, redirect
-
-BOOKING = {
-    "reference": "WR-2026-90725",
-    "campsite": "Bois Cheri Forest Camp",
-    "amount": 9150,
-}
-
-METHODS = [
-    ("mcb_juice", "MCB Juice", "Third-party payment app"),
-    ("sbm", "SBM Banking", ""),
-    ("bank", "Bank Transfer", ""),
-    ("wallet", "Mobile Wallet", ""),
-]
 
 
-def payment_view(request):
-    ctx = {"booking": BOOKING, "methods": METHODS}
-    if request.method == "POST":
-        if request.POST.get("mobile") and request.POST.get("email"):
-            return redirect("payment_done")  # TODO: redirect to MCB Juice, confirm on callback
-        ctx["error"] = True
-    return render(request, "payment.html", ctx)
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Payment
+from .forms import PaymentForm
+from bookings.models import Booking
 
 
-def payment_done(request):
-    return render(
-        request,
-        "payment_confirmation.html",
-        {
-            "booking": BOOKING,
-            "payment": {"method_label": "MCB Juice", "amount": BOOKING["amount"]},
-        },
-    )
+def secure_checkout(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    methods = [
+        ('mcb_juice', 'MCB Juice', 'Pay securely using your mobile app'),
+        ('credit_card', 'Credit Card', 'Pay via secure gateway')
+    ]
+    
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = Payment.objects.create(
+                booking=booking,
+                amount=booking.amount,
+                method=form.cleaned_data['method'],
+                mobile=form.cleaned_data['mobile'],
+                email=form.cleaned_data['email'],
+                country=form.cleaned_data['country'],
+                is_successful=True
+            )
+            return redirect('payment_confirmation', payment_id=payment.id)
+    else:
+        form = PaymentForm()
+
+    context = {
+        'booking': booking,
+        'methods': methods,
+        'form': form
+    }
+    return render(request, 'payment.html', context)
+
+def payment_confirmation(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id)
+    
+    context = {
+        'booking': payment.booking,
+        'payment': {
+            'amount': payment.amount,
+            'method_label': payment.get_method_label()
+        }
+    }
+    return render(request, 'payment_confirmation.html', context)

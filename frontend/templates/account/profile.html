@@ -1,9 +1,7 @@
-{% extends "base.html" %}
+{% extends "account_management_base.html" %}
 {% load static %}
 
-{% block title %}Profile – WonderCamp{% endblock %}
-{% block navbar %}{% endblock %}
-{% block footer %}{% endblock %}
+{% block account_title %}Profile – WonderCamp{% endblock %}
 {% block extra_head %}
   <link rel="stylesheet" href="{% static 'css/account.css' %}">
 {% endblock %}
@@ -76,7 +74,7 @@
     <div class="account-actions">
       <a href="{% url 'password_change' %}" class="account-btn account-btn--green">Change Password</a>
 
-      <form method="post" action="#" id="delete-form">
+      <form method="post" action="{% url 'delete_account' %}" id="delete-form">
         {% csrf_token %}
         <button type="submit" class="account-btn account-btn--orange">Delete Account</button>
       </form>

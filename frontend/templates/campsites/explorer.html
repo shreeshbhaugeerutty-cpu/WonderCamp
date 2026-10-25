@@ -1,1 +1,50 @@
-<h1>Campsite Explorer</h1>
+{% extends "base.html" %}
+{% load static %}
+ 
+{% block title %}Campsite Explorer | WonderCamp{% endblock %}
+ 
+{% block extra_head %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+{% endblock %}
+ 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/campsites.css' %}">
+{% endblock %}
+ 
+{# Header is shared with the detail page, so it lives in its own file #}
+{% block navbar %}{% include "campsites/_header.html" %}{% endblock %}
+ 
+{% block content %}
+<section class="explorer explorer-container">
+ 
+  <nav class="explorer-tabs" aria-label="Stay type">
+    <a href="{% url 'campsites:explorer' %}" class="explorer-tab is-active" aria-current="page">Campsites</a>
+    <a href="{% url 'camping_vans' %}" class="explorer-tab">RV</a>
+    <a href="#" class="explorer-tab">Lodging</a>
+  </nav>
+ 
+  <div class="campsite-grid">
+    {% for site in campsites %}
+      {# The whole card (picture + name) links to that campsite's detail page #}
+      <a class="campsite-card" href="{% url 'campsites:detail' site.slug %}">
+        <div class="campsite-card__image">
+          <img src="{% static site.image %}" alt="{{ site.name }}" loading="lazy">
+        </div>
+        <h2 class="campsite-card__name">{{ site.name }}</h2>
+        <p class="campsite-card__location">
+          <svg viewBox="0 0 14 20" aria-hidden="true">
+            <circle cx="7" cy="6" r="5" fill="currentColor"/>
+            <path d="M7 11v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span>{{ site.location }}</span>
+        </p>
+      </a>
+    {% empty %}
+      <p class="explorer-empty">No campsites found.</p>
+    {% endfor %}
+  </div>
+ 
+</section>
+{% endblock %}

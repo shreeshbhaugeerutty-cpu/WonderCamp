@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Business Policies - WonderCamp{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper" style="display: flex; gap: 30px; background-color: #fbf8e7; padding: 40px; font-family: sans-serif; min-height: 100vh;">
+  <!-- Sidebar -->
+  <aside style="width: 280px; background-color: #32521e; border-radius: 24px; padding: 30px; color: white;">
+    <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 40px;">WonderCamp</h2>
+    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">General</div>
+    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 18px;">
+      <li><a href="{% url 'admin_dashboard:dashboard' %}" style="color: white; text-decoration: none; font-weight: 600;">Operational Overview</a></li>
+      <li><a href="{% url 'admin_dashboard:master_data' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Client Profile & Master Data</a></li>
+      <li><a href="{% url 'admin_dashboard:business_policies' %}" style="color: white; text-decoration: none; font-weight: 700; opacity: 1;">Business Policies</a></li>
+      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Edit Catalogue</a></li>
+      <li><a href="{% url 'admin_dashboard:audit_logs' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Audit Records</a></li>
+    </ul>
+    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">Tools</div>
+    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 18px;">
+      <li><a href="{% url 'admin_dashboard:health' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Settings & Health</a></li>
+      <li>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" style="background: none; border: none; color: white; font-weight: 600; cursor: pointer; padding: 0;">Log Out</button>
+        </form>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main style="flex: 1;">
+    <h1 style="font-size: 42px; font-weight: 800; color: #658a4e; margin-bottom: 5px;">Business Policies & Rules</h1>
+    <p style="color: #4a5d3e; margin-bottom: 30px;">Operational pricing thresholds, refund terms, and booking guidelines.</p>
+
+    <div style="background-color: #658a4e; border-radius: 24px; padding: 30px; color: white;">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">ACTIVE SYSTEM POLICIES</h2>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for policy in policies %}
+        <div style="background-color: white; border-radius: 16px; padding: 20px; color: #333;">
+          <h3 style="margin: 0 0 8px 0; color: #32521e; font-size: 18px;">{{ policy.title }}</h3>
+          <p style="margin: 0 0 12px 0; color: #555;">{{ policy.value }}</p>
+          <div style="font-size: 12px; color: #888;">Key: <code>{{ policy.key }}</code> | Last updated: {{ policy.updated_at|date:"M d, Y" }}</div>
+        </div>
+        {% empty %}
+        <div style="background-color: white; border-radius: 16px; padding: 20px; color: #666; text-align: center;">No active business policies set.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <a href="{% url 'home' %}" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Home</a>
+    </div>
+  </main>
+</div>
+{% endblock %}

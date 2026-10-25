@@ -1,0 +1,14 @@
+{# One review card. Use: {% include "campsites/_review_card.html" with name=... rating=... pct=... text=... date=... %} #}
+<article class="review-card">
+  <header class="review-card__head">
+    <svg class="review-card__avatar" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="4"/>
+      <circle cx="32" cy="25" r="10" fill="currentColor"/>
+      <path d="M15 51 C15 42 21 39 32 39 C43 39 49 42 49 51 Z" fill="currentColor"/>
+    </svg>
+    <p class="review-card__name">{{ name }}</p>
+    {% include "campsites/_stars.html" with pct=pct rating=rating size="sm" %}
+  </header>
+  <p class="review-card__text">{{ text|linebreaksbr }}</p>
+  {% if date %}<p class="review-card__date">{{ date|date:"j M Y" }}</p>{% endif %}
+</article>
