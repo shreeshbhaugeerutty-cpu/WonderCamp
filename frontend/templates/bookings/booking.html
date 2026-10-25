@@ -137,7 +137,7 @@
     <!-- SUMMARY -->
     <aside class="your-stay">
       <h2>Your stay</h2>
-      <p class="stay-place">Bois Chéri Private Camp</p>
+      <p class="stay-place">{{ campsite.name }}</p>
 
       <div class="stay-information">
         <p>🍃 Pitch: <strong id="summary-pitch">Select a pitch</strong></p>
@@ -386,6 +386,7 @@ function updateCalendar() {
         arrival_date: checkIn.value,
         departure_date: checkOut.value
     });
+    {% if booking_id %}params.append("exclude", "{{ booking_id }}");{% endif %}
 
     try {
         const response = await fetch(`${url}?${params}`);
@@ -443,6 +444,33 @@ updateCounters();
 updateSummary();
 updatePrices();
 updateButtons();
+
+{% if existing %}
+(async () => {
+  checkIn.value = "{{ existing.arrival_date|date:'Y-m-d' }}";
+  const min = makeDate(checkIn.value);
+  min.setDate(min.getDate() + 3);
+  checkOut.min = inputDate(min);
+  checkOut.disabled = false;
+  checkOut.value = "{{ existing.departure_date|date:'Y-m-d' }}";
+  updateDates();
+
+  await checkPitchAvailability();
+
+  const card = [...pitchCards].find(c => c.dataset.name === "{{ existing.pitch|escapejs }}");
+  if (card) {
+    card.click();
+    values.campers = {{ existing.campers }};
+    values.vehicles = {{ existing.vehicles }};
+    values.pets = {{ existing.pets }};
+    values.tents = {{ existing.tents }};
+    updateCounters();
+    updateSummary();
+    updatePrices();
+    updateButtons();
+  }
+})();
+{% endif %}
 });
 
 </script>

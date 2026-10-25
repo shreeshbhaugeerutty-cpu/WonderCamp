@@ -33,7 +33,7 @@ def validate_booking_dates(arrival_date, departure_date):
     return None
 
 
-def is_pitch_available(campsite, pitch, arrival_date, departure_date):
+def is_pitch_available(campsite, pitch, arrival_date, departure_date, exclude_id=None):
     existing_bookings = BookingLine.objects.filter(
         line_type='pitch',
         item_name=pitch,
@@ -42,6 +42,9 @@ def is_pitch_available(campsite, pitch, arrival_date, departure_date):
         start_date__lt=departure_date,
         end_date__gt=arrival_date,
     )
+
+    if exclude_id:
+        existing_bookings = existing_bookings.exclude(booking_id=exclude_id)
 
     return not existing_bookings.exists()
 
@@ -61,11 +64,13 @@ def get_costs(pitch, nights):
     }
 
 
-def show_form(request, campsite, error=None):
+def show_form(request, campsite, error=None, existing=None, booking_id=None):
     return render(request, 'bookings/booking.html', {
         'campsite': campsite,
         'pitches': Pitch.objects.filter(campsite=campsite),
         'error': error,
+        'existing': existing,
+        'booking_id': booking_id,
     })
 
 
@@ -151,11 +156,14 @@ def check_pitch_availability(request, campsite_id):
     if error:
         return JsonResponse({'error': error}, status=400)
 
+    exclude_id = request.GET.get('exclude')
+    if exclude_id and not exclude_id.isdigit():
+        exclude_id = None
     availability = {}
 
     for pitch in Pitch.objects.filter(campsite=campsite):
         availability[pitch.name] = is_pitch_available(
-            campsite, pitch.name, arrival_date, departure_date
+            campsite, pitch.name, arrival_date, departure_date, exclude_id
         )
 
     return JsonResponse(availability)
@@ -281,3 +289,32 @@ def cancel_booking(request, booking_id):
         messages.error(request, "This booking can not be cancelled.")
 
     return redirect('bookings:my_bookings')
+
+
+@login_required(login_url='login')
+def modify_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(id=booking_id, customer=request.user)
+    except Booking.DoesNotExist:
+        raise Http404("Booking not found")
+
+    if booking.status not in ['pending', 'confirmed']:
+        messages.error(request, "This booking can not be modified.")
+        return redirect('bookings:my_bookings')
+
+    campsite = get_object_or_404(Campsite, name=booking.campsite_name)
+
+    lines = {}
+    for line in booking.bookingline_set.all():
+        lines[line.line_type] = line
+
+    existing = {
+        'pitch': lines['pitch'].item_name,
+        'arrival_date': booking.arrival_date,
+        'departure_date': booking.departure_date,
+        'campers': booking.no_of_adults,
+        'vehicles': booking.no_of_vehicles,
+        'pets': lines['pets'].quantity,
+        'tents': lines['tents'].quantity,
+    }
+    return show_form(request, campsite, existing=existing, booking_id=booking.id)
