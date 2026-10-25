@@ -13,8 +13,14 @@
   .sidebar-section-title { font-size: 13px; opacity: 0.75; margin-bottom: 12px; text-transform: uppercase; }
   .sidebar-nav { list-style: none; padding: 0; margin-bottom: 28px; display: flex; flex-direction: column; gap: 16px; }
   .sidebar-nav a { color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
-  .admin-main { flex: 1; }
+  .admin-main { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+  
+  .filter-pill { padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; border: none; background-color: #e2edd8; color: #32521e; transition: all 0.2s; }
+  .filter-pill.active { background-color: #32521e; color: white; }
+
   .alert-card { background-color: #ffffff; border-radius: 18px; padding: 24px; color: #333; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 6px solid #ff4d4d; }
+  .btn-dispatch { background-color: #d9534f; color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .btn-dispatch:hover { background-color: #c9302c; }
 </style>
 
 <div class="admin-layout">
@@ -22,39 +28,74 @@
     <div class="sidebar-logo">WonderCamp</div>
     <div class="sidebar-section-title">Safety & Dispatches</div>
     <ul class="sidebar-nav">
-      <li><a href="{% url 'admin_dashboard:emergency_alerts' %}" style="color: #ffcccc; font-weight: 800;">🚨 Emergency SOS Alerts</a></li>
+      <li><a href="/admin-dashboard/emergency-alerts/" style="color: #ffcccc; font-weight: 800;">🚨 Emergency SOS Alerts</a></li>
     </ul>
     <div class="sidebar-section-title">General</div>
     <ul class="sidebar-nav">
-      <li><a href="{% url 'admin_dashboard:dashboard' %}">Operational Overview</a></li>
-      <li><a href="{% url 'admin_dashboard:master_data' %}">Client Profile & Master Data</a></li>
-      <li><a href="{% url 'admin_dashboard:business_policies' %}">Business Policies</a></li>
-      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}">Edit Catalogue</a></li>
-      <li><a href="{% url 'admin_dashboard:audit_logs' %}">Audit Records</a></li>
+      <li><a href="/admin-dashboard/">Operational Overview</a></li>
+      <li><a href="/admin-dashboard/master-data/">Client Profile & Master Data</a></li>
+      <li><a href="/admin-dashboard/business-policies/">Business Policies</a></li>
+      <li><a href="/admin-dashboard/manage-catalogue/">Edit Catalogue</a></li>
+      <li><a href="/admin-dashboard/audit-logs/">Audit Records</a></li>
     </ul>
   </aside>
 
   <main class="admin-main">
-    <h1 style="font-size: 40px; font-weight: 800; color: #d9534f; margin-bottom: 5px;">Emergency SOS Alerts</h1>
-    <p style="color: #4a5d3e; margin-bottom: 30px;">Real-time camper emergency transmissions and dispatch management.</p>
+    <div>
+      <h1 style="font-size: 40px; font-weight: 900; color: #d9534f; margin: 0;">Emergency SOS Transmissions</h1>
+      <p style="color: #4a5d3e; font-size: 16px; font-weight: 600; margin-top: 4px;">Real-time camper emergency location dispatches and ranger response center.</p>
+    </div>
+
+    <!-- Filter Pills & Search -->
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button class="filter-pill active" onclick="filterAlerts('ALL', this)">All Alerts</button>
+      <button class="filter-pill" onclick="filterAlerts('ACTIVE', this)">Active (1)</button>
+      <button class="filter-pill" onclick="filterAlerts('RESOLVED', this)">Resolved (1)</button>
+    </div>
 
     <div style="background-color: #658a4e; border-radius: 28px; padding: 32px; color: white;">
-      <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 20px;">ACTIVE EMERGENCY TRANSMISSIONS</h2>
+      <h2 style="font-size: 22px; font-weight: 800; margin: 0 0 20px 0; text-transform: uppercase;">LIVE SAFETY DISPATCH LOG</h2>
+      
       {% for alert in emergency_alerts %}
-      <div class="alert-card" style="border-left-color: {% if alert.status == 'ACTIVE' %}#ff4d4d{% else %}#28a745{% endif %};">
+      <div class="alert-card" data-status="{{ alert.status }}" style="border-left-color: {% if alert.status == 'ACTIVE' %}#ff4d4d{% else %}#28a745{% endif %};">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <strong style="font-size: 18px; color: #32521e;">{{ alert.client_name }} — {{ alert.campsite }}</strong>
           <span style="font-size: 12px; font-weight: bold; background-color: {% if alert.status == 'ACTIVE' %}#ffe6e6{% else %}#e2f0d9{% endif %}; color: {% if alert.status == 'ACTIVE' %}#d9534f{% else %}#28a745{% endif %}; padding: 4px 12px; border-radius: 12px;">{{ alert.status }}</span>
         </div>
-        <p style="margin: 0 0 8px 0; color: #555;">{{ alert.details }}</p>
-        <div style="font-size: 13px; color: #777;">Contact: <strong>{{ alert.contact }}</strong> | Reported: {{ alert.timestamp }}</div>
+        <p style="margin: 0 0 12px 0; color: #555; font-size: 15px;">{{ alert.details }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #777;">
+          <span>Contact: <strong style="color: #333;">{{ alert.contact }}</strong> | Transmitted: {{ alert.timestamp }}</span>
+          {% if alert.status == 'ACTIVE' %}
+            <button class="btn-dispatch" onclick="dispatchRanger('{{ alert.client_name }}')">Dispatch Emergency Ranger</button>
+          {% endif %}
+        </div>
       </div>
       {% endfor %}
     </div>
 
-    <div style="margin-top: 40px;">
-      <a href="{% url 'admin_dashboard:dashboard' %}" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Dashboard</a>
+    <div>
+      <a href="/admin-dashboard/" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Dashboard</a>
     </div>
   </main>
 </div>
+
+<script>
+  function filterAlerts(status, btn) {
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll('.alert-card');
+    cards.forEach(card => {
+      if (status === 'ALL' || card.getAttribute('data-status') === status) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  function dispatchRanger(name) {
+    alert('🚨 Emergency Ranger Team dispatched to ' + name + '\'s campsite location! System notification sent.');
+  }
+</script>
 {% endblock %}

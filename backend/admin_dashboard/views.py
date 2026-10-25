@@ -1,6 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
 from .models import SystemAuditLog, SystemHealthLog
+from .forms import AdminProfileForm
+
 
 def is_admin(user):
     """
@@ -12,15 +17,11 @@ def is_admin(user):
 def get_formatted_admin_name(user):
     """
     Helper function to dynamically resolve and format the admin's greeting name.
-    1. Checks first_name + last_name.
-    2. Falls back to formatting email prefix (e.g. angelinajolie@gmail.com -> Angelina Jolie).
-    3. Falls back to username.
-    4. Defaults to "Admin".
     """
     full_name = user.get_full_name().strip()
     if full_name:
         return full_name
-    
+
     if user.email:
         email_prefix = user.email.split('@')[0]
         return email_prefix.replace('.', ' ').replace('_', ' ').replace('-', ' ').title()
@@ -36,7 +37,6 @@ def operational_dashboard(request):
     """
     Main Operational Admin Dashboard view.
     """
-    # Pending items awaiting admin action (for header notification drawer)
     pending_notifications = [
         {
             'title': 'Awaiting Payment Confirmation',
@@ -52,7 +52,6 @@ def operational_dashboard(request):
         }
     ]
 
-    # Historical completed logs
     audit_logs = SystemAuditLog.objects.all().order_by('-timestamp')[:10]
     health_logs = SystemHealthLog.objects.all().order_by('-timestamp')[:5]
     admin_name = get_formatted_admin_name(request.user)
@@ -67,12 +66,47 @@ def operational_dashboard(request):
 
 
 @user_passes_test(is_admin, login_url='/login/')
-def emergency_alerts(request):
+def admin_profile(request):
     """
-    Dedicated Emergency SOS Alerts Management View.
+    Admin Profile & Account Settings view (edit names, email, change password).
     """
     admin_name = get_formatted_admin_name(request.user)
-    
+
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            profile_form = AdminProfileForm(request.POST, instance=request.user)
+            password_form = PasswordChangeForm(request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile details updated successfully.')
+                return redirect('admin_dashboard:profile')
+        elif 'change_password' in request.POST:
+            profile_form = AdminProfileForm(instance=request.user)
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Password changed successfully.')
+                return redirect('admin_dashboard:profile')
+    else:
+        profile_form = AdminProfileForm(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+
+    context = {
+        'admin_name': admin_name,
+        'profile_form': profile_form,
+        'password_form': password_form,
+    }
+    return render(request, 'admin_dashboard/admin_profile.html', context)
+
+
+@user_passes_test(is_admin, login_url='/login/')
+def emergency_alerts(request):
+    """
+    Interactive Emergency SOS Alerts Management & Dispatch View.
+    """
+    admin_name = get_formatted_admin_name(request.user)
+
     active_emergencies = [
         {
             'id': 1,
@@ -103,33 +137,21 @@ def emergency_alerts(request):
 
 @user_passes_test(is_admin, login_url='/login/')
 def master_data(request):
-    """
-    Client Profile & Master Data Management sub-view.
-    """
     return render(request, 'admin_dashboard/master_data.html', {'admin_name': get_formatted_admin_name(request.user)})
 
 
 @user_passes_test(is_admin, login_url='/login/')
 def business_policies(request):
-    """
-    Business Policies & Operational Rules sub-view.
-    """
     return render(request, 'admin_dashboard/business_policies.html', {'admin_name': get_formatted_admin_name(request.user)})
 
 
 @user_passes_test(is_admin, login_url='/login/')
 def manage_catalogue(request):
-    """
-    Camping Catalogue Content Management sub-view.
-    """
     return render(request, 'admin_dashboard/manage_catalogue.html', {'admin_name': get_formatted_admin_name(request.user)})
 
 
 @user_passes_test(is_admin, login_url='/login/')
 def audit_logs(request):
-    """
-    System Audit Records & Compliance Logs sub-view.
-    """
     return render(request, 'admin_dashboard/audit_logs.html', {
         'admin_name': get_formatted_admin_name(request.user),
         'audit_logs': SystemAuditLog.objects.all().order_by('-timestamp')
@@ -138,9 +160,6 @@ def audit_logs(request):
 
 @user_passes_test(is_admin, login_url='/login/')
 def health(request):
-    """
-    Operational System Health Monitoring sub-view.
-    """
     return render(request, 'admin_dashboard/system_health.html', {
         'admin_name': get_formatted_admin_name(request.user),
         'health_logs': SystemHealthLog.objects.all().order_by('-timestamp')

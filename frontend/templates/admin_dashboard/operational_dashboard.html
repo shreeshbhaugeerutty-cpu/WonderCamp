@@ -384,9 +384,12 @@
         </div>
 
         <!-- Profile Avatar -->
-        <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #32521e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;" title="{{ admin_name }}">
-          {{ admin_name|slice:":1"|default:"A" }}
-        </div>
+       <!-- Profile Avatar Button -->
+        <a href="/admin-dashboard/profile/" style="text-decoration: none;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #32521e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; cursor: pointer; transition: transform 0.15s ease;" title="Edit Profile - {{ admin_name }}">
+            {{ admin_name|slice:":1"|default:"A" }}
+          </div>
+        </a>
       </div>
     </div>
 

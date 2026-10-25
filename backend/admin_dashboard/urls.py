@@ -10,4 +10,6 @@ urlpatterns = [
     path('manage-catalogue/', views.manage_catalogue, name='manage_catalogue'),
     path('audit-logs/', views.audit_logs, name='audit_logs'),
     path('health/', views.health, name='health'),
+    path('emergency-alerts/', views.emergency_alerts, name='emergency_alerts'),
+    path('profile/', views.admin_profile, name='profile'),
 ]
