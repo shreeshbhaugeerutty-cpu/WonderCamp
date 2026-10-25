@@ -18,7 +18,7 @@
           <path d="M9 3v15M15 6v15"/>
         </svg>
       </a>
-      <a href="{% if user.is_authenticated %}#{% else %}{% url 'login' %}{% endif %}" class="explorer-icon" aria-label="Notifications">
+      <a href="{% if user.is_authenticated %}{% url 'notifications:list' %}{% else %}{% url 'login' %}{% endif %}" class="explorer-icon" aria-label="Notifications">
         <svg viewBox="0 0 64 64" aria-hidden="true">
           <mask id="wc-notif-mask">
             <rect width="64" height="64" fill="white"/>
