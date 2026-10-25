@@ -263,3 +263,21 @@ def my_bookings(request):
         booking.campsite_id = campsite.id if campsite else 0
 
     return render(request, 'bookings/mybooking.html', {'bookings': bookings})
+
+
+@login_required(login_url='login')
+@require_POST
+def cancel_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(id=booking_id, customer=request.user)
+    except Booking.DoesNotExist:
+        raise Http404("Booking not found")
+
+    if booking.status in ['pending', 'confirmed']:
+        booking.status = 'cancelled'
+        booking.save()
+        messages.success(request, f"Booking {booking.reference_no} was cancelled.")
+    else:
+        messages.error(request, "This booking can not be cancelled.")
+
+    return redirect('bookings:my_bookings')
