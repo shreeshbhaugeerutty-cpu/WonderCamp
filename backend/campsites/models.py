@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 
 class Campsite(models.Model):
     name = models.CharField(max_length=100)
@@ -26,3 +23,4 @@ class Pitch(models.Model):
 
     def __str__(self):
         return self.campsite.name + ' - ' + self.name
+
