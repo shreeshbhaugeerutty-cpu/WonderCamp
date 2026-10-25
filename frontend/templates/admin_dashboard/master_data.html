@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Master Data Management - WonderCamp{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper" style="display: flex; gap: 30px; background-color: #fbf8e7; padding: 40px; font-family: sans-serif; min-height: 100vh;">
+  <!-- Sidebar Navigation -->
+  <aside style="width: 280px; background-color: #32521e; border-radius: 24px; padding: 30px; color: white;">
+    <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 40px;">WonderCamp</h2>
+    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">General</div>
+    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 18px;">
+      <li><a href="{% url 'admin_dashboard:dashboard' %}" style="color: white; text-decoration: none; font-weight: 600;">Operational Overview</a></li>
+      <li><a href="{% url 'admin_dashboard:master_data' %}" style="color: white; text-decoration: none; font-weight: 700; opacity: 1;">Client Profile & Master Data</a></li>
+      <li><a href="{% url 'admin_dashboard:business_policies' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Business Policies</a></li>
+      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Edit Catalogue</a></li>
+      <li><a href="{% url 'admin_dashboard:audit_logs' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Audit Records</a></li>
+    </ul>
+    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">Tools</div>
+    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 18px;">
+      <li><a href="{% url 'admin_dashboard:health' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Settings & Health</a></li>
+      <li>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" style="background: none; border: none; color: white; font-weight: 600; cursor: pointer; padding: 0;">Log Out</button>
+        </form>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main style="flex: 1;">
+    <h1 style="font-size: 42px; font-weight: 800; color: #658a4e; margin-bottom: 5px;">Master Data Management</h1>
+    <p style="color: #4a5d3e; margin-bottom: 30px;">Manage categories, camping regions, and system configuration entries.</p>
+
+    <div style="background-color: #658a4e; border-radius: 24px; padding: 30px; color: white;">
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">MASTER DATA ENTRIES</h2>
+      <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; color: #333;">
+        <thead>
+          <tr style="background-color: #f1f5ee; text-align: left;">
+            <th style="padding: 14px 20px;">Category</th>
+            <th style="padding: 14px 20px;">Code</th>
+            <th style="padding: 14px 20px;">Name</th>
+            <th style="padding: 14px 20px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in master_data %}
+          <tr style="border-top: 1px solid #e0e0e0;">
+            <td style="padding: 14px 20px;">{{ item.get_category_display }}</td>
+            <td style="padding: 14px 20px;"><code>{{ item.code }}</code></td>
+            <td style="padding: 14px 20px; font-weight: 600;">{{ item.name }}</td>
+            <td style="padding: 14px 20px;">
+              {% if item.is_active %}
+                <span style="background-color: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">Active</span>
+              {% else %}
+                <span style="background-color: #f8d7da; color: #721c24; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">Inactive</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" style="padding: 20px; text-align: center; color: #666;">No master data records found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <a href="{% url 'home' %}" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Home</a>
+    </div>
+  </main>
+</div>
+{% endblock %}

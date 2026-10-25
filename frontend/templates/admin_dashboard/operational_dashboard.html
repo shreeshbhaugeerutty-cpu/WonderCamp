@@ -3,34 +3,213 @@
 
 {% block title %}Admin Dashboard - WonderCamp{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
-<!-- Chart.js for rendering the report chart from Figma -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
-
-<!-- Override default Header & Footer so the admin layout takes over -->
-{% block navbar %}{% endblock %}
-{% block footer %}{% endblock %}
-
 {% block content %}
-<div class="admin-wrapper">
+<style>
+  /* Base reset for admin dashboard page */
+  body {
+    background-color: #fbf8e7 !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
 
-  <!-- ================= SIDEBAR ================= -->
+  .admin-layout {
+    display: flex;
+    gap: 32px;
+    background-color: #fbf8e7;
+    padding: 32px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  /* Dark Green Sidebar */
+  .admin-sidebar {
+    width: 270px;
+    background-color: #32521e;
+    border-radius: 28px;
+    padding: 32px 24px;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 36px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-section-title {
+    font-size: 14px;
+    opacity: 0.75;
+    margin-bottom: 14px;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 36px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sidebar-nav a, .sidebar-nav button {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* Main Workspace Area */
+  .admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search-box {
+    background-color: #658a4e;
+    border-radius: 30px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 400px;
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .welcome-title {
+    font-size: 44px;
+    font-weight: 900;
+    font-style: italic;
+    color: #658a4e;
+    margin: 0 0 6px 0;
+  }
+
+  .welcome-subtitle {
+    color: #4a5d3e;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  /* Forest Green Card Containers */
+  .green-card {
+    background-color: #658a4e;
+    border-radius: 28px;
+    padding: 28px 36px;
+    color: white;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  }
+
+  .green-card-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+  }
+
+  .white-inner-box {
+    background-color: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    color: #333333;
+  }
+
+  /* System Health List */
+  .health-metric-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .health-metric-label {
+    width: 160px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .health-metric-bar {
+    background-color: #ffffff;
+    height: 38px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  /* Audit Log Rows */
+  .audit-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+  .audit-item:last-child {
+    border-bottom: none;
+  }
+  .audit-item-header {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .audit-item-desc {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .back-home-link {
+    display: inline-block;
+    color: #32521e;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 800;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="admin-layout">
+  <!-- Left Sidebar Navigation -->
   <aside class="admin-sidebar">
-    <h2 class="brand-title">WonderCamp</h2>
-
+    <h2>WonderCamp</h2>
+    
     <div class="sidebar-section-title">General</div>
     <ul class="sidebar-nav">
       <li>
         <a href="{% url 'admin_dashboard:master_data' %}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
           Client Profile / Master Data
         </a>
       </li>
       <li>
         <a href="{% url 'admin_dashboard:business_policies' %}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
           Business Policies
         </a>
       </li>
@@ -42,7 +221,7 @@
       </li>
       <li>
         <a href="{% url 'admin_dashboard:audit_logs' %}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
           Audit Records
         </a>
       </li>
@@ -68,151 +247,114 @@
     </ul>
   </aside>
 
-  <!-- ================= MAIN CONTENT ================= -->
+  <!-- Right Dashboard Content -->
   <main class="admin-main">
-    
-    <!-- Top Search and Profile Header -->
-    <div class="admin-topbar">
-      <div class="admin-search-box">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/></svg>
+    <!-- Top Search & Profile Bar -->
+    <div class="admin-header">
+      <div class="search-box">
+        <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" placeholder="Search">
       </div>
-      <div class="admin-user-avatar">
-        <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #658a4e; display: flex; align-items: center; justify-content: center; color: white;">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
     </div>
 
-    <!-- Welcome Section -->
-    <div class="admin-welcome">
-      <h1>Welcome, Admin</h1>
-      <p>Wishing you a productive day. Here are your system logistics.</p>
+    <!-- Welcome Title -->
+    <div>
+      <h1 class="welcome-title">Welcome, Admin</h1>
+      <p class="welcome-subtitle">Wishing you a productive day. Here are your system logistics.</p>
     </div>
 
-    <!-- Camping Activities Report Chart Card -->
-    <div class="admin-card">
-      <h2 class="admin-card-title">CAMPING ACTIVITIES REPORT</h2>
-      <div class="chart-box">
-        <canvas id="activitiesChart" height="90"></canvas>
+    <!-- Container 1: Camping Activities Report -->
+    <section class="green-card">
+      <h2 class="green-card-title">CAMPING ACTIVITIES REPORT</h2>
+      <div class="white-inner-box">
+        <canvas id="activitiesChart" style="max-height: 250px; width: 100%;"></canvas>
       </div>
-    </div>
+    </section>
 
-    <!-- 2-Column Split: System Health & Audit Log -->
-    <div class="admin-grid-2">
-      
-      <!-- System Health Monitor Card -->
-      <div class="admin-card">
-        <h2 class="admin-card-title">SYSTEM HEALTH</h2>
-        
-        <div class="health-item">
-          <div class="health-label">Integration<br>Status</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: 85%;">Operational</div>
-          </div>
+    <!-- Container 2: System Health -->
+    <section class="green-card">
+      <h2 class="green-card-title">SYSTEM HEALTH</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="health-metric-row">
+          <div class="health-metric-label">Integration Status</div>
+          <div class="health-metric-bar" style="width: 75%;"></div>
         </div>
-
-        <div class="health-item">
-          <div class="health-label">Backup And<br>Data Retention</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: 60%;">Up to Date</div>
-          </div>
+        <div class="health-metric-row">
+          <div class="health-metric-label">Backup And Data Retention</div>
+          <div class="health-metric-bar" style="width: 55%;"></div>
         </div>
-
-        <div class="health-item">
-          <div class="health-label">Notification<br>Delivery</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: 55%;">99.4% Sent</div>
-          </div>
+        <div class="health-metric-row">
+          <div class="health-metric-label">Notification Delivery</div>
+          <div class="health-metric-bar" style="width: 50%;"></div>
         </div>
-
-        <div class="health-item">
-          <div class="health-label">Live<br>Responsiveness</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: 50%;">42ms</div>
-          </div>
+        <div class="health-metric-row">
+          <div class="health-metric-label">Live Responsiveness</div>
+          <div class="health-metric-bar" style="width: 45%;"></div>
         </div>
-
-        <div class="health-item">
-          <div class="health-label">Failed Jobs</div>
-          <div class="health-bar-bg">
-            <div class="health-bar-fill" style="width: 25%;">0 Pending</div>
-          </div>
+        <div class="health-metric-row">
+          <div class="health-metric-label">Failed Jobs</div>
+          <div class="health-metric-bar" style="width: 25%;"></div>
         </div>
       </div>
+    </section>
 
-      <!-- Audit & Compliance Log Card -->
-      <div class="audit-card">
-        <div class="audit-card-header">
-          <h2>Audit & Compliance Log</h2>
-          <div class="admin-search-box" style="max-width: 100%;">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/></svg>
-            <input type="text" placeholder="Search logs..." style="background: rgba(44, 82, 30, 0.25); color: #2C521E;">
-          </div>
+    <!-- Container 3: Audit & Compliance Log -->
+    <section class="green-card">
+      <h2 class="green-card-title">Audit & Compliance Log</h2>
+      <div class="search-box" style="margin-bottom: 20px; width: 100%; box-sizing: border-box; background-color: rgba(255,255,255,0.25);">
+        <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Search audit logs...">
+      </div>
+      <div>
+        <div class="audit-item">
+          <div class="audit-item-header">Refund / John Applesmith</div>
+          <div class="audit-item-desc">Mr John Applesmith refunded on 2nd September 2026</div>
         </div>
-        <div class="audit-card-body">
-          <div class="audit-entry">
-            <div class="title">Refund/ John Applesmith</div>
-            <div class="desc">Mr John Applesmith refunded on 2nd September 2026</div>
-          </div>
-
-          <div class="audit-entry">
-            <div class="title">Booked/ Linda Gironzmon</div>
-            <div class="desc">Mrs Linda Gironzmon booked Pieter Both site on 2nd September 2026</div>
-          </div>
-
-          <div class="audit-entry">
-            <div class="title">Password Reset/ Linda Gironzmon</div>
-            <div class="desc">Mrs Linda Gironzmon's password was reset on 1st September 2026.</div>
-          </div>
+        <div class="audit-item">
+          <div class="audit-item-header">Booked / Linda Gironzmon</div>
+          <div class="audit-item-desc">Mrs Linda Gironzmon booked Pieter Both site on 2nd September 2026</div>
+        </div>
+        <div class="audit-item">
+          <div class="audit-item-header">Password Reset / Linda Gironzmon</div>
+          <div class="audit-item-desc">Mrs Linda Gironzmon's password was reset on 1st September 2026.</div>
         </div>
       </div>
+    </section>
 
-    </div>
-
-    <!-- Navigation Back Link -->
+    <!-- Back to Home Footer Link -->
     <div>
       <a href="{% url 'home' %}" class="back-home-link">&lt; Back to Home</a>
     </div>
-
   </main>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Chart rendering matching Figma Bar Chart Specs
   const ctx = document.getElementById('activitiesChart').getContext('2d');
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [
-        'Bookings', 'Bookings refunded', 'Bookings to Cancel', 
-        'Booking Status To Update', 'Campsites available', 
-        'Campsites suspended', 'Campsites booked', 'Bookings Paid', 'Users Booked'
-      ],
+      labels: ['Bookings', 'Bookings refunded', 'Bookings to Cancel', 'Booking Status To Update', 'Campsites available', 'Campsites suspended', 'Campsites booked', 'Bookings Paid', 'Users Booked'],
       datasets: [{
         label: 'September 2026',
-        data: [60, 15, 30, 20, 42, 10, 58, 55, 85, 40],
-        backgroundColor: '#5D8B43',
+        data: [60, 15, 30, 20, 42, 10, 58, 14, 58],
+        backgroundColor: '#658a4e',
         borderRadius: 4
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { font: { size: 11 } }
-        }
+        legend: { display: false }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          ticks: { stepSize: 20 }
-        },
-        x: {
-          ticks: { font: { size: 9 } }
-        }
+        y: { beginAtZero: true, max: 100 }
       }
     }
   });
