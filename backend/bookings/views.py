@@ -1,22 +1,20 @@
-from django.shortcuts import render
-from django.http import Http404, JsonResponse
-from django.contrib.auth.decorators import login_required
-from datetime import timedelta
-from django.utils import timezone
-from .models import Booking, BookingLine
-# Temporary campsite data until Campsites backend is ready
-TEMP_CAMPSITES = {
-    76: {
-        'name': 'Bois Chéri Private Camp',
-        'location': 'Bois Chéri',
-    },
-    77: {
-        'name': 'Black River Campsite',
-        'location': 'Black River',
-    },
-}
+from datetime import date, timedelta
 
-from datetime import date
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from django.utils.crypto import get_random_string
+from django.views.decorators.http import require_POST
+
+from backend.campsites.models import Campsite, Pitch
+from .dummy_data import ELECTRICITY_PER_NIGHT, WATER_FEE, CLEANING_FEE
+from .models import Booking, BookingLine
+
+CANCELLATION_POLICY = 'Free cancellation up to 7 days before arrival'
+
+
 def validate_booking_dates(arrival_date, departure_date):
     today = timezone.localdate()
 
@@ -39,7 +37,7 @@ def is_pitch_available(campsite, pitch, arrival_date, departure_date):
     existing_bookings = BookingLine.objects.filter(
         line_type='pitch',
         item_name=pitch,
-        booking__campsite_name=campsite['name'],
+        booking__campsite_name=campsite.name,
         booking__status__in=['pending', 'confirmed'],
         start_date__lt=departure_date,
         end_date__gt=arrival_date,
@@ -47,12 +45,100 @@ def is_pitch_available(campsite, pitch, arrival_date, departure_date):
 
     return not existing_bookings.exists()
 
+
+def get_costs(pitch, nights):
+    pitch_fee = pitch.price_per_night * nights
+    electricity_fee = ELECTRICITY_PER_NIGHT * nights
+    total_cost = pitch_fee + electricity_fee + WATER_FEE + CLEANING_FEE
+
+    return {
+        'price_per_night': pitch.price_per_night,
+        'pitch_fee': pitch_fee,
+        'electricity_fee': electricity_fee,
+        'water_fee': WATER_FEE,
+        'cleaning_fee': CLEANING_FEE,
+        'total_cost': total_cost,
+    }
+
+
+def show_form(request, campsite, error=None):
+    return render(request, 'bookings/booking.html', {
+        'campsite': campsite,
+        'pitches': Pitch.objects.filter(campsite=campsite),
+        'error': error,
+    })
+
+
+def add_line(booking, line_type, item_name, quantity, unit_price):
+    BookingLine.objects.create(
+        booking=booking,
+        line_type=line_type,
+        item_name=item_name,
+        quantity=quantity,
+        unit_price=unit_price,
+        line_total=quantity * unit_price,
+        start_date=booking.arrival_date,
+        end_date=booking.departure_date,
+    )
+
+
+def check_booking_form(data, campsite):
+    # returns (error, booking) - error is None if everything is ok
+    pitch = Pitch.objects.filter(campsite=campsite, name=data.get('pitch')).first()
+
+    if pitch is None:
+        return 'Please select a valid pitch.', None
+
+    try:
+        campers = int(data.get('campers'))
+        vehicles = int(data.get('vehicles'))
+        pets = int(data.get('pets'))
+        tents = int(data.get('tents'))
+    except (ValueError, TypeError):
+        return 'Please enter valid numbers of campers, vehicles, pets and tents.', None
+
+    if campers < 1 or campers > pitch.max_campers:
+        return 'The number of campers exceeds the allowed capacity.', None
+    if vehicles < 0 or vehicles > pitch.max_vehicles:
+        return 'The number of vehicles exceeds the allowed capacity.', None
+    if pets < 0 or pets > pitch.max_pets:
+        return 'The number of pets exceeds the allowed capacity.', None
+    if tents < 0 or tents > pitch.max_tents:
+        return 'The number of tents exceeds the allowed capacity.', None
+
+    try:
+        arrival_date = date.fromisoformat(data.get('arrival_date'))
+        departure_date = date.fromisoformat(data.get('departure_date'))
+    except (ValueError, TypeError):
+        return 'Please select valid arrival and departure dates.', None
+
+    error = validate_booking_dates(arrival_date, departure_date)
+    if error:
+        return error, None
+
+    if not is_pitch_available(campsite, pitch.name, arrival_date, departure_date):
+        return 'This pitch is already booked for the selected dates. Please choose another pitch or different dates.', None
+
+    number_of_nights = (departure_date - arrival_date).days
+
+    booking = {
+        'pitch': pitch.name,
+        'arrival_date': arrival_date,
+        'departure_date': departure_date,
+        'number_of_nights': number_of_nights,
+        'campers': campers,
+        'vehicles': vehicles,
+        'pets': pets,
+        'tents': tents,
+    }
+    booking.update(get_costs(pitch, number_of_nights))
+
+    return None, booking
+
+
 @login_required(login_url='login')
 def check_pitch_availability(request, campsite_id):
-    campsite = TEMP_CAMPSITES.get(campsite_id)
-
-    if campsite is None:
-        raise Http404("Campsite not found")
+    campsite = get_object_or_404(Campsite, id=campsite_id)
 
     try:
         arrival_date = date.fromisoformat(request.GET.get('arrival_date', ''))
@@ -65,179 +151,115 @@ def check_pitch_availability(request, campsite_id):
     if error:
         return JsonResponse({'error': error}, status=400)
 
-    pitches = [
-        'Hillside G-07',
-        'Lakeside Loft',
-        'Mountain Wild',
-        'Streamside Birch',
-    ]
-
     availability = {}
 
-    for pitch in pitches:
-        availability[pitch] = is_pitch_available(
-            campsite, pitch, arrival_date, departure_date
+    for pitch in Pitch.objects.filter(campsite=campsite):
+        availability[pitch.name] = is_pitch_available(
+            campsite, pitch.name, arrival_date, departure_date
         )
 
     return JsonResponse(availability)
 
 
-
-
-
 @login_required(login_url='login')
 def create_booking(request, campsite_id):
-    campsite = TEMP_CAMPSITES.get(campsite_id)
-
-    if campsite is None:
-        raise Http404("Campsite not found")
-    campsite['id'] = campsite_id
+    campsite = get_object_or_404(Campsite, id=campsite_id)
 
     if request.method == 'POST':
-        arrival = request.POST.get('arrival_date')
-        departure = request.POST.get('departure_date')
-        pitch = request.POST.get('pitch')
-        campers = request.POST.get('campers')
-        vehicles = request.POST.get('vehicles')
-        pets = request.POST.get('pets')
-        tents = request.POST.get('tents')
-        
-        valid_pitches = {
-          'Hillside G-07': {
-          'price': 2800,
-          'campers': 4, 'vehicles': 1, 'pets': 2, 'tents': 2
-          },
-          'Lakeside Loft': {
-          'price': 3500,
-          'campers': 6, 'vehicles': 2, 'pets': 0, 'tents': 2
-          },
-          'Mountain Wild': {
-          'price': 2500,
-          'campers': 8, 'vehicles': 2, 'pets': 2, 'tents': 3
-          },
-          'Streamside Birch': {
-          'price': 4800,
-          'campers': 5, 'vehicles': 1, 'pets': 1, 'tents': 2
-          },
-        }
-
-
-        if pitch not in valid_pitches:
-            return render(request, 'bookings/booking.html', {
-            'campsite': campsite,
-            'error': 'Please select a valid pitch.'
-          })
-        try:
-           campers = int(campers)
-           vehicles = int(vehicles)
-           pets = int(pets)
-           tents = int(tents)
-        except (ValueError, TypeError):
-           return render(request, 'bookings/booking.html', {
-             'campsite': campsite,
-             'error': 'Please enter valid numbers of campers, vehicles, pets and tents.'
-           })
-        capacity = valid_pitches[pitch]
-
-        if campers < 1 or campers > capacity['campers']:
-          return render(request, 'bookings/booking.html', {
-            'campsite': campsite,
-            'error': 'The number of campers exceeds the allowed capacity.'
-          })
-        if vehicles < 0 or vehicles > capacity['vehicles']:
-           return render(request, 'bookings/booking.html', {
-            'campsite': campsite,
-            'error': 'The number of vehicles exceeds the allowed capacity.'
-          })
-        
-
-        if pets < 0 or pets > capacity['pets']:
-           return render(request, 'bookings/booking.html', {
-            'campsite': campsite,
-            'error': 'The number of pets exceeds the allowed capacity.'
-         })
-
-        if tents < 0 or tents > capacity['tents']:
-          return render(request, 'bookings/booking.html', {
-           'campsite': campsite,
-           'error': 'The number of tents exceeds the allowed capacity.'
-         })
-
-
-
-
-        try:
-            arrival_date = date.fromisoformat(arrival)
-            departure_date = date.fromisoformat(departure)
-        except (ValueError, TypeError):
-            error = "Please select valid arrival and departure dates."
-        else:
-            error = validate_booking_dates(arrival_date, departure_date)
+        error, booking = check_booking_form(request.POST, campsite)
 
         if error:
-            return render(
-                request,
-                'bookings/booking.html',
-                {
-                    'campsite': campsite,
-                    'error': error,
-                }
-            )
-        
-        # Check whether the selected pitch is available
-        if not is_pitch_available(campsite, pitch, arrival_date, departure_date):
-            return render(request, 'bookings/booking.html', {
-                'campsite': campsite,
-                'error': 'This pitch is already booked for the selected dates. Please choose another pitch or different dates.'
-            })
+            return show_form(request, campsite, error)
 
-        
-        # Dates are valid.
-        # Booking will be saved in a later step.
+        booking['campsite'] = campsite
+        return render(request, 'bookings/confirmation.html', booking)
 
-        # Calculate number of nights
-        number_of_nights = (departure_date - arrival_date).days
+    return show_form(request, campsite)
 
-        # Get price of selected pitch
-        price_per_night = valid_pitches[pitch]['price']
-
-        # Calculate pitch cost
-        pitch_fee = price_per_night * number_of_nights
-
-        # Additional charges
-        electricity_fee = 120 * number_of_nights
-        water_fee = 420
-        cleaning_fee = 188
-
-        # Calculate total booking cost
-        total_cost = pitch_fee + electricity_fee + water_fee + cleaning_fee
-
-        print("Number of nights:", number_of_nights)
-        print("Selected pitch:", pitch)
-        print("Total booking cost: Rs", total_cost)
-       
-
-        return render(request, 'bookings/confirmation.html', {
-        'campsite': campsite,
-        'pitch': pitch,
-        'arrival_date': arrival_date,
-        'departure_date': departure_date,
-        'number_of_nights': number_of_nights,
-        'campers': campers,
-        'vehicles': vehicles,
-        'pets': pets,
-        'tents': tents,
-        'total_cost': total_cost,
-        })
-    
-    return render(request, 'bookings/booking.html', {
-        'campsite': campsite
-    })
 
 @login_required(login_url='login')
-def confirmation(request):
-    return render(request, 'bookings/confirmation.html')
+@require_POST
+def save_booking(request, campsite_id):
+    campsite = get_object_or_404(Campsite, id=campsite_id)
+
+    error, b = check_booking_form(request.POST, campsite)
+
+    if error:
+        return show_form(request, campsite, error)
+
+    booking = Booking.objects.create(
+        customer=request.user,
+        reference_no=get_random_string(12),
+        campsite_name=campsite.name,
+        campsite_location=campsite.location,
+        total_cost=b['total_cost'],
+        arrival_date=b['arrival_date'],
+        departure_date=b['departure_date'],
+        no_of_adults=b['campers'],
+        no_of_vehicles=b['vehicles'],
+        cancellation_policy_snapshot=CANCELLATION_POLICY,
+    )
+    booking.reference_no = f"WC-{booking.created_at.year}-{booking.id:05d}"
+    booking.save()
+
+    nights = b['number_of_nights']
+    add_line(booking, 'pitch', b['pitch'], nights, b['price_per_night'])
+    add_line(booking, 'electricity', 'Electricity', nights, ELECTRICITY_PER_NIGHT)
+    add_line(booking, 'water', 'Water Pack', 1, b['water_fee'])
+    add_line(booking, 'cleaning', 'Cleaning Fee', 1, b['cleaning_fee'])
+    add_line(booking, 'pets', 'Pets', b['pets'], 0)
+    add_line(booking, 'tents', 'Tents / Grills', b['tents'], 0)
+
+    messages.success(request, f"Booking {booking.reference_no} saved.")
+    return redirect('bookings:my_bookings')
+
+
+@login_required(login_url='login')
+def booking_detail(request, booking_id):
+    try:
+        booking = Booking.objects.get(id=booking_id, customer=request.user)
+    except Booking.DoesNotExist:
+        raise Http404("Booking not found")
+
+    lines = {}
+    for line in booking.bookingline_set.all():
+        lines[line.line_type] = line
+
+    context = {
+        'booking': booking,
+        'campsite': {'name': booking.campsite_name, 'location': booking.campsite_location},
+        'pitch': lines['pitch'].item_name,
+        'arrival_date': booking.arrival_date,
+        'departure_date': booking.departure_date,
+        'number_of_nights': (booking.departure_date - booking.arrival_date).days,
+        'campers': booking.no_of_adults,
+        'vehicles': booking.no_of_vehicles,
+        'pets': lines['pets'].quantity,
+        'tents': lines['tents'].quantity,
+        'price_per_night': lines['pitch'].unit_price,
+        'pitch_fee': lines['pitch'].line_total,
+        'electricity_fee': lines['electricity'].line_total,
+        'water_fee': lines['water'].line_total,
+        'cleaning_fee': lines['cleaning'].line_total,
+        'total_cost': booking.total_cost,
+    }
+    return render(request, 'bookings/confirmation.html', context)
+
 
 @login_required(login_url='login')
 def my_bookings(request):
-    return render(request, 'bookings/mybooking.html')
+    bookings = Booking.objects.filter(customer=request.user)
+
+    for booking in bookings:
+        if booking.status in ['cancelled', 'completed']:
+            booking.filter_status = booking.status
+        else:
+            booking.filter_status = 'upcoming'
+
+        pitch_line = booking.bookingline_set.filter(line_type='pitch').first()
+        booking.pitch = pitch_line.item_name if pitch_line else ''
+        booking.nights = (booking.departure_date - booking.arrival_date).days
+        campsite = Campsite.objects.filter(name=booking.campsite_name).first()
+        booking.campsite_id = campsite.id if campsite else 0
+
+    return render(request, 'bookings/mybooking.html', {'bookings': bookings})

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'backend.bookings',
     'backend.accounts',
+    'backend.campsites',
     #'backend.notifications'
     'backend.notifications.apps.NotificationsConfig'
 ]

@@ -8,15 +8,15 @@
 <section class="booking-summary-page">
 
   <header class="summary-heading">
-    <p class="booking-breadcrumb">Bois Chéri Private Camp &gt; Review your booking</p>
+    <p class="booking-breadcrumb">{{ campsite.name }} &gt; Review your booking</p>
     <h1>Review Your Booking</h1>
     <p>Check your stay details before you pay.</p>
   </header>
 
   <section class="summary-reference" aria-label="Booking reference and campsite">
-    <div><span>Booking Reference</span><strong id="review-reference">Generated after confirmation</strong></div>
-    <div><span>Campsite</span><strong>Bois Chéri Forest Camp</strong></div>
-    <span class="summary-status">Pending Payment</span>
+    <div><span>Booking Reference</span><strong>{% if booking %}{{ booking.reference_no }}{% else %}Generated after confirmation{% endif %}</strong></div>
+    <div><span>Campsite</span><strong>{{ campsite.name }}</strong></div>
+    <span class="summary-status">{% if booking %}{{ booking.get_status_display }}{% else %}Pending Payment{% endif %}</span>
   </section>
 
   <div class="summary-hold" role="status">
@@ -44,8 +44,8 @@
 
         <div class="summary-campsite-info" id="campsite-details">
           <div>
-            <h2>Bois Chéri Forest Camp</h2>
-            <p>⌖ Bois Chéri, Savanne District, Mauritius</p>
+            <h2>{{ campsite.name }}</h2>
+            <p>⌖ {{ campsite.location }}, Mauritius</p>
           </div>
 
           <span class="summary-tag">⛺ Camping Pitch</span>
@@ -68,18 +68,18 @@
       <section class="summary-panel summary-stay-details">
         <div class="summary-panel__heading">
           <h2 class="summary-panel__title">Stay Details</h2>
-          <a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-modify">Modify Booking</a>
+          {% if not booking %}<a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-modify">Modify Booking</a>{% endif %}
         </div>
 
         <div class="summary-stay-grid">
-          <div><strong>📅 Arrival</strong><span id="review-arrival">Not selected</span></div>
-          <div><strong>📅 Departure</strong><span id="review-departure">Not selected</span></div>
-          <div><strong>🌙 Duration</strong><span><span id="review-duration">0</span> {{ number_of_nights }}</span></div>
-          <div><strong>👥 Campers</strong><span><span id="review-campers">0</span> persons</span></div>
-          <div><strong>🚙 Vehicles</strong><span><span id="review-vehicles">0</span> vehicle(s)</span></div>
+          <div><strong>📅 Arrival</strong><span id="review-arrival">{{ arrival_date|date:"l, j F Y" }}</span></div>
+          <div><strong>📅 Departure</strong><span id="review-departure">{{ departure_date|date:"l, j F Y" }}</span></div>
+          <div><strong>🌙 Duration</strong><span>{{ number_of_nights }} nights</span></div>
+          <div><strong>👥 Campers</strong><span>{{ campers }} persons</span></div>
+          <div><strong>🚙 Vehicles</strong><span>{{ vehicles }} vehicle(s)</span></div>
           <div><strong>⛺ Pitch</strong><span id="review-pitch">{{ pitch }}</span></div>
-          <div><strong>🐾 Pets</strong><span id="review-pets">0</span></div>
-          <div><strong>⛺ Tents / Grills</strong><span id="review-tents">0</span></div>
+          <div><strong>🐾 Pets</strong><span id="review-pets">{{ pets }}</span></div>
+          <div><strong>⛺ Tents / Grills</strong><span id="review-tents">{{ tents }}</span></div>
         </div>
       </section>
     </div>
@@ -92,10 +92,10 @@
         <ul>
           <li>⛺ <span id="side-pitch">{{ pitch }}</span></li>
           <li>📅 <span id="side-dates">{{ arrival_date|date:"d M Y" }} → {{ departure_date|date:"d M Y" }}</span></li>
-          <li>🌙 <span id="side-nights">0</span> {{ number_of_nights }}</li>
-          <li>👥 <span id="side-campers">0</span> campers</li>
-          <li>⌖ Bois Chéri Forest Camp</li>
-          <li>🚙 <span id="side-vehicles">0</span> vehicle(s)</li>
+          <li>🌙 {{ number_of_nights }} nights</li>
+          <li>👥 {{ campers }} campers</li>
+          <li>⌖ {{ campsite.name }}</li>
+          <li>🚙 {{ vehicles }} vehicle(s)</li>
         </ul>
       </section>
 
@@ -103,28 +103,28 @@
         <h2 class="summary-panel__title">Price Breakdown</h2>
 
         <div class="summary-price__row">
-          <span>Pitch Fee<br><small id="review-pitch-calculation">No pitch selected</small></span>
-          <strong id="review-pitch-price">Rs 0</strong>
+          <span>Pitch Fee<br><small>Rs {{ price_per_night }} × {{ number_of_nights }} nights</small></span>
+          <strong>Rs {{ pitch_fee }}</strong>
         </div>
 
         <div class="summary-price__row">
           <span>Electricity</span>
-          <strong id="review-electricity">Rs 0</strong>
+          <strong>Rs {{ electricity_fee }}</strong>
         </div>
 
         <div class="summary-price__row">
           <span>Water Pack Fee</span>
-          <strong id="review-water">Rs 0</strong>
+          <strong>Rs {{ water_fee }}</strong>
         </div>
 
         <div class="summary-price__row">
           <span>Cleaning Fee</span>
-          <strong id="review-cleaning">Rs 0</strong>
+          <strong>Rs {{ cleaning_fee }}</strong>
         </div>
 
         <div class="summary-price__total">
           <span>Total Booking Cost</span>
-          <strong id="review-total">Rs 0</strong>
+          <strong>Rs {{ total_cost }}</strong>
         </div>
       </section>
 
@@ -139,15 +139,33 @@
     <p>Please read the policy before you pay. It explains the cancellation rules and any applicable refund conditions.</p>
   </details>
 
+  {% if not booking %}
   <label class="summary-agreement">
     <input id="booking-agreement" type="checkbox">
     <span>I have reviewed my booking details and agree to the Booking &amp; Cancellation Policy.</span>
   </label>
 
+  {% endif %}
+
+  {% if booking %}
   <div class="summary-actions">
-    <a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-back">← Back / Modify Booking</a>
-    <button id="payment-button" class="summary-pay" type="button" disabled>Proceed to Payment →</button>
+    <a href="{% url 'bookings:my_bookings' %}" class="summary-back">← Back to My Bookings</a>
   </div>
+  {% else %}
+  <form method="post" action="{% url 'bookings:save_booking' campsite_id=campsite.id %}" class="summary-actions">
+    {% csrf_token %}
+    <input type="hidden" name="arrival_date" value="{{ arrival_date|date:'Y-m-d' }}">
+    <input type="hidden" name="departure_date" value="{{ departure_date|date:'Y-m-d' }}">
+    <input type="hidden" name="pitch" value="{{ pitch }}">
+    <input type="hidden" name="campers" value="{{ campers }}">
+    <input type="hidden" name="vehicles" value="{{ vehicles }}">
+    <input type="hidden" name="pets" value="{{ pets }}">
+    <input type="hidden" name="tents" value="{{ tents }}">
+
+    <a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-back">← Back / Modify Booking</a>
+    <button id="payment-button" class="summary-pay" type="submit" disabled>Proceed to Payment →</button>
+  </form>
+  {% endif %}
 
 </section>
 {% endblock %}
@@ -155,90 +173,14 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const $ = id => document.getElementById(id);
-  const saved = null;
+  const agreement = document.getElementById("booking-agreement");
+  const paymentButton = document.getElementById("payment-button");
 
-  const money = amount =>
-    "Rs " + (Number(amount) || 0).toLocaleString("en-US");
-
-  const makeDate = value => {
-    if (!value) return null;
-    const [y, m, d] = value.split("-").map(Number);
-    return new Date(y, m - 1, d);
-  };
-
-  const formatDate = value => {
-    const date = makeDate(value);
-    return date
-      ? date.toLocaleDateString("en-GB", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        })
-      : "Not selected";
-  };
-
-  const shortDate = value => {
-    const date = makeDate(value);
-    return date
-      ? date.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        })
-      : "Not selected";
-  };
-
-  function loadBooking(b) {
-    $("review-arrival").textContent = formatDate(b.checkIn);
-    $("review-departure").textContent = formatDate(b.checkOut);
-    $("review-duration").textContent = b.nights || 0;
-    $("review-campers").textContent = b.campers || 0;
-    $("review-vehicles").textContent = b.vehicles || 0;
-    $("review-pets").textContent = b.pets || 0;
-    $("review-tents").textContent = b.tents || 0;
-    $("review-pitch").textContent = b.pitch || "Not selected";
-
-    $("review-pitch-tag").textContent =
-      b.pitch ? "⌖ " + b.pitch : "⌖ Pitch not selected";
-
-    $("side-pitch").textContent = b.pitch || "Pitch not selected";
-    $("side-nights").textContent = b.nights || 0;
-    $("side-campers").textContent = b.campers || 0;
-    $("side-vehicles").textContent = b.vehicles || 0;
-
-    if (b.checkIn && b.checkOut) {
-      $("side-dates").textContent =
-        shortDate(b.checkIn) + " → " + shortDate(b.checkOut);
-    }
-
-    if (b.pricePerNight && b.nights) {
-      $("review-pitch-calculation").textContent =
-        money(b.pricePerNight) + " × " + b.nights + " nights";
-    }
-
-    $("review-pitch-price").textContent = money(b.pitchFee);
-    $("review-electricity").textContent = money(b.electricity);
-    $("review-water").textContent = money(b.water);
-    $("review-cleaning").textContent = money(b.cleaning);
-    $("review-total").textContent = money(b.total);
+  if (agreement) {
+    agreement.addEventListener("change", () => {
+      paymentButton.disabled = !agreement.checked;
+    });
   }
-
-  if (saved) {
-    try {
-      loadBooking(JSON.parse(saved));
-    } catch (error) {
-      console.error("Could not load booking details:", error);
-    }
-  }
-
-  const agreement = $("booking-agreement");
-  const paymentButton = $("payment-button");
-
-  agreement.addEventListener("change", () => {
-    paymentButton.disabled = !agreement.checked;
-  });
 });
 </script>
 {% endblock %}

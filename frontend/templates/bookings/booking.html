@@ -8,8 +8,8 @@
 <main class="create-booking-page">
 
   <section class="create-booking-heading">
-    <p class="booking-breadcrumb">Bois Chéri Private Camp &gt; Book your stay</p>
-    <h1>Plan Your Stay at Bois Chéri</h1>
+    <p class="booking-breadcrumb">{{ campsite.name }} &gt; Book your stay</p>
+    <h1>Plan Your Stay at {{ campsite.location }}</h1>
     <p class="booking-intro">Choose your dates, pitch, party size, and any extras. You can review everything before payment.</p>
   </section>
 
@@ -71,45 +71,17 @@
         </div>
 
         <div class="pitch-grid">
-          <article class="pitch-card" data-name="Hillside G-07" data-price="2800" data-campers="4" data-vehicles="1" data-pets="2" data-tents="2">
-            <img src="{% static 'images/PHOTO-2026-09-27-09-58-01.jpeg' %}" alt="Hillside G-07 campsite">
+          {% for pitch in pitches %}
+          <article class="pitch-card" data-name="{{ pitch.name }}" data-price="{{ pitch.price_per_night }}" data-campers="{{ pitch.max_campers }}" data-vehicles="{{ pitch.max_vehicles }}" data-pets="{{ pitch.max_pets }}" data-tents="{{ pitch.max_tents }}">
+            <img src="{% static pitch.image %}" alt="{{ pitch.name }} campsite">
             <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">RIVERSIDE</span><span class="pitch-select"></span></div>
-              <h3>HILLSIDE G-07</h3>
-              <p>Stunning views of the valley with direct sunrise exposure.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 2,800 <small>/nt</small></strong></div>
+              <div class="pitch-top"><span class="pitch-category">{{ pitch.category }}</span><span class="pitch-select"></span></div>
+              <h3>{{ pitch.name|upper }}</h3>
+              <p>{{ pitch.description }}</p>
+              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs {{ pitch.price_per_night|floatformat:"0g" }} <small>/nt</small></strong></div>
             </div>
           </article>
-
-          <article class="pitch-card" data-name="Lakeside Loft" data-price="3500" data-campers="6" data-vehicles="2" data-pets="0" data-tents="2">
-            <img src="{% static 'images/Rectangle@2x.png' %}" alt="Lakeside Loft campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">FOREST</span><span class="pitch-select"></span></div>
-              <h3>LAKESIDE LOFT</h3>
-              <p>Close to the dock, perfect for morning swims and canoe access.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 3,500 <small>/nt</small></strong></div>
-            </div>
-          </article>
-
-          <article class="pitch-card" data-name="Mountain Wild" data-price="2500" data-campers="8" data-vehicles="2" data-pets="2" data-tents="3">
-            <img src="{% static 'images/Rectangle.png' %}" alt="Mountain Wild campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">FOREST</span><span class="pitch-select"></span></div>
-              <h3>MOUNTAIN WILD</h3>
-              <p>Secluded higher up, absolute peace and starry nights.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 2,500 <small>/nt</small></strong></div>
-            </div>
-          </article>
-
-          <article class="pitch-card" data-name="Streamside Birch" data-price="4800" data-campers="5" data-vehicles="1" data-pets="1" data-tents="2">
-            <img src="{% static 'images/Rectangles.png' %}" alt="Streamside Birch campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">RIVERSIDE</span><span class="pitch-select"></span></div>
-              <h3>STREAMSIDE BIRCH</h3>
-              <p>Listen to the soft rustle of the stream. Highly shaded.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 4,800 <small>/nt</small></strong></div>
-            </div>
-          </article>
+          {% endfor %}
         </div>
       </section>
 
