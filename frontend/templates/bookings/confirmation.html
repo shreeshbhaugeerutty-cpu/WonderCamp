@@ -68,7 +68,7 @@
       <section class="summary-panel summary-stay-details">
         <div class="summary-panel__heading">
           <h2 class="summary-panel__title">Stay Details</h2>
-          {% if not booking %}<a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-modify">Modify Booking</a>{% endif %}
+          {% if not booking %}<a href="{% if modify_id %}{% url 'bookings:modify_booking' booking_id=modify_id %}{% else %}{% url 'bookings:create_booking' campsite_id=campsite.id %}{% endif %}" class="summary-modify">Modify Booking</a>{% endif %}
         </div>
 
         <div class="summary-stay-grid">
@@ -152,7 +152,7 @@
     <a href="{% url 'bookings:my_bookings' %}" class="summary-back">← Back to My Bookings</a>
   </div>
   {% else %}
-  <form method="post" action="{% url 'bookings:save_booking' campsite_id=campsite.id %}" class="summary-actions">
+  <form method="post" action="{% if modify_id %}{% url 'bookings:update_booking' booking_id=modify_id %}{% else %}{% url 'bookings:save_booking' campsite_id=campsite.id %}{% endif %}" class="summary-actions">
     {% csrf_token %}
     <input type="hidden" name="arrival_date" value="{{ arrival_date|date:'Y-m-d' }}">
     <input type="hidden" name="departure_date" value="{{ departure_date|date:'Y-m-d' }}">
@@ -162,8 +162,8 @@
     <input type="hidden" name="pets" value="{{ pets }}">
     <input type="hidden" name="tents" value="{{ tents }}">
 
-    <a href="{% url 'bookings:create_booking' campsite_id=campsite.id %}" class="summary-back">← Back / Modify Booking</a>
-    <button id="payment-button" class="summary-pay" type="submit" disabled>Proceed to Payment →</button>
+    <a href="{% if modify_id %}{% url 'bookings:modify_booking' booking_id=modify_id %}{% else %}{% url 'bookings:create_booking' campsite_id=campsite.id %}{% endif %}" class="summary-back">← Back / Modify Booking</a>
+    <button id="payment-button" class="summary-pay" type="submit" disabled>{% if modify_id %}Save Changes{% else %}Proceed to Payment →{% endif %}</button>
   </form>
   {% endif %}
 

@@ -2,6 +2,7 @@ from datetime import date, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -74,6 +75,16 @@ def show_form(request, campsite, error=None, existing=None, booking_id=None):
     })
 
 
+def save_lines(booking, b):
+    nights = b['number_of_nights']
+    add_line(booking, 'pitch', b['pitch'], nights, b['price_per_night'])
+    add_line(booking, 'electricity', 'Electricity', nights, ELECTRICITY_PER_NIGHT)
+    add_line(booking, 'water', 'Water Pack', 1, b['water_fee'])
+    add_line(booking, 'cleaning', 'Cleaning Fee', 1, b['cleaning_fee'])
+    add_line(booking, 'pets', 'Pets', b['pets'], 0)
+    add_line(booking, 'tents', 'Tents / Grills', b['tents'], 0)
+
+
 def add_line(booking, line_type, item_name, quantity, unit_price):
     BookingLine.objects.create(
         booking=booking,
@@ -87,7 +98,7 @@ def add_line(booking, line_type, item_name, quantity, unit_price):
     )
 
 
-def check_booking_form(data, campsite):
+def check_booking_form(data, campsite, exclude_id=None):
     # returns (error, booking) - error is None if everything is ok
     pitch = Pitch.objects.filter(campsite=campsite, name=data.get('pitch')).first()
 
@@ -121,7 +132,7 @@ def check_booking_form(data, campsite):
     if error:
         return error, None
 
-    if not is_pitch_available(campsite, pitch.name, arrival_date, departure_date):
+    if not is_pitch_available(campsite, pitch.name, arrival_date, departure_date, exclude_id):
         return 'This pitch is already booked for the selected dates. Please choose another pitch or different dates.', None
 
     number_of_nights = (departure_date - arrival_date).days
@@ -210,13 +221,7 @@ def save_booking(request, campsite_id):
     booking.reference_no = f"WC-{booking.created_at.year}-{booking.id:05d}"
     booking.save()
 
-    nights = b['number_of_nights']
-    add_line(booking, 'pitch', b['pitch'], nights, b['price_per_night'])
-    add_line(booking, 'electricity', 'Electricity', nights, ELECTRICITY_PER_NIGHT)
-    add_line(booking, 'water', 'Water Pack', 1, b['water_fee'])
-    add_line(booking, 'cleaning', 'Cleaning Fee', 1, b['cleaning_fee'])
-    add_line(booking, 'pets', 'Pets', b['pets'], 0)
-    add_line(booking, 'tents', 'Tents / Grills', b['tents'], 0)
+    save_lines(booking, b)
 
     messages.success(request, f"Booking {booking.reference_no} saved.")
     return redirect('bookings:my_bookings')
@@ -291,6 +296,22 @@ def cancel_booking(request, booking_id):
     return redirect('bookings:my_bookings')
 
 
+def get_existing(booking):
+    lines = {}
+    for line in booking.bookingline_set.all():
+        lines[line.line_type] = line
+
+    return {
+        'pitch': lines['pitch'].item_name,
+        'arrival_date': booking.arrival_date,
+        'departure_date': booking.departure_date,
+        'campers': booking.no_of_adults,
+        'vehicles': booking.no_of_vehicles,
+        'pets': lines['pets'].quantity,
+        'tents': lines['tents'].quantity,
+    }
+
+
 @login_required(login_url='login')
 def modify_booking(request, booking_id):
     try:
@@ -303,18 +324,49 @@ def modify_booking(request, booking_id):
         return redirect('bookings:my_bookings')
 
     campsite = get_object_or_404(Campsite, name=booking.campsite_name)
+    existing = get_existing(booking)
 
-    lines = {}
-    for line in booking.bookingline_set.all():
-        lines[line.line_type] = line
+    if request.method == 'POST':
+        error, b = check_booking_form(request.POST, campsite, booking.id)
 
-    existing = {
-        'pitch': lines['pitch'].item_name,
-        'arrival_date': booking.arrival_date,
-        'departure_date': booking.departure_date,
-        'campers': booking.no_of_adults,
-        'vehicles': booking.no_of_vehicles,
-        'pets': lines['pets'].quantity,
-        'tents': lines['tents'].quantity,
-    }
+        if error:
+            return show_form(request, campsite, error, existing, booking.id)
+
+        b['campsite'] = campsite
+        b['modify_id'] = booking.id
+        return render(request, 'bookings/confirmation.html', b)
+
     return show_form(request, campsite, existing=existing, booking_id=booking.id)
+
+
+@login_required(login_url='login')
+@require_POST
+def update_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(id=booking_id, customer=request.user)
+    except Booking.DoesNotExist:
+        raise Http404("Booking not found")
+
+    if booking.status not in ['pending', 'confirmed']:
+        messages.error(request, "This booking can not be modified.")
+        return redirect('bookings:my_bookings')
+
+    campsite = get_object_or_404(Campsite, name=booking.campsite_name)
+    error, b = check_booking_form(request.POST, campsite, booking.id)
+
+    if error:
+        return show_form(request, campsite, error, get_existing(booking), booking.id)
+
+    with transaction.atomic():
+        booking.arrival_date = b['arrival_date']
+        booking.departure_date = b['departure_date']
+        booking.no_of_adults = b['campers']
+        booking.no_of_vehicles = b['vehicles']
+        booking.total_cost = b['total_cost']
+        booking.save()
+
+        booking.bookingline_set.all().delete()
+        save_lines(booking, b)
+
+    messages.success(request, f"Booking {booking.reference_no} was updated.")
+    return redirect('bookings:my_bookings')
