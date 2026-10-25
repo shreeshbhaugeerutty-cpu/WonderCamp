@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Emergency SOS Alerts - WonderCamp{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<style>
+  body { background-color: #fbf8e7 !important; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  .admin-layout { display: flex; gap: 32px; background-color: #fbf8e7; padding: 32px; min-height: 100vh; box-sizing: border-box; }
+  .admin-sidebar { width: 270px; background-color: #32521e; border-radius: 28px; padding: 32px 24px; color: #ffffff; flex-shrink: 0; }
+  .sidebar-logo { font-size: 32px; font-weight: 800; margin-bottom: 32px; }
+  .sidebar-section-title { font-size: 13px; opacity: 0.75; margin-bottom: 12px; text-transform: uppercase; }
+  .sidebar-nav { list-style: none; padding: 0; margin-bottom: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .sidebar-nav a { color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+  .admin-main { flex: 1; }
+  .alert-card { background-color: #ffffff; border-radius: 18px; padding: 24px; color: #333; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 6px solid #ff4d4d; }
+</style>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">WonderCamp</div>
+    <div class="sidebar-section-title">Safety & Dispatches</div>
+    <ul class="sidebar-nav">
+      <li><a href="{% url 'admin_dashboard:emergency_alerts' %}" style="color: #ffcccc; font-weight: 800;">🚨 Emergency SOS Alerts</a></li>
+    </ul>
+    <div class="sidebar-section-title">General</div>
+    <ul class="sidebar-nav">
+      <li><a href="{% url 'admin_dashboard:dashboard' %}">Operational Overview</a></li>
+      <li><a href="{% url 'admin_dashboard:master_data' %}">Client Profile & Master Data</a></li>
+      <li><a href="{% url 'admin_dashboard:business_policies' %}">Business Policies</a></li>
+      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}">Edit Catalogue</a></li>
+      <li><a href="{% url 'admin_dashboard:audit_logs' %}">Audit Records</a></li>
+    </ul>
+  </aside>
+
+  <main class="admin-main">
+    <h1 style="font-size: 40px; font-weight: 800; color: #d9534f; margin-bottom: 5px;">Emergency SOS Alerts</h1>
+    <p style="color: #4a5d3e; margin-bottom: 30px;">Real-time camper emergency transmissions and dispatch management.</p>
+
+    <div style="background-color: #658a4e; border-radius: 28px; padding: 32px; color: white;">
+      <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 20px;">ACTIVE EMERGENCY TRANSMISSIONS</h2>
+      {% for alert in emergency_alerts %}
+      <div class="alert-card" style="border-left-color: {% if alert.status == 'ACTIVE' %}#ff4d4d{% else %}#28a745{% endif %};">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 18px; color: #32521e;">{{ alert.client_name }} — {{ alert.campsite }}</strong>
+          <span style="font-size: 12px; font-weight: bold; background-color: {% if alert.status == 'ACTIVE' %}#ffe6e6{% else %}#e2f0d9{% endif %}; color: {% if alert.status == 'ACTIVE' %}#d9534f{% else %}#28a745{% endif %}; padding: 4px 12px; border-radius: 12px;">{{ alert.status }}</span>
+        </div>
+        <p style="margin: 0 0 8px 0; color: #555;">{{ alert.details }}</p>
+        <div style="font-size: 13px; color: #777;">Contact: <strong>{{ alert.contact }}</strong> | Reported: {{ alert.timestamp }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div style="margin-top: 40px;">
+      <a href="{% url 'admin_dashboard:dashboard' %}" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Dashboard</a>
+    </div>
+  </main>
+</div>
+{% endblock %}
