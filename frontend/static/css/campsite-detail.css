@@ -1,0 +1,391 @@
+/* ==========================================================
+   Campsite detail page
+   Loaded after campsites.css, so it reuses its colours
+   (--wc-green, --wc-cream, --wc-ink, --wc-pin) and header styles.
+   ========================================================== */
+ 
+/* ---------- Hero picture ---------- */
+.cd-hero {
+  width: 100%;
+  height: clamp(260px, 52vw, 620px);
+  overflow: hidden;
+  background: var(--wc-placeholder);
+}
+ 
+.cd-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+ 
+.cd-body {
+  max-width: 1100px;
+  padding-top: 28px;
+  padding-bottom: 110px;
+}
+ 
+.cd-back {
+  display: inline-block;
+  margin-bottom: 24px;
+  font: 600 15px "Inter", sans-serif;
+  color: var(--wc-green);
+  text-decoration: none;
+}
+ 
+.cd-back:hover { text-decoration: underline; }
+ 
+/* ---------- Name, price, contact ---------- */
+.cd-summary {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+ 
+.cd-summary__main {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+ 
+.cd-title {
+  display: inline-block;
+  margin: 0 0 24px;
+  padding: 14px 40px;
+  background: var(--wc-green);
+  color: #fff;
+  border-radius: 999px;
+  font: 700 clamp(26px, 3.6vw, 42px)/1.2 "Inter", sans-serif;
+}
+ 
+.cd-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font: 500 20px/1.3 "Inter", sans-serif;
+  color: var(--wc-green);
+  text-decoration: none;
+}
+ 
+.cd-meta svg {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+ 
+.cd-meta--location svg {
+  width: 14px;
+  height: 20px;
+  color: var(--wc-pin);
+}
+ 
+a.cd-meta { transition: opacity 0.2s ease; }
+a.cd-meta:hover { opacity: 0.75; }
+ 
+.cd-contact {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 28px;
+}
+ 
+.cd-summary__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+}
+ 
+.cd-price {
+  margin: 8px 0 0;
+  font: 700 clamp(28px, 3.4vw, 42px)/1 "Inter", sans-serif;
+  color: var(--wc-ink);
+}
+ 
+.cd-book {
+  display: inline-block;
+  padding: 18px 44px;
+  background: var(--wc-green);
+  color: #fff;
+  border-radius: 999px;
+  font: 700 20px "Inter", sans-serif;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+ 
+.cd-book:hover {
+  background: #335E1C;
+  transform: translateY(-1px);
+}
+ 
+/* ---------- Section basics ---------- */
+.cd-divider {
+  width: 80%;
+  margin: 56px auto;
+  border: 0;
+  border-top: 1px solid rgba(63, 116, 36, 0.45);
+}
+ 
+.cd-heading {
+  margin: 0 0 32px;
+  font: 700 24px/1.3 "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.cd-heading--sm { margin-bottom: 18px; }
+ 
+/* ---------- Stars ---------- */
+.stars {
+  --star: 28px;
+  position: relative;
+  display: inline-flex;
+  line-height: 0;
+  flex-shrink: 0;
+}
+ 
+.stars__row { display: inline-flex; }
+ 
+.stars__row--fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+ 
+.stars svg {
+  width: var(--star);
+  height: var(--star);
+  flex-shrink: 0;
+}
+ 
+.stars path {
+  fill: #fff;
+  stroke: #1a1a1a;
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+ 
+.stars__row--fill path { fill: #FFD21F; }
+ 
+.stars--sm { --star: 22px; }
+.stars--lg { --star: 48px; }
+ 
+/* ---------- Price graph ---------- */
+.price-chart {
+  position: relative;
+  margin: 0 18px;
+  padding-bottom: 40px;
+}
+ 
+.price-chart__svg {
+  display: block;
+  width: 100%;
+  height: 240px;
+}
+ 
+.price-chart__label {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font: 700 20px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.price-chart__note {
+  margin: 14px 18px 0;
+  font: 500 15px "Inter", sans-serif;
+  color: var(--wc-green);
+  opacity: 0.85;
+}
+ 
+/* ---------- Review cards ---------- */
+.review-track {
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 4px 20px;
+  margin-bottom: 40px;
+}
+ 
+.review-card {
+  flex: 0 0 min(460px, 85%);
+  scroll-snap-align: start;
+  box-sizing: border-box;
+  min-height: 300px;
+  padding: 44px 56px 56px;
+  border: 1.5px solid var(--wc-ink);
+  border-radius: 80px;
+}
+ 
+.review-card__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  margin-bottom: 28px;
+}
+ 
+.review-card__avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  color: var(--wc-green);
+}
+ 
+.review-card__name {
+  margin: 0;
+  font: 600 15px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.review-card__text {
+  margin: 0;
+  font: 600 15px/1.5 "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.review-card__date {
+  margin: 16px 0 0;
+  font: 500 13px "Inter", sans-serif;
+  color: var(--wc-green);
+  opacity: 0.7;
+}
+ 
+/* ---------- Leave a review form ---------- */
+.review-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 32px;
+  border-radius: 32px;
+  background: rgba(63, 116, 36, 0.07);
+}
+ 
+.review-form__title {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: 700 20px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.review-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+ 
+.review-form__field--full { grid-column: 1 / -1; }
+ 
+.review-form label {
+  font: 600 14px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.review-form input,
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(63, 116, 36, 0.5);
+  border-radius: 14px;
+  background: #fff;
+  font: 400 16px "Inter", sans-serif;
+  color: var(--wc-ink);
+}
+ 
+.review-form input:focus,
+.review-form select:focus,
+.review-form textarea:focus {
+  outline: none;
+  border-color: var(--wc-green);
+  box-shadow: 0 0 0 3px rgba(63, 116, 36, 0.18);
+}
+ 
+.review-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+ 
+.review-form__error {
+  margin: 0;
+  font: 500 13px "Inter", sans-serif;
+  color: #B3261E;
+}
+ 
+.review-form__submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 14px 36px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--wc-green);
+  color: #fff;
+  font: 700 17px "Inter", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+ 
+.review-form__submit:hover { background: #335E1C; }
+ 
+/* ---------- About / rating breakdown ---------- */
+.cd-overall {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+  color: var(--wc-green);
+}
+ 
+.cd-overall__score { font: 700 26px "Inter", sans-serif; }
+.cd-overall__label { font: 700 22px "Inter", sans-serif; }
+ 
+.rating-list {
+  display: grid;
+  gap: 26px;
+  max-width: 540px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+ 
+.rating-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 40px;
+  align-items: center;
+  gap: 20px;
+  font: 600 20px "Inter", sans-serif;
+  color: var(--wc-green);
+}
+ 
+.rating-bar {
+  height: 16px;
+  border-radius: 999px;
+  background: #D9D9D9;
+  overflow: hidden;
+}
+ 
+.rating-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--wc-green);
+}
+ 
+/* ---------- Phone ---------- */
+@media (max-width: 720px) {
+  .cd-summary__side { align-items: flex-start; }
+  .cd-title { padding: 12px 28px; }
+  .cd-meta { font-size: 17px; }
+  .cd-book { padding: 14px 34px; font-size: 18px; }
+  .stars--lg { --star: 36px; }
+  .price-chart__svg { height: 180px; }
+  .price-chart__label { font-size: 16px; }
+  .review-card { border-radius: 48px; padding: 32px 30px 40px; min-height: 0; }
+  .review-form { grid-template-columns: 1fr; padding: 24px; }
+  .rating-row { grid-template-columns: 110px 1fr 36px; gap: 12px; font-size: 16px; }
+}
