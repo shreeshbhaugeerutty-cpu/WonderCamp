@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Payment successful | WonderCamp{% endblock %}
+
+{% block content %}
+    <div class="cream-page confirm">
+        <main class="page container">
+            <section class="panel">
+                <h2>PAYMENT SUMMARY</h2>
+                <dl>
+                    <dt>Booking reference</dt>
+                    <dd>{{ booking.reference }}</dd>
+                    
+                    <dt>Campsite</dt>
+                    <dd>{{ booking.campsite }}</dd>
+                    
+                    <dt>Payment method</dt>
+                    <dd>{{ payment.method_label }}</dd>
+                    
+                    <div class="paid">
+                        <span>Amount paid</span>
+                        <span>Rs {{ payment.amount|floatformat:"0" }}</span>
+                    </div>
+                </dl>
+                
+                <div class="tick" aria-hidden="true">✓</div>
+                <h3>Payment Successful</h3>
+                <p style="font-size:.85rem;margin-top:.5rem">
+                    Your payment of Rs {{ payment.amount|floatformat:"0" }} has been successfully processed.
+                </p>
+            </section>
+            
+            <a href="{% url 'my_bookings' %}" style="font-size:.85rem">View My Booking →</a>
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Explore Mauritius | WonderCamp{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class="wrap container">
+        <h1>Explore Mauritius</h1>
+        <p class="lead">
+            A curated map of the island's most breathtaking spots, pristine beaches, protected forests, 
+            cultural landmarks and WonderCamp campsites. Click any pin to reveal its story.
+        </p>
+
+        <div class="chips" role="group" aria-label="Filter spots">
+            <button class="chip" data-cat="all" aria-pressed="true">All Spot Categories</button>
+            <button class="chip" data-cat="sightseeing" aria-pressed="false">Sightseeing</button>
+            <button class="chip" data-cat="nature" aria-pressed="false">Nature Trails</button>
+            <button class="chip" data-cat="beaches" aria-pressed="false">Pristine Beaches</button>
+            <button class="chip" data-cat="adventure" aria-pressed="false">Adventure Activities</button>
+        </div>
+
+        <div class="map-box">
+            <div id="map"></div>
+            <div class="legend">
+                <i style="background:#f08a24"></i>Sightseeing<br>
+                <i style="background:#2e7d32"></i>Nature<br>
+                <i style="background:#1e88e5"></i>Beaches<br>
+                <i style="background:#e53935"></i>Adventure
+            </div>
+        </div>
+
+        <div class="hl-head">
+            <h2>Explore Highlights</h2>
+            <a href="#">Show All {{ spots_json|length }} Locations</a>
+        </div>
+
+        <div class="cards">
+            {% for s in spots %}
+                <article class="card">
+                    <img src="{% static s.image %}" alt="{{ s.name }}" loading="lazy">
+                    <div class="card-body">
+                        <span class="tag">{{ s.category|title }}</span>
+                        <h3>{{ s.name }}</h3>
+                        <p style="font-size:.8rem;color:#555">{{ s.blurb }}</p>
+                    </div>
+                    <button data-focus="{{ s.id }}">View on Map →</button>
+                </article>
+            {% endfor %}
+        </div>
+    </main>
+
+    {{ spots_json|json_script:"spots-data" }}
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
+    <script>
+        const spots = JSON.parse(document.getElementById('spots-data').textContent);
+        
+        const colors = {
+            sightseeing: '#f08a24', 
+            nature: '#2e7d32', 
+            beaches: '#1e88e5', 
+            adventure: '#e53935'
+        };
+        
+        const esc = s => String(s).replace(/[&<>"']/g, c => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[c]));
+
+        const map = L.map('map', {zoomControl: true});
+        
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            referrerPolicy: 'strict-origin-when-cross-origin',
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        function popupHtml(s) {
+            return `
+                <div class="iw">
+                    <img src="${esc(s.image_url)}" alt="">
+                    <h3>${esc(s.name)}</h3>
+                    <p>${esc(s.blurb)}</p>
+                    <a href="${esc(s.url)}">Learn more</a>
+                </div>
+            `;
+        }
+
+        const layer = L.layerGroup().addTo(map);
+        
+        const markers = spots.map(s => {
+            const m = L.circleMarker([s.lat, s.lng], {
+                radius: 9, 
+                fillColor: colors[s.category], 
+                fillOpacity: 1, 
+                color: '#fff', 
+                weight: 2
+            })
+            .bindTooltip(s.name)
+            .bindPopup(popupHtml(s), {minWidth: 220});
+            
+            m.spot = s;
+            m.addTo(layer);
+            return m;
+        });
+
+        map.fitBounds(L.latLngBounds(spots.map(s => [s.lat, s.lng])), {padding: [40, 40]});
+
+        function setFilter(cat) {
+            document.querySelectorAll('.chip').forEach(x => {
+                x.setAttribute('aria-pressed', x.dataset.cat === cat);
+            });
+            
+            map.closePopup();
+            
+            markers.forEach(m => {
+                const show = cat === 'all' || m.spot.category === cat;
+                if (show) {
+                    layer.addLayer(m);
+                } else {
+                    layer.removeLayer(m);
+                }
+            });
+        }
+        
+        document.querySelectorAll('.chip').forEach(c => {
+            c.onclick = () => setFilter(c.dataset.cat);
+        });
+
+        document.querySelectorAll('[data-focus]').forEach(b => {
+            b.onclick = () => {
+                const m = markers.find(m => m.spot.id == b.dataset.focus);
+                if (!m) return;
+                
+                if (!layer.hasLayer(m)) {
+                    setFilter('all'); 
+                }
+                
+                document.getElementById('map').scrollIntoView({
+                    behavior: 'smooth', 
+                    block: 'center'
+                });
+                
+                map.setView(m.getLatLng(), 13);
+                m.openPopup();
+            };
+        });
+    </script>
+{% endblock %}

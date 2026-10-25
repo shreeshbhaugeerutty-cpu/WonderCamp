@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from .import views
 from django.contrib.auth import views as auth_views
+from backend.map import views as map_views
+from backend.payments import views as payment_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +30,14 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     path('', include('backend.bookings.urls')),
-    path('notifications/',include ('backend.notifications.urls'))
+    path('notifications/',include ('backend.notifications.urls')),
+    #  Map & SOS Routes
+    path('map/', map_views.map_view, name='map'),
+    path('sos/', map_views.sos_view, name='sos'),
+    path('sos/trigger/', map_views.sos_trigger, name='sos_trigger'),
+
+    #  Payment Routes
+    path('payment/', payment_views.payment_view, name='payment'),
+    path('payment/done/', payment_views.payment_done, name='payment_done'),
 ]
 

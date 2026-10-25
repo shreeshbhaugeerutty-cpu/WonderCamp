@@ -2195,3 +2195,438 @@ button { font-family: inherit; cursor: pointer; border: none; }
     padding-inline: 10px;
   }
 }
+/* ==========================================================
+   EXPLORE MAP, PAYMENTS & SOS EXTENSIONS
+========================================================== */
+
+/* Map Page Styles */
+.wrap {
+  padding-block: 100px 40px;
+}
+.wrap h1 {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--forest);
+}
+.lead {
+  max-width: 520px;
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.5rem 0 1.4rem;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.chip {
+  border: 1px solid #e3dfc8;
+  background: #fff;
+  border-radius: 99px;
+  padding: 0.4rem 1rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+}
+.map-box {
+  position: relative;
+  isolation: isolate;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e3dfc8;
+}
+#map {
+  height: 520px;
+  width: 100%;
+}
+.legend {
+  position: absolute;
+  z-index: 1000;
+  top: 10px;
+  right: 10px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.7rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+}
+.iw {
+  width: 220px;
+  font-family: var(--font-body);
+}
+.iw img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.leaflet-container .iw h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--forest);
+  margin: 0.4rem 0 0.1rem;
+}
+.leaflet-container .iw p {
+  font-size: 0.75rem;
+  color: #555;
+  margin: 0.2rem 0 0;
+}
+.leaflet-container .iw a {
+  display: block;
+  margin-top: 0.5rem;
+  background: var(--forest);
+  color: #fff;
+  text-align: center;
+  padding: 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+.hl-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 2rem 0 1rem;
+}
+.hl-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--forest);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.cards .card {
+  background: #fff;
+  border: 1px solid #e3dfc8;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: auto;
+}
+.cards .card img {
+  height: 120px;
+  width: 100%;
+  object-fit: cover;
+}
+.cards .card .card-body {
+  padding: 0.8rem;
+  flex: 1;
+}
+.cards .card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--forest);
+  margin: 0.3rem 0;
+}
+.tag {
+  font-size: 0.65rem;
+  background: #d4f5e2;
+  color: var(--forest);
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
+}
+.cards .card button {
+  border: 0;
+  border-top: 1px solid #e3dfc8;
+  background: none;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* Payment & Checkout Styles */
+.cream-page {
+  background: var(--cream);
+  padding-top: 100px;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+.page {
+  max-width: 640px;
+  margin: auto;
+}
+.page h1 {
+  font-family: var(--font-gefika);
+  font-size: 1.6rem;
+  color: var(--forest);
+}
+.sub {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0.2rem 0 1rem;
+}
+.timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f3ecc9;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.timer b {
+  background: #fbe9b5;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+.panel {
+  background: #fff;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.panel h2 {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.8rem;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.sum {
+  background: #d9d9d9;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+.sum div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid #fff;
+}
+.sum div:last-child {
+  border: 0;
+  font-weight: 700;
+}
+.methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.method {
+  border: 1px solid #e3dfc8;
+  border-radius: 4px;
+  background: #fff;
+  padding: 1rem;
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+.method small {
+  display: block;
+  color: #666;
+}
+.method[aria-pressed="true"] {
+  background: #8a9a5b;
+  color: #fff;
+  border-color: #8a9a5b;
+}
+.method[aria-pressed="true"] small {
+  color: #fff;
+}
+.field {
+  margin-bottom: 1rem;
+}
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 0.7rem;
+  border: 0;
+  border-radius: 3px;
+  background: #d9d9d9;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  border-top: 1px solid #333;
+  padding-top: 1rem;
+  margin: 1.2rem 0;
+}
+.note {
+  font-size: 0.75rem;
+  color: #555;
+  margin-bottom: 0.6rem;
+}
+.btn--payment {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 4px;
+  background: #8a9a5b;
+  color: #1d2a14;
+  font: 600 0.85rem var(--font-body);
+  padding: 0.9rem;
+  text-align: center;
+  cursor: pointer;
+}
+.btn--payment:hover {
+  background: #7b8b4e;
+}
+
+/* Confirmation Styles */
+.confirm {
+  text-align: center;
+}
+.confirm .panel {
+  padding: 2rem;
+}
+.confirm h2 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.03em;
+}
+.confirm dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+.confirm dd {
+  font-weight: 600;
+  text-align: right;
+}
+.paid {
+  background: #d9d9d9;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem;
+  font-weight: 700;
+}
+.tick {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #d4f5e2;
+  color: var(--forest);
+  display: grid;
+  place-items: center;
+  margin: 1.5rem auto 0.8rem;
+  font-size: 1.2rem;
+}
+.confirm h3 {
+  font-family: var(--font-gefika);
+  font-size: 1.1rem;
+  color: var(--forest);
+}
+
+/* SOS Page Styles */
+.sos-page {
+  max-width: 520px;
+  margin: 80px auto 40px;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.sos-head {
+  padding: 1.2rem 1.2rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #cfc9a6;
+}
+.sos-head h1 {
+  font-family: var(--font-gefika);
+  font-weight: 800;
+  font-size: 2.4rem;
+  color: var(--forest);
+  line-height: 1;
+}
+.sos-head em {
+  font-family: var(--font-gefika);
+  font-size: 0.85rem;
+  color: var(--forest);
+  font-weight: 700;
+}
+.sos-head .logo {
+  color: var(--forest);
+  font-family: var(--font-gefika);
+  font-style: normal;
+  font-size: 1.3rem;
+}
+.banner {
+  background: var(--forest);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  padding: 1rem 1.2rem;
+}
+#map-sos {
+  flex: 1;
+  min-height: 380px;
+  z-index: 0;
+}
+.dock {
+  background: var(--forest);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.6rem;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.dock a, .dock button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  color: #fff;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.sos-btn {
+  color: var(--orange) !important;
+  font-family: var(--font-gefika);
+  font-weight: 800;
+  font-size: 1.3rem !important;
+}
+.sos-btn svg {
+  width: 48px;
+  height: 48px;
+}
+.leaflet-container .you {
+  font-weight: 700;
+  color: var(--forest);
+  font-size: 0.85rem;
+}
