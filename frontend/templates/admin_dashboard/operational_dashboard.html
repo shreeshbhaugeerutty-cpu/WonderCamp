@@ -3,12 +3,11 @@
 
 {% block title %}Admin Dashboard - WonderCamp{% endblock %}
 
-{% comment %} Hide global base navbar to prevent overlap {% endcomment %}
+{% comment %} Suppress global site navbar for standalone admin dashboard layout {% endcomment %}
 {% block navbar %}{% endblock %}
 
 {% block content %}
 <style>
-  /* Reset and base styles */
   body {
     background-color: #fbf8e7 !important;
     margin: 0;
@@ -16,7 +15,6 @@
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
 
-  /* Main flex layout */
   .admin-layout {
     display: flex;
     gap: 32px;
@@ -39,21 +37,23 @@
   .sidebar-logo {
     font-size: 32px;
     font-weight: 800;
-    margin: 0 0 36px 0;
+    margin: 0 0 32px 0;
     letter-spacing: -0.5px;
     color: #ffffff;
   }
 
   .sidebar-section-title {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.75;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .sidebar-nav {
     list-style: none;
     padding: 0;
-    margin: 0 0 36px 0;
+    margin: 0 0 28px 0;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -75,10 +75,10 @@
   }
 
   .sidebar-nav a:hover, .sidebar-nav button:hover {
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
-  /* Main Dashboard Area */
+  /* Main Workspace */
   .admin-main {
     flex: 1;
     display: flex;
@@ -115,6 +115,59 @@
     color: rgba(255, 255, 255, 0.85);
   }
 
+  /* Header Icons & Profile Bar */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+  }
+
+  .header-icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #658a4e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    transition: transform 0.15s ease;
+  }
+
+  .header-icon-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    background-color: #ff9900;
+    border: 2px solid #fbf8e7;
+    border-radius: 50%;
+  }
+
+  /* Pending Action Notifications Drawer */
+  .notification-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px;
+    width: 360px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 20px;
+    z-index: 100;
+    color: #333;
+  }
+
   .welcome-title {
     font-size: 40px;
     font-weight: 900;
@@ -130,7 +183,7 @@
     margin: 0;
   }
 
-  /* Forest Green Card Containers */
+  /* Card Containers */
   .green-card {
     background-color: #658a4e;
     border-radius: 28px;
@@ -154,7 +207,7 @@
     color: #333333;
   }
 
-  /* System Health Animated Gradient Bars */
+  /* Animated System Health Bars */
   .health-metric-row {
     display: flex;
     align-items: center;
@@ -220,43 +273,57 @@
 </style>
 
 <div class="admin-layout">
-  <!-- Left Sidebar Navigation -->
+  <!-- Sidebar -->
   <aside class="admin-sidebar">
     <div class="sidebar-logo">WonderCamp</div>
-    
+
+    <!-- Safety Section -->
+    <div class="sidebar-section-title">Safety & Dispatches</div>
+    <ul class="sidebar-nav">
+      <li>
+        <a href="/admin-dashboard/emergency-alerts/" style="color: #ffcccc; font-weight: 700;">
+          <svg width="20" height="20" fill="none" stroke="#ffcccc" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Emergency SOS Alerts
+          <span style="background-color: #ff4d4d; color: white; border-radius: 10px; padding: 2px 8px; font-size: 11px; margin-left: auto;">1</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- General Section -->
     <div class="sidebar-section-title">General</div>
     <ul class="sidebar-nav">
       <li>
-        <a href="{% url 'admin_dashboard:master_data' %}">
+        <a href="/admin-dashboard/master-data/">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
           Client Profile / Master Data
         </a>
       </li>
       <li>
-        <a href="{% url 'admin_dashboard:business_policies' %}">
+        <a href="/admin-dashboard/business-policies/">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
           Business Policies
         </a>
       </li>
       <li>
-        <a href="{% url 'admin_dashboard:manage_catalogue' %}">
+        <a href="/admin-dashboard/manage-catalogue/">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           Edit Catalogue
         </a>
       </li>
       <li>
-        <a href="{% url 'admin_dashboard:audit_logs' %}">
+        <a href="/admin-dashboard/audit-logs/">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
           Audit Records
         </a>
       </li>
     </ul>
 
+    <!-- Tools Section -->
     <div class="sidebar-section-title">Tools</div>
     <ul class="sidebar-nav">
       <li>
-        <a href="{% url 'admin_dashboard:health' %}">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <a href="/admin-dashboard/health/">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           Settings & Health
         </a>
       </li>
@@ -272,20 +339,61 @@
     </ul>
   </aside>
 
-  <!-- Right Dashboard Main Area -->
+  <!-- Main Content -->
   <main class="admin-main">
-    <!-- Top Header Bar -->
+    <!-- Header -->
     <div class="admin-header">
       <div class="search-box">
         <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="globalSearch" placeholder="Search operational metrics...">
       </div>
-      <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #658a4e; display: flex; align-items: center; justify-content: center; color: white;">
-        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+
+      <div class="header-actions">
+        <!-- Action Items / Pending Notifications Icon -->
+        <button class="header-icon-btn" onclick="toggleNotificationDropdown()" title="Pending Actions">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="notification-badge"></span>
+        </button>
+
+        <!-- Dropdown for Actions Awaiting Admin Confirmation -->
+        <div class="notification-dropdown" id="notificationDropdown">
+          <h3 style="margin: 0 0 14px 0; color: #32521e; font-size: 16px; display: flex; justify-content: space-between; align-items: center;">
+            Pending Actions
+            <span style="font-size: 11px; background-color: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Action Required</span>
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            {% for item in notifications %}
+            <div style="background-color: #f8fbf6; border-left: 4px solid {% if item.urgent %}#ff9900{% else %}#658a4e{% endif %}; padding: 10px 12px; border-radius: 8px;">
+              <strong style="color: #32521e; font-size: 13px; display: block;">{{ item.title }}</strong>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">{{ item.details }}</p>
+              <span style="font-size: 10px; color: #888;">{{ item.time }}</span>
+            </div>
+            {% empty %}
+            <div style="background-color: #f8fbf6; border-left: 4px solid #ff9900; padding: 10px 12px; border-radius: 8px;">
+              <strong style="color: #32521e; font-size: 13px; display: block;">Awaiting Payment Confirmation</strong>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">Client Sarah Smith submitted receipt for Black River Gorges booking.</p>
+              <span style="font-size: 10px; color: #888;">10 mins ago</span>
+            </div>
+            <div style="background-color: #f8fbf6; border-left: 4px solid #658a4e; padding: 10px 12px; border-radius: 8px;">
+              <strong style="color: #32521e; font-size: 13px; display: block;">Pending Campsite Approval</strong>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">New listing submitted for Pieter Both site review.</p>
+              <span style="font-size: 10px; color: #888;">45 mins ago</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Profile Avatar -->
+       <!-- Profile Avatar Button -->
+        <a href="/admin-dashboard/profile/" style="text-decoration: none;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #32521e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; cursor: pointer; transition: transform 0.15s ease;" title="Edit Profile - {{ admin_name }}">
+            {{ admin_name|slice:":1"|default:"A" }}
+          </div>
+        </a>
       </div>
     </div>
 
-    <!-- Personalized Welcome Banner -->
+    <!-- Greeting Banner -->
     <div>
       <h1 class="welcome-title">Welcome, {{ admin_name|default:"Admin" }}</h1>
       <p class="welcome-subtitle">Wishing you a productive day. Here are your system logistics.</p>
@@ -326,12 +434,12 @@
       </div>
     </section>
 
-    <!-- Container 3: Audit & Compliance Log -->
+    <!-- Container 3: Audit & Compliance Log (Completed History) -->
     <section class="green-card">
       <h2 class="green-card-title">Audit & Compliance Log</h2>
       <div class="search-box" style="margin-bottom: 20px; width: 100%; box-sizing: border-box; background-color: rgba(255,255,255,0.25);">
         <svg width="20" height="20" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="auditSearchInput" placeholder="Search audit logs...">
+        <input type="text" id="auditSearchInput" placeholder="Search completed action records...">
       </div>
       <div id="auditLogContainer">
         {% for log in audit_logs %}
@@ -341,22 +449,21 @@
         </div>
         {% empty %}
         <div class="audit-item">
-          <div class="audit-item-header">Refund / John Applesmith</div>
-          <div class="audit-item-desc">Mr John Applesmith refunded on 2nd September 2026</div>
+          <div class="audit-item-header">Confirmed Payment / John Applesmith</div>
+          <div class="audit-item-desc">Admin confirmed payment receipt for John Applesmith on 2nd September 2026</div>
         </div>
         <div class="audit-item">
-          <div class="audit-item-header">Booked / Linda Gironzmon</div>
-          <div class="audit-item-desc">Mrs Linda Gironzmon booked Pieter Both site on 2nd September 2026</div>
+          <div class="audit-item-header">Approved Listing / Pieter Both Campsite</div>
+          <div class="audit-item-desc">Admin verified and published Pieter Both campsite listing on 2nd September 2026</div>
         </div>
         <div class="audit-item">
           <div class="audit-item-header">Password Reset / Linda Gironzmon</div>
-          <div class="audit-item-desc">Mrs Linda Gironzmon's password was reset on 1st September 2026.</div>
+          <div class="audit-item-desc">Mrs Linda Gironzmon's password reset completed on 1st September 2026.</div>
         </div>
         {% endfor %}
       </div>
     </section>
 
-    <!-- Back to Home Footer Link -->
     <div>
       <a href="{% url 'home' %}" class="back-home-link">&lt; Back to Home</a>
     </div>
@@ -367,7 +474,19 @@
 {% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // 1. Chart Rendering
+  function toggleNotificationDropdown() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
+
+  document.addEventListener('click', function(event) {
+    const actions = document.querySelector('.header-actions');
+    const dropdown = document.getElementById('notificationDropdown');
+    if (actions && !actions.contains(event.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+
   const ctx = document.getElementById('activitiesChart').getContext('2d');
   const chartLabels = ['Bookings', 'Bookings refunded', 'Bookings to Cancel', 'Booking Status To Update', 'Campsites available', 'Campsites suspended', 'Campsites booked', 'Bookings Paid', 'Users Booked'];
   const chartData = [60, 15, 30, 20, 42, 10, 58, 14, 58];
@@ -391,40 +510,37 @@
     }
   });
 
-  // 2. Interactive Real-Time Search for Audit Logs
   const auditSearchInput = document.getElementById('auditSearchInput');
   const auditLogContainer = document.getElementById('auditLogContainer');
 
-  auditSearchInput.addEventListener('input', function(e) {
-    const term = e.target.value.toLowerCase().trim();
-    const items = auditLogContainer.querySelectorAll('.audit-item');
-
-    items.forEach(item => {
-      const text = item.textContent.toLowerCase();
-      if (text.includes(term)) {
-        item.style.display = 'block';
-      } else {
-        item.style.display = 'none';
-      }
+  if (auditSearchInput) {
+    auditSearchInput.addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase().trim();
+      const items = auditLogContainer.querySelectorAll('.audit-item');
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(term) ? 'block' : 'none';
+      });
     });
-  });
+  }
 
-  // 3. Global Search Bar Handler
   const globalSearch = document.getElementById('globalSearch');
-  globalSearch.addEventListener('input', function(e) {
-    const term = e.target.value.toLowerCase().trim();
-    if (!term) {
-      activitiesChart.data.labels = chartLabels;
-      activitiesChart.data.datasets[0].data = chartData;
-    } else {
-      const filteredIndices = chartLabels
-        .map((label, idx) => label.toLowerCase().includes(term) ? idx : -1)
-        .filter(idx => idx !== -1);
-      
-      activitiesChart.data.labels = filteredIndices.map(idx => chartLabels[idx]);
-      activitiesChart.data.datasets[0].data = filteredIndices.map(idx => chartData[idx]);
-    }
-    activitiesChart.update();
-  });
+  if (globalSearch) {
+    globalSearch.addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase().trim();
+      if (!term) {
+        activitiesChart.data.labels = chartLabels;
+        activitiesChart.data.datasets[0].data = chartData;
+      } else {
+        const filteredIndices = chartLabels
+          .map((label, idx) => label.toLowerCase().includes(term) ? idx : -1)
+          .filter(idx => idx !== -1);
+        
+        activitiesChart.data.labels = filteredIndices.map(idx => chartLabels[idx]);
+        activitiesChart.data.datasets[0].data = filteredIndices.map(idx => chartData[idx]);
+      }
+      activitiesChart.update();
+    });
+  }
 </script>
 {% endblock %}

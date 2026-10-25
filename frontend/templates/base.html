@@ -21,29 +21,26 @@
         <li><a href="{% url 'campsites:explorer' %}">Campsites</a></li>
         <li><a href="{% url 'camping_vans' %}">Camping Vans</a></li>
         <li><a href="#">Lodgings</a></li>
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'profile' %}">Account</a></li>
-          <li>
-            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="nav-logout-btn">Log Out</button>
-            </form>
-          </li>
-        {% else %}
-          <li><a href="{% url 'register' %}">Login/Register</a></li>
-        {% endif %}
 
         {% if user.is_authenticated %}
-          <li>
-            <a href="#" aria-label="Account" class="nav-icon">
-              <img src="{% static 'images/user-profile.png' %}" alt="" class="nav-icon__img">
-            </a>
-          </li>
           <li>
             <a href="{% url 'notifications:list' %}" aria-label="Notifications" class="nav-icon">
               <img src="{% static 'images/notifss.png' %}" alt="Notifications" class="nav-icon__img">
             </a>
           </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'profile' %}" aria-label="Account" class="nav-icon">
+              <img src="{% static 'images/user-profile.png' %}" alt="" class="nav-icon__img"></a></li>
+          <li>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <a href="{% url 'logout' %}" onclick="this.closest('form').submit(); return false;" aria-label="Logout" class="nav-icon">
+              <img src="{% static 'images/logouticon.png' %}" alt="" class="nav-icon__img"></a></li>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'register' %}">Login/Register</a></li>
         {% endif %}
       </ul>
     </nav>
