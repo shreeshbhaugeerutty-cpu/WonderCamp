@@ -117,6 +117,12 @@ button { font-family: inherit; cursor: pointer; border: none; }
 }
 
 /* ---------- Header / Nav ---------- */
+body.solid-navbar .site-header {
+  background: var(--forest);
+  padding-block: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
 .site-header {
   position: fixed;
   inset-inline: 0;
