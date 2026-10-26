@@ -8,9 +8,9 @@
 <main class="create-booking-page">
 
   <section class="create-booking-heading">
-    <p class="booking-breadcrumb">Bois Chéri Private Camp &gt; Book your stay</p>
-    <h1>Plan Your Stay at Bois Chéri</h1>
-    <p class="booking-intro">Choose your dates, pitch, party size, and any extras. You can review everything before payment.</p>
+    <p class="booking-breadcrumb">{{ campsite.name }} &gt; Book your stay</p>
+    <h1>Plan Your Stay at {{ campsite.name }}</h1>
+    <p class="booking-intro">Choose your dates, party size, and any extras. You can review everything before payment.</p>
   </section>
 
   <section class="booking-progress">
@@ -63,93 +63,42 @@
 
 </section>
 
-      <!-- PITCH -->
-      <section class="booking-box">
-        <div class="section-heading">
-          <h2>🍃 Pick your pitch</h2>
-          <p>Choose your pitch first. Your party limits will then be shown below.</p>
-        </div>
-
-        <div class="pitch-grid">
-          <article class="pitch-card" data-name="Hillside G-07" data-price="2800" data-campers="4" data-vehicles="1" data-pets="2" data-tents="2">
-            <img src="{% static 'images/PHOTO-2026-09-27-09-58-01.jpeg' %}" alt="Hillside G-07 campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">RIVERSIDE</span><span class="pitch-select"></span></div>
-              <h3>HILLSIDE G-07</h3>
-              <p>Stunning views of the valley with direct sunrise exposure.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 2,800 <small>/nt</small></strong></div>
-            </div>
-          </article>
-
-          <article class="pitch-card" data-name="Lakeside Loft" data-price="3500" data-campers="6" data-vehicles="2" data-pets="0" data-tents="2">
-            <img src="{% static 'images/Rectangle@2x.png' %}" alt="Lakeside Loft campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">FOREST</span><span class="pitch-select"></span></div>
-              <h3>LAKESIDE LOFT</h3>
-              <p>Close to the dock, perfect for morning swims and canoe access.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 3,500 <small>/nt</small></strong></div>
-            </div>
-          </article>
-
-          <article class="pitch-card" data-name="Mountain Wild" data-price="2500" data-campers="8" data-vehicles="2" data-pets="2" data-tents="3">
-            <img src="{% static 'images/Rectangle.png' %}" alt="Mountain Wild campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">FOREST</span><span class="pitch-select"></span></div>
-              <h3>MOUNTAIN WILD</h3>
-              <p>Secluded higher up, absolute peace and starry nights.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 2,500 <small>/nt</small></strong></div>
-            </div>
-          </article>
-
-          <article class="pitch-card" data-name="Streamside Birch" data-price="4800" data-campers="5" data-vehicles="1" data-pets="1" data-tents="2">
-            <img src="{% static 'images/Rectangles.png' %}" alt="Streamside Birch campsite">
-            <div class="pitch-information">
-              <div class="pitch-top"><span class="pitch-category">RIVERSIDE</span><span class="pitch-select"></span></div>
-              <h3>STREAMSIDE BIRCH</h3>
-              <p>Listen to the soft rustle of the stream. Highly shaded.</p>
-              <div class="pitch-bottom"><span class="rating">★★★★★</span><strong>Rs 4,800 <small>/nt</small></strong></div>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <!-- GUESTS -->
       <section class="booking-box">
         <div class="section-heading">
           <h2>🍃 Who's coming along?</h2>
-          <p>Tell us your camp companions and vehicles. Limits depend on the pitch you selected.</p>
+          <p>Tell us your camp companions and vehicles. Limits are set by {{ campsite.name }}.</p>
         </div>
 
         <div class="guest-grid">
           <div class="guest-option">
-            <div class="guest-left"><span class="guest-icon">♙</span><div><strong>Campers</strong><small id="campers-limit">Select a pitch first</small></div></div>
+            <div class="guest-left"><span class="guest-icon">♙</span><div><strong>Campers</strong><small id="campers-limit"></small></div></div>
             <div class="counter"><button type="button" class="minus" data-target="campers" disabled>−</button><span id="campers">0</span><button type="button" class="plus" data-target="campers" disabled>+</button></div>
           </div>
 
           <div class="guest-option">
-            <div class="guest-left"><span class="guest-icon">🚙</span><div><strong>Vehicles</strong><small id="vehicles-limit">Select a pitch first</small></div></div>
+            <div class="guest-left"><span class="guest-icon">🚙</span><div><strong>Vehicles</strong><small id="vehicles-limit"></small></div></div>
             <div class="counter"><button type="button" class="minus" data-target="vehicles" disabled>−</button><span id="vehicles">0</span><button type="button" class="plus" data-target="vehicles" disabled>+</button></div>
           </div>
 
           <div class="guest-option">
-            <div class="guest-left"><span class="guest-icon">☆</span><div><strong>Pets</strong><small id="pets-limit">Select a pitch first</small></div></div>
+            <div class="guest-left"><span class="guest-icon">☆</span><div><strong>Pets</strong><small id="pets-limit"></small></div></div>
             <div class="counter"><button type="button" class="minus" data-target="pets" disabled>−</button><span id="pets">0</span><button type="button" class="plus" data-target="pets" disabled>+</button></div>
           </div>
 
           <div class="guest-option">
-            <div class="guest-left"><span class="guest-icon">⛺</span><div><strong>Tents / Grills</strong><small id="tents-limit">Select a pitch first</small></div></div>
+            <div class="guest-left"><span class="guest-icon">⛺</span><div><strong>Tents</strong><small id="tents-limit"></small></div></div>
             <div class="counter"><button type="button" class="minus" data-target="tents" disabled>−</button><span id="tents">0</span><button type="button" class="plus" data-target="tents" disabled>+</button></div>
           </div>
         </div>
 
-        <div class="capacity-message" id="capacity-message">🍃 Select a pitch above to see its capacity.</div>
+        <div class="capacity-message" id="capacity-message">{{ campsite.capacity }}</div>
       </section>
 
       <form id="booking-form" method="POST" hidden>
          {% csrf_token %}
         <input type="hidden" name="arrival_date" id="form-arrival-date">
         <input type="hidden" name="departure_date" id="form-departure-date">
-        <input type="hidden" name="pitch" id="form-pitch">
         <input type="hidden" name="campers" id="form-campers">
         <input type="hidden" name="vehicles" id="form-vehicles">
         <input type="hidden" name="pets" id="form-pets">
@@ -157,7 +106,7 @@
       </form>
 
       <div class="booking-bottom">
-        <a href="#" class="back-link">← Back to campsite</a>
+        <a href="{% url 'campsites:detail' campsite.slug %}" class="back-link">← Back to campsite</a>
         <button type="button" class="bottom-review-button" id="bottom-review-button" disabled>Continue to Review →</button>
       </div>
     </div>
@@ -165,16 +114,17 @@
     <!-- SUMMARY -->
     <aside class="your-stay">
       <h2>Your stay</h2>
-      <p class="stay-place">Bois Chéri Private Camp</p>
+      <p class="stay-place">{{ campsite.name }}</p>
 
       <div class="stay-information">
-        <p>🍃 Pitch: <strong id="summary-pitch">Select a pitch</strong></p>
+        <p>⌖ {{ campsite.location }}</p>
+        <p>Rs {{ campsite.price }} per night</p>
         <p>📅 Dates: <strong id="summary-dates">Select your dates</strong></p>
         <p>♙ Party: <strong><span id="summary-campers">0</span> campers, <span id="summary-vehicles">0</span> vehicle(s)</strong></p>
       </div>
 
       <div class="stay-prices">
-        <div><span>Pitch fee (<span id="summary-nights">0</span> nights)</span><strong id="pitch-price">Rs 0</strong></div>
+        <div><span>Accommodation fee (<span id="summary-nights">0</span> nights)</span><strong id="accommodation-price">Rs 0</strong></div>
         <div><span id="electricity-label">Electricity</span><strong id="electricity-price">Rs 0</strong></div>
         <div><span>Water pack fee</span><strong>Rs 420</strong></div>
         <div><span>Cleaning fee</span><strong>Rs 188</strong></div>
@@ -190,18 +140,24 @@
 {% endblock %}
 
 {% block extra_scripts %}
+{{ initial_booking|json_script:"initial-booking-data" }}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
   const checkIn=$("check-in"), checkOut=$("check-out"), nightCount=$("night-count"), dateError=$("date-error");
-  const summaryPitch=$("summary-pitch"), summaryDates=$("summary-dates"), summaryNights=$("summary-nights");
+  const summaryDates=$("summary-dates"), summaryNights=$("summary-nights");
   const summaryCampers=$("summary-campers"), summaryVehicles=$("summary-vehicles");
-  const pitchPrice=$("pitch-price"), electricityPrice=$("electricity-price"), electricityLabel=$("electricity-label"), totalPrice=$("total-price");
+  const accommodationPrice=$("accommodation-price"), electricityPrice=$("electricity-price"), electricityLabel=$("electricity-label"), totalPrice=$("total-price");
   const capacityMessage=$("capacity-message"), reviewButton=$("review-button"), bottomReviewButton=$("bottom-review-button");
-  const pitchCards=document.querySelectorAll(".pitch-card");
-  let selectedPitch=null;
-  let values={campers:0,vehicles:0,pets:0,tents:0};
-  let limits={campers:0,vehicles:0,pets:0,tents:0};
+  const pricePerNight={{ campsite.price }};
+  const minimums={campers:{{ campsite.min_campers }},vehicles:0,pets:0,tents:1};
+  let values={...minimums};
+  const limits={campers:{{ campsite.max_campers }},vehicles:{{ campsite.max_vehicles }},pets:{{ campsite.max_pets }},tents:{{ campsite.max_tents }}};
+  const initialBooking=JSON.parse($("initial-booking-data").textContent);
+  Object.keys(values).forEach(key => {
+    const saved=initialBooking[key];
+    if(Number.isInteger(saved)) values[key]=Math.min(limits[key],Math.max(minimums[key],saved));
+  });
 
   const makeDate=v => { if(!v) return null; const [y,m,d]=v.split("-").map(Number); return new Date(y,m-1,d); };
   const inputDate=d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -211,6 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const today=new Date(); today.setHours(0,0,0,0);
   const tomorrow=new Date(today); tomorrow.setDate(today.getDate()+1);
   checkIn.min=inputDate(tomorrow);
+  if(initialBooking.checkIn){
+    checkIn.value=initialBooking.checkIn;
+    checkOut.value=initialBooking.checkOut || "";
+    checkOut.disabled=false;
+    const earliestDeparture=makeDate(checkIn.value);
+    earliestDeparture.setDate(earliestDeparture.getDate()+3);
+    checkOut.min=inputDate(earliestDeparture);
+  }
 
   function updateDates(){
     const n=nights(), options={day:"numeric",month:"short",year:"numeric"};
@@ -235,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
         checkOut.value = "";
         checkOut.disabled = true;
         updateDates();
-        checkPitchAvailability();
         return;
        }
 
@@ -250,7 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
        }
 
        updateDates();
-       checkPitchAvailability();
      });
 
     
@@ -263,7 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
        }
 
       updateDates();
-      checkPitchAvailability();
      });
 
 
@@ -345,107 +306,41 @@ function updateCalendar() {
 }
 
 
-  pitchCards.forEach(card=>card.addEventListener("click",()=>{
-    if (card.dataset.available === "false") return;
-    pitchCards.forEach(c=>c.classList.remove("selected"));
-    card.classList.add("selected"); selectedPitch=card;
-    ["campers","vehicles","pets","tents"].forEach(k=>{ limits[k]=+card.dataset[k]; values[k]=0; });
-    updateLimits(); updateCounters(); updateSummary(); updatePrices(); updateButtons();}));
-    
-
   function updateLimits(){
-    $("campers-limit").textContent=`Maximum ${limits.campers} campers`;
+    $("campers-limit").textContent=`${minimums.campers}–${limits.campers} campers`;
     $("vehicles-limit").textContent=`Maximum ${limits.vehicles} vehicle${limits.vehicles===1?"":"s"}`;
     $("pets-limit").textContent=limits.pets?`Maximum ${limits.pets} pet${limits.pets===1?"":"s"}`:"Pets not allowed";
-    $("tents-limit").textContent=`Maximum ${limits.tents} tents / grills`;
-    capacityMessage.innerHTML=`🍃 Based on your choice: <strong>${selectedPitch.dataset.name}</strong> accommodates up to <strong>${limits.campers} persons</strong>, <strong>${limits.vehicles} vehicle${limits.vehicles===1?"":"s"}</strong>, ${limits.pets?`<strong>${limits.pets} pet${limits.pets===1?"":"s"}</strong>`:"<strong>no pets</strong>"}, and <strong>${limits.tents} tents/grills</strong>.`;
+    $("tents-limit").textContent=`1–${limits.tents} tents`;
+    capacityMessage.textContent="Campers, vehicles, pets and tents must stay within this campsite’s limits.";
   }
 
   document.querySelectorAll(".counter button").forEach(btn=>btn.addEventListener("click",()=>{
-    if(!selectedPitch) return;
     const k=btn.dataset.target;
     if(btn.classList.contains("plus") && values[k]<limits[k]) values[k]++;
-    if(btn.classList.contains("minus") && values[k]>0) values[k]--;
+    if(btn.classList.contains("minus") && values[k]>minimums[k]) values[k]--;
     updateCounters(); updateSummary(); updateButtons();
   }));
 
   function updateCounters(){
     Object.keys(values).forEach(k=>$(k).textContent=values[k]);
-    document.querySelectorAll(".plus").forEach(b=>b.disabled=!selectedPitch||values[b.dataset.target]>=limits[b.dataset.target]);
-    document.querySelectorAll(".minus").forEach(b=>b.disabled=!selectedPitch||values[b.dataset.target]<=0);
+    document.querySelectorAll(".plus").forEach(b=>b.disabled=values[b.dataset.target]>=limits[b.dataset.target]);
+    document.querySelectorAll(".minus").forEach(b=>b.disabled=values[b.dataset.target]<=minimums[b.dataset.target]);
   }
 
   function updateSummary(){
-    summaryPitch.textContent=selectedPitch?selectedPitch.dataset.name:"Select a pitch";
     summaryCampers.textContent=values.campers;
     summaryVehicles.textContent=values.vehicles;
   }
 
   function updatePrices(){
-    if(!selectedPitch || nights()<3){ pitchPrice.textContent=electricityPrice.textContent=totalPrice.textContent="Rs 0"; return; }
-    const n=nights(), fee=+selectedPitch.dataset.price*n, electricity=120*n;
-    pitchPrice.textContent=money(fee); electricityPrice.textContent=money(electricity);
+    if(nights()<3){ accommodationPrice.textContent=electricityPrice.textContent=totalPrice.textContent="Rs 0"; return; }
+    const n=nights(), fee=pricePerNight*n, electricity=120*n;
+    accommodationPrice.textContent=money(fee); electricityPrice.textContent=money(electricity);
     totalPrice.textContent=money(fee+electricity+420+188);
   }
    
-    async function checkPitchAvailability() {
-    if (!checkIn.value || !checkOut.value || nights() < 3) {
-    pitchCards.forEach(card => {
-        card.dataset.available = "false";
-        card.style.opacity = "0.4";
-        card.style.cursor = "not-allowed";
-    });
-    pitchCards.forEach(card => card.classList.remove("selected"));
-    selectedPitch = null;
-
-    values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
-    limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
-
-    updateCounters();
-    updateSummary();
-    updatePrices();
-
-    reviewButton.disabled = true;
-    bottomReviewButton.disabled = true;
-    return;
-}
-    const url = "{% url 'bookings:check_pitch_availability' campsite_id=campsite.id %}";
-    const params = new URLSearchParams({
-        arrival_date: checkIn.value,
-        departure_date: checkOut.value
-    });
-
-    try {
-        const response = await fetch(`${url}?${params}`);
-        if (!response.ok) throw new Error("Availability check failed");
-
-        const availability = await response.json();
-
-        pitchCards.forEach(card => {
-            const available = availability[card.dataset.name] === true;
-
-            card.dataset.available = String(available);
-            card.style.opacity = available ? "1" : "0.4";
-            card.style.cursor = available ? "pointer" : "not-allowed";
-
-            if (!available && selectedPitch === card) {
-                card.classList.remove("selected");
-                selectedPitch = null;
-                values = {campers: 0, vehicles: 0, pets: 0, tents: 0};
-                limits = {campers: 0, vehicles: 0, pets: 0, tents: 0};
-                updateCounters();
-                updateSummary();
-                updatePrices();
-                updateButtons();
-            }
-        });
-    } catch (error) {
-        console.error("Could not check pitch availability:", error);
-    }
-}
-
   function updateButtons(){
-    const ready=selectedPitch && checkIn.value && checkOut.value && nights()>=3 && values.campers>=1;
+    const ready=checkIn.value && checkOut.value && nights()>=3 && values.campers>=minimums.campers && makeDate(checkIn.value)>today;
     reviewButton.disabled=bottomReviewButton.disabled=!ready;
   }
 
@@ -455,7 +350,6 @@ function updateCalendar() {
 
     $("form-arrival-date").value = checkIn.value;
     $("form-departure-date").value = checkOut.value;
-    $("form-pitch").value = selectedPitch.dataset.name;
     $("form-campers").value = values.campers;
     $("form-vehicles").value = values.vehicles;
     $("form-pets").value = values.pets;
@@ -466,7 +360,8 @@ function updateCalendar() {
 
 reviewButton.addEventListener("click", continueToReview);
 bottomReviewButton.addEventListener("click", continueToReview);
-updateCalendar();
+updateDates();
+updateLimits();
 updateCounters();
 updateSummary();
 updatePrices();
