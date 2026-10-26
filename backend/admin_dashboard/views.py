@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
-from .models import SystemAuditLog, SystemHealthLog
+from django.utils import timezone
+
+from .models import SystemAuditLog, SystemHealthLog, EmergencyAlert
 from .forms import AdminProfileForm
+from backend.notifications.utils import create_notification
 
 
 def is_admin(user):
@@ -103,34 +106,42 @@ def admin_profile(request):
 @user_passes_test(is_admin, login_url='/login/')
 def emergency_alerts(request):
     """
-    Interactive Emergency SOS Alerts Management & Dispatch View.
+    Dynamic Interactive Emergency SOS Alerts Management & Dispatch View.
     """
     admin_name = get_formatted_admin_name(request.user)
 
-    active_emergencies = [
-        {
-            'id': 1,
-            'client_name': 'John Doe',
-            'campsite': 'Black River Gorges - Site A4',
-            'timestamp': '12 mins ago',
-            'status': 'ACTIVE',
-            'details': 'Medical assistance requested via SOS trigger.',
-            'contact': '+230 5123 4567'
-        },
-        {
-            'id': 2,
-            'client_name': 'Linda Gironzmon',
-            'campsite': 'Le Morne Coastal Trail',
-            'timestamp': '2 hours ago',
-            'status': 'RESOLVED',
-            'details': 'Adverse weather guidance dispatch completed.',
-            'contact': '+230 5987 6543'
-        }
-    ]
+    if request.method == 'POST':
+        alert_id = request.POST.get('alert_id')
+        alert_obj = get_object_or_404(EmergencyAlert, pk=alert_id)
+
+        alert_obj.status = 'RESOLVED'
+        alert_obj.resolved_at = timezone.now()
+        alert_obj.resolved_by = request.user
+        alert_obj.save()
+
+        # 1. System Audit Logging
+        SystemAuditLog.objects.create(
+            actor=request.user,
+            action_type='SECURITY',
+            details=f"Resolved emergency alert #{alert_obj.pk} for client {alert_obj.client_name}"
+        )
+
+        # 2. Dynamic Notification Dispatch using helper function
+        create_notification(
+            user=request.user,
+            title="Emergency SOS Resolved",
+            message=f"Unit dispatched & alert resolved for {alert_obj.client_name} at {alert_obj.campsite}.",
+            request=request
+        )
+
+        messages.success(request, f"Emergency alert for {alert_obj.client_name} marked as RESOLVED.")
+        return redirect('admin_dashboard:emergency_alerts')
+
+    alerts = EmergencyAlert.objects.all().order_by('-timestamp')
 
     context = {
         'admin_name': admin_name,
-        'emergency_alerts': active_emergencies,
+        'emergency_alerts': alerts,
     }
     return render(request, 'admin_dashboard/emergency_alerts.html', context)
 
