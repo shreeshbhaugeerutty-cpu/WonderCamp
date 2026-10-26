@@ -9,10 +9,10 @@
                 <h2>PAYMENT SUMMARY</h2>
                 <dl>
                     <dt>Booking reference</dt>
-                    <dd>{{ booking.reference }}</dd>
+                    <dd>{{ booking.reference_no }}</dd>
                     
                     <dt>Campsite</dt>
-                    <dd>{{ booking.campsite }}</dd>
+                    <dd>{{ booking.campsite_name }}</dd>
                     
                     <dt>Payment method</dt>
                     <dd>{{ payment.method_label }}</dd>
@@ -24,13 +24,13 @@
                 </dl>
                 
                 <div class="tick" aria-hidden="true">✓</div>
-                <h3>Payment Successful</h3>
+                <h3>Demo Payment Successful</h3>
                 <p style="font-size:.85rem;margin-top:.5rem">
-                    Your payment of Rs {{ payment.amount|floatformat:"0" }} has been successfully processed.
+                    Your payment of Rs {{ payment.amount|floatformat:"0" }} has been recorded as a demo payment. No money was charged.
                 </p>
             </section>
             
-            <a href="{% url 'my_bookings' %}" style="font-size:.85rem">View My Booking →</a>
+            <a href="{% url 'bookings:my_bookings' %}" style="font-size:.85rem">View My Booking →</a>
         </main>
     </div>
 {% endblock %}

@@ -27,8 +27,7 @@ urlpatterns = [
     path('sos/trigger/', map_views.sos_trigger, name='sos_trigger'),
 
     #  Payment Routes
-    path('payment/', TemplateView.as_view(template_name='payments/payment.html'), name='payment'),
-    path('payment/done/', TemplateView.as_view(template_name='payments/payment_confirmation.html'), name='payment_done'),
+    path('payment/', include('backend.payments.urls')),
 
     # 3. Custom Admin Dashboard (FR 6.1 - FR 6.6)
     path('admin-dashboard/', include('backend.admin_dashboard.urls')),

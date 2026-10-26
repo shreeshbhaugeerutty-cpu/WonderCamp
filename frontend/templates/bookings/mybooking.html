@@ -42,6 +42,7 @@
           <div><span>Amount Paid</span><strong>Rs {{ booking.amount_paid|floatformat:2 }}</strong><span>{{ booking.payment_method }}</span></div>
         </div>
         <div class="booking-actions">
+          {% if booking.status == 'pending' %}<a href="{% url 'secure_checkout' booking_id=booking.id %}" class="booking-action booking-action--primary">Pay Now</a>{% endif %}
           <a href="{% url 'bookings:booking_detail' booking_id=booking.id %}" class="booking-action booking-action--primary">View Details</a>
           {% if booking.can_modify %}<a href="{% url 'bookings:modify_booking' booking_id=booking.id %}" class="booking-action">Modify Booking</a>{% endif %}
           {% if booking.status == 'pending' or booking.status == 'confirmed' %}

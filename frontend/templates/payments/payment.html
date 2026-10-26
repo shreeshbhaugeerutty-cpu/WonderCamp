@@ -6,47 +6,44 @@
     <div class="cream-page">
         <div class="page container">
             <h1>Secure Checkout</h1>
-            <p class="sub">Complete your payment to confirm your stay at {{ booking.campsite }}.</p>
+            <p class="sub">Complete your payment to confirm your stay at {{ booking.campsite_name }}.</p>
             
-            <div class="timer">
-                <span>Your slot is temporarily held for you.</span>
-                <b id="countdown">10:00</b>
-            </div>
-            
+            <p class="note">Demo checkout: no money will be charged.</p>
             <form method="post" novalidate>
                 {% csrf_token %}
+                {{ form.non_field_errors }}{{ form.method.errors }}{{ form.country.errors }}
                 
                 <section class="panel">
                     <h2>PAYMENT SUMMARY</h2>
                     <div class="sum">
                         <div>
                             <span>Booking reference</span>
-                            <span>{{ booking.reference }}</span>
+                            <span>{{ booking.reference_no }}</span>
                         </div>
                         <div>
                             <span>Campsite</span>
-                            <span>{{ booking.campsite }}</span>
+                            <span>{{ booking.campsite_name }}</span>
                         </div>
                         <div>
                             <span>Total to pay</span>
-                            <span>Rs {{ booking.amount|floatformat:"0" }}</span>
+                            <span>Rs {{ booking.total_cost|floatformat:"0" }}</span>
                         </div>
                     </div>
                     
                     <h2 style="margin-top:1.4rem">CHOOSE PAYMENT METHOD</h2>
                     <div class="methods" role="radiogroup">
                         {% for val,label,desc in methods %}
-                            <button type="button" class="method" data-method="{{ val }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+                            <button type="button" class="method" data-method="{{ val }}" aria-pressed="{% if form.method.value == val %}true{% else %}false{% endif %}">
                                 {{ label }}<small>{{ desc }}</small>
                             </button>
                         {% endfor %}
                     </div>
-                    <input type="hidden" name="method" id="method" value="mcb_juice">
+                    <input type="hidden" name="method" id="method" value="{{ form.method.value|default:'mcb_juice' }}">
                 </section>
                 
                 <section class="panel">
-                    <h2>MCB JUICE PAYMENT</h2>
-                    <p class="note">Pay securely using MCB Juice. Enter your details below to continue.</p>
+                    <h2>DEMO PAYMENT DETAILS</h2>
+                    <p class="note">Enter your details below to continue with the demo payment.</p>
                     
                     <div class="field">
                         <label for="id_mobile">Mobile number</label>
@@ -62,24 +59,18 @@
                     
                     <div class="field">
                         <label for="id_country">Country</label>
-                        <select id="id_country" name="country">
-                            <option>Mauritius</option>
-                            <option>Réunion</option>
-                            <option>France</option>
-                            <option>United Kingdom</option>
-                            <option>Other</option>
-                        </select>
+                        {{ form.country }}
                     </div>
                     
                     <div class="total">
                         <span>Amount to pay</span>
-                        <span>Rs {{ booking.amount|floatformat:"0" }}</span>
+                        <span>Rs {{ booking.total_cost|floatformat:"0" }}</span>
                     </div>
                     
-                    <p class="note">You will be redirected to MCB Juice to authorise and complete your payment.</p>
-                    <p class="note">Secure encrypted payment. Your payment information is securely processed.</p>
+                    <p class="note">Submit to record a demo payment and complete your booking.</p>
+                    <p class="note">This checkout is not connected to a payment provider.</p>
                     
-                    <button class="btn btn--payment" type="submit">Continue with MCB Juice</button>
+                    <button class="btn btn--payment" type="submit">Complete Demo Payment</button>
                 </section>
             </form>
         </div>
@@ -97,12 +88,5 @@
             };
         });
 
-        let t = 600;
-        const el = document.getElementById('countdown');
-        
-        setInterval(() => {
-            if (t > 0) t--;
-            el.textContent = String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
-        }, 1000);
     </script>
 {% endblock %}

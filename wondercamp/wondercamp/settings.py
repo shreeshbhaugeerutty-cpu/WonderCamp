@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend.bookings',
+    'backend.payments',
     'backend.accounts',
     #'backend.notifications'
     'backend.campsites',

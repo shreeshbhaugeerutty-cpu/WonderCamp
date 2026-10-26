@@ -6,7 +6,7 @@ from django.db import models
 # Import your Booking model here, e.g., 
 # from bookings.models import Booking
 
-class Payment(models.fields.Model):
+class Payment(models.Model):
     PAYMENT_METHODS = [
         ('mcb_juice', 'MCB Juice'),
         ('credit_card', 'Credit/Debit Card'),

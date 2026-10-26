@@ -10,7 +10,7 @@
   {% block extra_css %}{% endblock %}
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
   <!-- ============ HEADER / NAV (shared on every page) ============ -->
   {% block navbar %}

@@ -29,12 +29,17 @@
         <button type="submit" class="btn btn--create-account">Login</button>
       </form>
 
+      {% get_providers as socialaccount_providers %}
+      {% for provider in socialaccount_providers %}
+      {% if provider.id == 'google' %}
       <div class="auth-form__divider"><span>OR</span></div>
 
-      <a href="{% provider_login_url 'google' %}" class="btn btn--google">
+      <a href="{% provider_login_url provider %}" class="btn btn--google">
         <img src="{% static 'images/formkit_google.png' %}" alt="">
         Sign In with Google.
       </a>
+      {% endif %}
+      {% endfor %}
 
       <p class="auth-form__footer-link">
         Don't have an account? <a href="{% url 'register' %}"><strong>Sign Up</strong></a>

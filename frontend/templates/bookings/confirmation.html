@@ -129,7 +129,7 @@
   </details>
 
   {% if booking %}
-  <div class="summary-actions"><a href="{% url 'bookings:my_bookings' %}" class="summary-back">← Back to My Bookings</a></div>
+  <div class="summary-actions">{% if booking.status == 'pending' %}<a class="summary-pay" href="{% url 'secure_checkout' booking_id=booking.id %}">Pay Now</a>{% endif %}<a href="{% url 'bookings:my_bookings' %}" class="summary-back">← Back to My Bookings</a></div>
   {% else %}
   <form method="post" action="{% if modify_id %}{% url 'bookings:update_booking' booking_id=modify_id %}{% else %}{% url 'bookings:save_booking' campsite_slug=campsite.slug %}{% endif %}">
     {% csrf_token %}
@@ -145,7 +145,7 @@
     </label>
     <div class="summary-actions">
       <a href="{% if modify_id %}{% url 'bookings:modify_booking' booking_id=modify_id %}{% else %}{% url 'bookings:create_booking' campsite_slug=campsite.slug %}{% endif %}" class="summary-back">← Back / Modify Booking</a>
-      <button id="payment-button" class="summary-pay" type="submit" disabled>{% if modify_id %}Save Changes{% else %}Save Booking{% endif %}</button>
+      <button id="payment-button" class="summary-pay" type="submit" disabled>{% if modify_id %}Save Changes{% else %}Proceed to Payment{% endif %}</button>
     </div>
   </form>
   {% endif %}

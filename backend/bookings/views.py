@@ -37,7 +37,7 @@ def active_campsite_bookings(campsite, exclude_booking_id=None):
     bookings = Booking.objects.filter(
         Q(campsite_name=campsite['name'])
         | Q(bookingline__line_type='accommodation', bookingline__item_name=campsite['slug']),
-        status__in=('pending', 'confirmed'),
+        status__in=('pending', 'confirmed', 'completed'),
     )
     if exclude_booking_id is not None:
         bookings = bookings.exclude(pk=exclude_booking_id)
@@ -215,8 +215,7 @@ def save_booking(request, campsite_slug):
         booking.save(update_fields=['reference_no'])
         save_lines(booking, review, campsite)
     request.session.pop('booking_review', None)
-    messages.success(request, f'Booking {booking.reference_no} saved as pending. No payment has been taken.')
-    return redirect('bookings:my_bookings')
+    return redirect('secure_checkout', booking_id=booking.pk)
 
 
 @login_required(login_url='login')
