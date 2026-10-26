@@ -51,7 +51,6 @@
           </form>
           {% endif %}
         </div>
-        <p class="booking-policy">{{ booking.cancellation_policy_snapshot }}</p>
       </div>
     </article>
     {% empty %}<p>You have no bookings yet. <a href="{% url 'campsites:explorer' %}">Explore campsites</a></p>{% endfor %}
