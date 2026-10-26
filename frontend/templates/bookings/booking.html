@@ -38,7 +38,7 @@
           <label class="date-box"><span>CHECK-OUT</span><input type="date" id="check-out" disabled></label>
           <span class="nights-badge" id="night-count">Select dates</span>
         </div>
-        <p class="date-error" id="date-error">{{ error|default:"" }}</p>
+        <p class="date-error" id="date-error">{% if error != 'This campsite is already booked for your selected dates. Please choose different dates.' %}{{ error|default:"" }}{% endif %}</p>
 
        
 <div class="calendar-wrapper">
@@ -60,6 +60,7 @@
         <div class="calendar-days"></div>
     </div>
 </div>
+<p class="calendar-legend" style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">— Unavailable night</p>
 
 </section>
 
@@ -141,6 +142,7 @@
 
 {% block extra_scripts %}
 {{ initial_booking|json_script:"initial-booking-data" }}
+{{ booked_ranges|json_script:"booked-ranges-data" }}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
@@ -154,6 +156,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let values={...minimums};
   const limits={campers:{{ campsite.max_campers }},vehicles:{{ campsite.max_vehicles }},pets:{{ campsite.max_pets }},tents:{{ campsite.max_tents }}};
   const initialBooking=JSON.parse($("initial-booking-data").textContent);
+  const bookedRanges=JSON.parse($("booked-ranges-data").textContent);
+  const isBookedNight=value => bookedRanges.some(range => value>=range.start && value<range.end);
+  const overlapsBookedStay=() => checkIn.value && checkOut.value && bookedRanges.some(
+    range => checkIn.value<range.end && checkOut.value>range.start
+  );
   Object.keys(values).forEach(key => {
     const saved=initialBooking[key];
     if(Number.isInteger(saved)) values[key]=Math.min(limits[key],Math.max(minimums[key],saved));
@@ -195,6 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
     checkIn.addEventListener("change", () => {
       dateError.textContent = "";
 
+      if (isBookedNight(checkIn.value)) {
+        checkIn.value="";
+      }
+
       if (!checkIn.value) {
         checkOut.value = "";
         checkOut.disabled = true;
@@ -211,6 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
        if (checkOut.value && makeDate(checkOut.value) < min) {
          checkOut.value = "";
        }
+       if (overlapsBookedStay()) {
+         checkOut.value="";
+       }
 
        updateDates();
      });
@@ -223,6 +237,9 @@ document.addEventListener("DOMContentLoaded", () => {
         dateError.textContent = "Minimum stay is 3 nights.";
         checkOut.value = "";
        }
+      if (overlapsBookedStay()) {
+        checkOut.value="";
+      }
 
       updateDates();
      });
@@ -256,6 +273,14 @@ function renderCalendar(calendarId, year, month) {
         const span = document.createElement("span");
         span.textContent = day;
         span.dataset.day = day;
+        const dateValue=inputDate(new Date(year, month, day));
+        if(isBookedNight(dateValue)) {
+            span.textContent="—";
+            span.title=`${dateValue}: unavailable night`;
+            span.setAttribute("aria-label", `${dateValue}: unavailable night`);
+            span.style.backgroundColor="#e5e7eb";
+            span.style.color="#6b7280";
+        }
         daysContainer.appendChild(span);
     }
 }
@@ -340,7 +365,7 @@ function updateCalendar() {
   }
    
   function updateButtons(){
-    const ready=checkIn.value && checkOut.value && nights()>=3 && values.campers>=minimums.campers && makeDate(checkIn.value)>today;
+    const ready=checkIn.value && checkOut.value && nights()>=3 && values.campers>=minimums.campers && makeDate(checkIn.value)>today && !overlapsBookedStay();
     reviewButton.disabled=bottomReviewButton.disabled=!ready;
   }
 

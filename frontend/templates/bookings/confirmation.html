@@ -14,9 +14,9 @@
   </header>
 
   <section class="summary-reference" aria-label="Booking reference and campsite">
-    <div><span>Booking Reference</span><strong id="review-reference">Generated after confirmation</strong></div>
+    <div><span>Booking Reference</span><strong id="review-reference">{% if booking %}{{ booking.reference_no }}{% else %}Generated when saved{% endif %}</strong></div>
     <div><span>Campsite</span><strong>{{ campsite.name }}</strong></div>
-    <span class="summary-status">Pending Payment</span>
+    <span class="summary-status">{% if booking %}{{ booking.get_status_display }}{% else %}Pending Payment{% endif %}</span>
   </section>
 
   <div class="summary-hold" role="status">
@@ -59,7 +59,7 @@
       <section class="summary-panel summary-stay-details">
         <div class="summary-panel__heading">
           <h2 class="summary-panel__title">Stay Details</h2>
-          <a href="{% url 'bookings:create_booking' campsite_slug=campsite.slug %}" class="summary-modify">Modify Booking</a>
+          {% if not booking %}<a href="{% if modify_id %}{% url 'bookings:modify_booking' booking_id=modify_id %}{% else %}{% url 'bookings:create_booking' campsite_slug=campsite.slug %}{% endif %}" class="summary-modify">Modify Booking</a>{% elif can_modify %}<a href="{% url 'bookings:modify_booking' booking_id=booking.id %}" class="summary-modify">Modify Booking</a>{% endif %}
         </div>
 
         <div class="summary-stay-grid">
@@ -128,15 +128,27 @@
     <p>Please read the policy before you pay. It explains the cancellation rules and any applicable refund conditions.</p>
   </details>
 
-  <label class="summary-agreement">
-    <input id="booking-agreement" type="checkbox">
-    <span>I have reviewed my booking details and agree to the Booking &amp; Cancellation Policy.</span>
-  </label>
-
-  <div class="summary-actions">
-    <a href="{% url 'bookings:create_booking' campsite_slug=campsite.slug %}" class="summary-back">← Back / Modify Booking</a>
-    <button id="payment-button" class="summary-pay" type="button" disabled>Proceed to Payment →</button>
-  </div>
+  {% if booking %}
+  <div class="summary-actions"><a href="{% url 'bookings:my_bookings' %}" class="summary-back">← Back to My Bookings</a></div>
+  {% else %}
+  <form method="post" action="{% if modify_id %}{% url 'bookings:update_booking' booking_id=modify_id %}{% else %}{% url 'bookings:save_booking' campsite_slug=campsite.slug %}{% endif %}">
+    {% csrf_token %}
+    <input type="hidden" name="arrival_date" value="{{ booking_review.checkIn }}">
+    <input type="hidden" name="departure_date" value="{{ booking_review.checkOut }}">
+    <input type="hidden" name="campers" value="{{ booking_review.campers }}">
+    <input type="hidden" name="vehicles" value="{{ booking_review.vehicles }}">
+    <input type="hidden" name="pets" value="{{ booking_review.pets }}">
+    <input type="hidden" name="tents" value="{{ booking_review.tents }}">
+    <label class="summary-agreement">
+      <input id="booking-agreement" type="checkbox" required>
+      <span>I have reviewed my booking details and agree to the Booking &amp; Cancellation Policy.</span>
+    </label>
+    <div class="summary-actions">
+      <a href="{% if modify_id %}{% url 'bookings:modify_booking' booking_id=modify_id %}{% else %}{% url 'bookings:create_booking' campsite_slug=campsite.slug %}{% endif %}" class="summary-back">← Back / Modify Booking</a>
+      <button id="payment-button" class="summary-pay" type="submit" disabled>{% if modify_id %}Save Changes{% else %}Save Booking{% endif %}</button>
+    </div>
+  </form>
+  {% endif %}
 
 </section>
 {% endblock %}
@@ -216,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const agreement = $("booking-agreement");
   const paymentButton = $("payment-button");
 
-  agreement.addEventListener("change", () => {
+  if (agreement && paymentButton) agreement.addEventListener("change", () => {
     paymentButton.disabled = !agreement.checked;
   });
 });
