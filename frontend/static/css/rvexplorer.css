@@ -1,189 +1,140 @@
-/* Base page layout & top padding to clear header */
-.rv-page-container {
-  width: 100%;
-  max-width: 1050px;
-  margin: 0 auto;
-  padding: 110px 20px 80px 20px;
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, sans-serif;
+/* Page Background & Layout */
+body {
+  background-color: #fcf9ee;
+  margin: 0;
+  font-family: serif;
 }
 
-/* Header Row with WonderCamp logo, Searchbar, and Icons */
+.rv-page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px 80px 20px;
+}
+
+/* Header & Search */
 .rv-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-/* WonderCamp Logo Typography */
 .rv-brand-logo {
-  font-family: 'Georgia', serif;
+  font-size: 2rem;
   font-weight: 800;
-  font-size: 2.2rem;
-  color: #3b6025;
+  color: #386629;
   text-decoration: none;
-  letter-spacing: -0.5px;
-  white-space: nowrap;
+  font-family: Georgia, serif;
 }
 
-/* Pill Search Box */
 .rv-search-box {
   display: flex;
   align-items: center;
-  border: 1.5px solid #3b6025;
-  border-radius: 30px;
-  padding: 8px 20px;
+  border: 1.5 solid #386629;
+  border-radius: 25px;
+  padding: 6px 16px;
   flex: 1;
-  max-width: 500px;
+  max-width: 320px;
   background-color: transparent;
 }
 
 .rv-search-box svg {
-  width: 20px;
-  height: 20px;
-  stroke: #3b6025;
-  margin-right: 12px;
-  flex-shrink: 0;
+  margin-right: 8px;
+  color: #386629;
 }
 
 .rv-search-box input {
   border: none;
   background: transparent;
   outline: none;
-  font-size: 1rem;
-  color: #2b2b2b;
   width: 100%;
+  font-size: 1rem;
+  color: #386629;
 }
 
-/* Right Action Icons */
+.rv-search-box input::placeholder {
+  color: #8da482;
+}
+
 .rv-top-icons {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
 }
 
 .rv-icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  color: #3b6025;
+  color: #386629;
+  text-decoration: none;
   display: flex;
   align-items: center;
-  transition: opacity 0.2s ease;
 }
 
-.rv-icon-btn:hover {
-  opacity: 0.8;
-}
-
-/* Category Navigation Line */
+/* Sub-navigation Links */
 .rv-subnav {
   display: flex;
-  gap: 35px;
-  border-bottom: 1.5px solid #c8d3b8;
+  gap: 28px;
+  border-bottom: 1.5 solid #c3d3b7;
   padding-bottom: 10px;
-  margin-bottom: 45px;
+  margin-bottom: 40px;
 }
 
 .rv-subnav-link {
   text-decoration: none;
-  font-weight: 800;
-  font-size: 1.15rem;
-  color: #2e4d1e;
-  position: relative;
-  padding-bottom: 10px;
-  transition: color 0.2s ease;
+  color: #386629;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-/* Green underline on hover and active state */
-.rv-subnav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -11.5px;
-  left: 0;
-  width: 0%;
-  height: 3.5px;
-  background-color: #3b6025;
-  border-radius: 2px;
-  transition: width 0.25s ease;
+.rv-subnav-link.active {
+  border-bottom: 3 solid #386629;
+  padding-bottom: 8px;
 }
 
-.rv-subnav-link:hover::after,
-.rv-subnav-link.active::after {
-  width: 100%;
-}
-
-/* 2-Column Responsive Grid */
+/* Cards Grid (2 in Row 1, 1 on the left in Row 2) */
 .rv-cards-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px 30px;
-  justify-items: center;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .rv-card {
+  text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-decoration: none;
-  color: inherit;
-  width: 100%;
-  max-width: 350px;
-  transition: transform 0.2s ease;
+  text-align: center;
 }
 
-.rv-card:hover {
-  transform: translateY(-4px);
-}
-
-/* Capsule Oval Image Frame */
+/* Dome/Arch Image Container */
 .rv-capsule-frame {
   width: 100%;
-  height: 210px;
-  border-radius: 105px;
+  height: 200px;
+  border-radius: 100px 100px 0 0; /* Creates the arched stadium top */
   overflow: hidden;
-  background-color: #e2e2e2;
+  background-color: #e2e8f0;
   margin-bottom: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .rv-capsule-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* Typography */
 .rv-card-title {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 4px 0 2px 0;
-  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a2e15;
+  margin: 0 0 4px 0;
+  font-family: Georgia, serif;
 }
 
 .rv-card-tag {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #3b6025;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #386629;
   margin: 0;
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .rv-header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .rv-search-box {
-    max-width: 100%;
-  }
-  .rv-cards-grid {
-    grid-template-columns: 1fr;
-  }
 }

@@ -34,7 +34,7 @@
 
     <div style="text-align: right;">
       <a href="#" class="rv-book-btn">Book Now</a>
-      <div class="rv-stars" style="margin-top: 8px;">★★★★☆</div>
+      <div class="rv-stars" style="margin-top: 8px;">★★★★★</div>
     </div>
   </div>
 
@@ -57,19 +57,19 @@
   <h3 class="rv-section-title">Why guests love this campsite?</h3>
   <div class="rv-reviews-grid">
     {% for review in rv.reviews %}
-    <div class="rv-review-card">
-      <div class="rv-review-header">
-        <div class="rv-reviewer">
-          <span>👤</span> {{ review.author }}
+      <div class="rv-review-card">
+        <div class="rv-review-header">
+          <div class="rv-reviewer">
+            <span>👤</span> {{ review.author }}
+          </div>
+          <div class="rv-stars" style="font-size: 0.9rem;">★★★★★</div>
         </div>
-        <div class="rv-stars" style="font-size: 0.9rem;">★★★★☆</div>
+        <div class="rv-review-body">
+          "{{ review.comment }}"
+        </div>
       </div>
-      <div class="rv-review-body">
-        "{{ review.comment }}"
-      </div>
-    </div>
     {% empty %}
-    <p style="color: #666; font-style: italic;">No reviews yet for this RV.</p>
+      <p style="color: #666; font-style: italic;">No reviews yet for this RV.</p>
     {% endfor %}
   </div>
 
@@ -79,23 +79,23 @@
   <h3 class="rv-section-title">About</h3>
   <div class="rv-about-score">
     <span style="font-size: 1.5rem;">{{ rv.rating|default:"4.5" }}</span>
-    <span class="rv-stars">★★★★☆</span>
+    <span class="rv-stars">★★★★★</span>
     <span style="color: #3b6025;">Good</span>
   </div>
 
   <!-- Breakdown Bars -->
   {% for key, value in rv.ratings_breakdown.items %}
-  <div class="rv-rating-row">
-    <span>{% if key == 'sleep_quality' %}Sleep Quality{% else %}{{ key|title }}{% endif %}</span>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div class="rv-progress-bar-bg">
-        <div class="rv-progress-bar-fill" style="width: {% widthratio value 5 100 %}%;"></div>
+    <div class="rv-rating-row">
+      <span>{% if key == 'sleep_quality' %}Sleep Quality{% else %}{{ key|title }}{% endif %}</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="rv-progress-bar-bg">
+          <div class="rv-progress-bar-fill" style="width: {% widthratio value 5 100 %}%;"></div>
+        </div>
+        <span>{{ value }}</span>
       </div>
-      <span>{{ value }}</span>
     </div>
-  </div>
   {% empty %}
-  <p style="color: #666; font-style: italic; margin-top: 10px;">No detailed rating breakdown available for this RV in Django Admin.</p>
+    <p style="color: #666; font-style: italic; margin-top: 10px;">No detailed rating breakdown available for this RV in Django Admin.</p>
   {% endfor %}
 
 </div>
