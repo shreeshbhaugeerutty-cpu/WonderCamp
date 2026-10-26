@@ -105,3 +105,52 @@ class BookingFlowTests(TestCase):
         self.assertTemplateUsed(response, 'bookings/booking.html')
         self.assertTrue(response.context['error'])
         self.assertFalse(Booking.objects.exists())
+
+    def test_expiry_releases_dates_and_keeps_booking_in_history(self):
+        self.client.post(self.save_url, {**self.data, 'action': 'save_for_later'})
+        booking = Booking.objects.get()
+        Booking.objects.filter(pk=booking.pk).update(
+            created_at=timezone.now() - timedelta(hours=48),
+        )
+        response = self.client.get(reverse('bookings:my_bookings'))
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, 'expired')
+        self.assertContains(response, 'data-status="expired"')
+        self.assertContains(response, 'Your reserved dates have been released.')
+        self.assertNotContains(response, 'Pay Now')
+        self.assertNotContains(response, 'Modify Booking')
+        self.client.post(self.save_url, self.data)
+        self.assertEqual(Booking.objects.count(), 2)
+
+    def test_availability_expires_hold_without_visiting_my_bookings(self):
+        self.client.post(self.save_url, self.data)
+        booking = Booking.objects.get()
+        Booking.objects.filter(pk=booking.pk).update(
+            created_at=timezone.now() - timedelta(hours=49),
+        )
+        response = self.client.get(self.create_url)
+        self.assertEqual(response.context['booked_ranges'], [])
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, 'expired')
+
+    def test_unexpired_and_paid_bookings_are_preserved(self):
+        self.client.post(self.save_url, self.data)
+        booking = Booking.objects.get()
+        Booking.objects.filter(pk=booking.pk).update(
+            created_at=timezone.now() - timedelta(hours=47),
+        )
+        self.assertEqual(Booking.expire_pending(), 0)
+        Booking.objects.filter(pk=booking.pk).update(
+            created_at=timezone.now() - timedelta(hours=49), status='completed',
+        )
+        self.assertEqual(Booking.expire_pending(), 0)
+
+    def test_expiry_command(self):
+        from django.core.management import call_command
+        from io import StringIO
+
+        self.client.post(self.save_url, self.data)
+        Booking.objects.update(created_at=timezone.now() - timedelta(hours=49))
+        output = StringIO()
+        call_command('expire_bookings', stdout=output)
+        self.assertIn('Expired 1 unpaid booking(s).', output.getvalue())

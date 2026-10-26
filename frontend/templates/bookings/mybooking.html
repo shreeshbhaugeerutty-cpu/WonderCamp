@@ -16,6 +16,7 @@
       <button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="upcoming">Upcoming</button>
       <button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="completed">Completed</button>
       <button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="cancelled">Cancelled</button>
+      <button class="booking-filter" type="button" role="tab" aria-selected="false" data-filter="expired">Expired</button>
     </div>
   </section>
 
@@ -41,6 +42,11 @@
           <div><span>Total Cost</span><strong>Rs {{ booking.total_cost|floatformat:2 }}</strong></div>
           <div><span>Amount Paid</span><strong>Rs {{ booking.amount_paid|floatformat:2 }}</strong><span>{{ booking.payment_method }}</span></div>
         </div>
+        {% if booking.status == 'pending' %}
+        <p>Pay by {{ booking.payment_deadline|date:"d M Y, H:i T" }} to keep your dates (48 hours after saving).</p>
+        {% elif booking.status == 'expired' %}
+        <p>Payment deadline passed. Your reserved dates have been released.</p>
+        {% endif %}
         <div class="booking-actions">
           {% if booking.status == 'pending' %}<a href="{% url 'secure_checkout' booking_id=booking.id %}" class="booking-action booking-action--primary">Pay Now</a>{% endif %}
           <a href="{% url 'bookings:booking_detail' booking_id=booking.id %}" class="booking-action booking-action--primary">View Details</a>

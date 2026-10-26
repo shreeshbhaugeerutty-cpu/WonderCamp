@@ -11,6 +11,7 @@ from .models import Payment
 @login_required(login_url='login')
 @transaction.atomic
 def secure_checkout(request, booking_id):
+    Booking.expire_pending()
     booking = get_object_or_404(
         Booking.objects.select_for_update(), pk=booking_id, customer=request.user,
     )

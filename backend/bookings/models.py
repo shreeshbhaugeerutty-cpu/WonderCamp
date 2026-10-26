@@ -1,9 +1,13 @@
+from datetime import timedelta
+
+from django.utils import timezone
 from django.conf import settings
 from django.db import models
 
 class Booking(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
+        ('expired', 'Expired'),
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
         ('completed', 'Completed'),
@@ -33,6 +37,17 @@ class Booking(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def payment_deadline(self):
+        return self.created_at + timedelta(hours=48)
+
+    @classmethod
+    def expire_pending(cls):
+        return cls.objects.filter(
+            status='pending', created_at__lte=timezone.now() - timedelta(hours=48),
+            amount_paid=0,
+        ).exclude(payment__is_successful=True).update(status='expired')
 
     def __str__(self):
         return self.reference_no

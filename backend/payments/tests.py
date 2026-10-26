@@ -77,3 +77,13 @@ class PaymentFlowTests(TestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Booking.objects.count(), 1)
+
+    def test_expired_booking_cannot_be_paid_even_from_open_checkout(self):
+        self.assertEqual(self.client.get(self.url).status_code, 200)
+        Booking.objects.filter(pk=self.booking.pk).update(
+            created_at=timezone.now() - timedelta(hours=48),
+        )
+        self.assertRedirects(self.client.post(self.url, self.data), reverse('bookings:my_bookings'))
+        self.booking.refresh_from_db()
+        self.assertEqual(self.booking.status, 'expired')
+        self.assertFalse(Payment.objects.exists())

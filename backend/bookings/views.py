@@ -34,6 +34,7 @@ def validate_booking_dates(arrival_date, departure_date):
 
 
 def active_campsite_bookings(campsite, exclude_booking_id=None):
+    Booking.expire_pending()
     bookings = Booking.objects.filter(
         Q(campsite_name=campsite['name'])
         | Q(bookingline__line_type='accommodation', bookingline__item_name=campsite['slug']),
@@ -216,31 +217,34 @@ def save_booking(request, campsite_slug):
         save_lines(booking, review, campsite)
     request.session.pop('booking_review', None)
     if request.POST.get('action') == 'save_for_later':
-        messages.success(request, f'Booking {booking.reference_no} saved. Your dates are reserved; you can pay later from My Bookings.')
+        messages.success(request, f'Booking {booking.reference_no} saved. Your dates are reserved for 48 hours; pay before the deadline shown in My Bookings.')
         return redirect('bookings:my_bookings')
     return redirect('secure_checkout', booking_id=booking.pk)
 
 
 @login_required(login_url='login')
 def my_bookings(request):
+    Booking.expire_pending()
     bookings = list(Booking.objects.filter(customer=request.user).prefetch_related('bookingline_set'))
     for booking in bookings:
         context = booking_context(booking)
         booking.nights = context['booking_review']['nights']
         booking.image = context['campsite'].get('image', '')
         booking.can_modify = context['can_modify']
-        booking.filter_status = booking.status if booking.status in ('cancelled', 'completed') else 'upcoming'
+        booking.filter_status = booking.status if booking.status in ('cancelled', 'completed', 'expired') else 'upcoming'
     return render(request, 'bookings/mybooking.html', {'bookings': bookings})
 
 
 @login_required(login_url='login')
 def booking_detail(request, booking_id):
+    Booking.expire_pending()
     booking = get_object_or_404(Booking, pk=booking_id, customer=request.user)
     return render(request, 'bookings/confirmation.html', booking_context(booking))
 
 
 @login_required(login_url='login')
 def modify_booking(request, booking_id):
+    Booking.expire_pending()
     booking = get_object_or_404(Booking, pk=booking_id, customer=request.user)
     context = booking_context(booking)
     if not context['can_modify']:
@@ -263,6 +267,7 @@ def modify_booking(request, booking_id):
 @login_required(login_url='login')
 @require_POST
 def update_booking(request, booking_id):
+    Booking.expire_pending()
     with transaction.atomic():
         booking = get_object_or_404(Booking.objects.select_for_update(), pk=booking_id, customer=request.user)
         context = booking_context(booking)
@@ -288,6 +293,7 @@ def update_booking(request, booking_id):
 @login_required(login_url='login')
 @require_POST
 def cancel_booking(request, booking_id):
+    Booking.expire_pending()
     with transaction.atomic():
         booking = get_object_or_404(Booking.objects.select_for_update(), pk=booking_id, customer=request.user)
         if booking.status in ('pending', 'confirmed'):
