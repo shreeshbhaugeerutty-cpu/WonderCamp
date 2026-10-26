@@ -14,14 +14,12 @@ RVS = {
 def camping_vans(request):
     return render(request, 'RV/rvexplorer.html')
 
-<<<<<<< HEAD
-
 def rv_details(request, rv_id):
     rv = RVS.get(rv_id)
     if rv is None:
         raise Http404("RV not found")
     return render(request, 'RV/rvdetails.html', {"rv": rv})
-=======
+
 def rv_explorer(request):
     """View to list all RVs on the main explorer/camping-vans page."""
     rvs = RV.objects.all()
@@ -78,4 +76,4 @@ def rv_details(request, rv_id=1):
         }
     }
     return render(request, 'RV/rvdetails.html', context)
->>>>>>> sahil
+

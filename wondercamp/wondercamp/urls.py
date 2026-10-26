@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
@@ -38,5 +38,4 @@ urlpatterns = [
     # 5. Google OAuth2 Login
     path("accounts/", include("allauth.urls")),
 ]
-=======
->>>>>>> sahil
+

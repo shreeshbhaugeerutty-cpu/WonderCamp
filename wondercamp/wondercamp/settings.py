@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'backend.bookings',
     'backend.payments',
     'backend.accounts',
+    'backend.vehicles',
     #'backend.notifications'
     'backend.campsites',
     'backend.admin_dashboard',
