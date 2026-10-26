@@ -32,6 +32,34 @@
       <section class="summary-campsite">
         <div class="summary-gallery">
           <img class="summary-gallery__main" src="{% static campsite.image %}" alt="{{ campsite.name }}">
+          {% if campsite.slug == 'mont-choisy' %}
+          <img class="summary-gallery__main" src="{% static 'images/mchoisy1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/mchoisy2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'bois-cheri' %}
+          <img class="summary-gallery__main" src="{% static 'images/bs1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/bs2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'malenga' %}
+          <img class="summary-gallery__main" src="{% static 'images/man1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/man2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'le-morne' %}
+          <img class="summary-gallery__main" src="{% static 'images/morne1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/morne2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'black-river' %}
+          <img class="summary-gallery__main" src="{% static 'images/black1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/black2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'saj-recreation' %}
+          <img class="summary-gallery__main" src="{% static 'images/saj1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/saj2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'plaines-vertes' %}
+          <img class="summary-gallery__main" src="{% static 'images/pv1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/pv2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'lake-of-wonder' %}
+          <img class="summary-gallery__main" src="{% static 'images/lake1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/lake2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% elif campsite.slug == 'dolomites' %}
+          <img class="summary-gallery__main" src="{% static 'images/range1.png' %}" alt="{{ campsite.name }} — additional photo 1">
+          <img class="summary-gallery__main" src="{% static 'images/range2.png' %}" alt="{{ campsite.name }} — additional photo 2">
+          {% endif %}
         </div>
 
         <div class="summary-campsite-info" id="campsite-details">
