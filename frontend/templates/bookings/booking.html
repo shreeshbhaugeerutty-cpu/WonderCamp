@@ -104,6 +104,7 @@
         <input type="hidden" name="vehicles" id="form-vehicles">
         <input type="hidden" name="pets" id="form-pets">
         <input type="hidden" name="tents" id="form-tents"> 
+        {% if not modify_id %}<button type="submit" id="save-later-submit" formaction="{% url 'bookings:save_booking' campsite.slug %}" name="action" value="save_for_later">Save for later</button>{% endif %}
       </form>
 
       <div class="booking-bottom">
@@ -133,7 +134,7 @@
 
       <div class="stay-total"><strong>Total</strong><span id="total-price">Rs 0</span></div>
       <button type="button" class="review-button" id="review-button" disabled>Continue to Review →</button>
-      <button type="button" class="save-button">Save for later</button>
+      {% if not modify_id %}<button type="button" class="save-button" id="save-later-button" disabled>Save for later</button>{% endif %}
       <p class="stay-note">Full sum will be processed once you confirm your booking details.</p>
     </aside>
   </div>
@@ -151,6 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const summaryCampers=$("summary-campers"), summaryVehicles=$("summary-vehicles");
   const accommodationPrice=$("accommodation-price"), electricityPrice=$("electricity-price"), electricityLabel=$("electricity-label"), totalPrice=$("total-price");
   const capacityMessage=$("capacity-message"), reviewButton=$("review-button"), bottomReviewButton=$("bottom-review-button");
+  const saveLaterButton=$("save-later-button");
   const pricePerNight={{ campsite.price }};
   const minimums={campers:{{ campsite.min_campers }},vehicles:0,pets:0,tents:1};
   let values={...minimums};
@@ -367,10 +369,11 @@ function updateCalendar() {
   function updateButtons(){
     const ready=checkIn.value && checkOut.value && nights()>=3 && values.campers>=minimums.campers && makeDate(checkIn.value)>today && !overlapsBookedStay();
     reviewButton.disabled=bottomReviewButton.disabled=!ready;
+    if (saveLaterButton) saveLaterButton.disabled=!ready;
   }
 
   
- function continueToReview() {
+ function submitBooking(saveForLater = false) {
     if (reviewButton.disabled) return;
 
     $("form-arrival-date").value = checkIn.value;
@@ -380,11 +383,16 @@ function updateCalendar() {
     $("form-pets").value = values.pets;
     $("form-tents").value = values.tents;
 
-    $("booking-form").requestSubmit();
+    if (saveForLater) {
+      $("booking-form").requestSubmit($("save-later-submit"));
+    } else {
+      $("booking-form").requestSubmit();
+    }
 }
 
-reviewButton.addEventListener("click", continueToReview);
-bottomReviewButton.addEventListener("click", continueToReview);
+reviewButton.addEventListener("click", () => submitBooking());
+bottomReviewButton.addEventListener("click", () => submitBooking());
+if (saveLaterButton) saveLaterButton.addEventListener("click", () => submitBooking(true));
 updateDates();
 updateLimits();
 updateCounters();

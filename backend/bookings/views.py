@@ -209,12 +209,15 @@ def save_booking(request, campsite_slug):
             campsite_name=campsite['name'], campsite_location=campsite['location'],
             total_cost=review['total'], arrival_date=review['checkIn'], departure_date=review['checkOut'],
             no_of_adults=review['campers'], no_of_vehicles=review['vehicles'],
-            cancellation_policy_snapshot='Free cancellation up to 7 days before arrival',
+            cancellation_policy_snapshot='',
         )
         booking.reference_no = f'WC-{booking.created_at.year}-{booking.id:05d}'
         booking.save(update_fields=['reference_no'])
         save_lines(booking, review, campsite)
     request.session.pop('booking_review', None)
+    if request.POST.get('action') == 'save_for_later':
+        messages.success(request, f'Booking {booking.reference_no} saved. Your dates are reserved; you can pay later from My Bookings.')
+        return redirect('bookings:my_bookings')
     return redirect('secure_checkout', booking_id=booking.pk)
 
 

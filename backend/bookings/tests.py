@@ -80,3 +80,28 @@ class BookingFlowTests(TestCase):
         }
         self.assertEqual(self.client.post(self.save_url, next_stay).status_code, 302)
         self.assertEqual(Booking.objects.count(), 2)
+
+    def test_save_for_later_reserves_dates_without_payment(self):
+        response = self.client.post(self.save_url, {**self.data, 'action': 'save_for_later'})
+        self.assertRedirects(response, reverse('bookings:my_bookings'))
+        booking = Booking.objects.get(customer=self.user)
+        self.assertEqual(booking.status, 'pending')
+        self.assertEqual(booking.amount_paid, 0)
+        self.assertEqual(booking.bookingline_set.count(), 6)
+        self.assertNotIn('booking_review', self.client.session)
+        listing = self.client.get(reverse('bookings:my_bookings'))
+        self.assertContains(listing, reverse('secure_checkout', args=[booking.pk]))
+
+        other = get_user_model().objects.create_user(email='later@example.com', password='test-password')
+        self.client.force_login(other)
+        response = self.client.post(self.save_url, {**self.data, 'action': 'save_for_later'})
+        self.assertIn('This campsite is already booked', response.context['error'])
+        self.assertEqual(Booking.objects.count(), 1)
+
+    def test_save_for_later_rejects_invalid_dates(self):
+        response = self.client.post(self.save_url, {
+            **self.data, 'departure_date': self.data['arrival_date'], 'action': 'save_for_later',
+        })
+        self.assertTemplateUsed(response, 'bookings/booking.html')
+        self.assertTrue(response.context['error'])
+        self.assertFalse(Booking.objects.exists())
