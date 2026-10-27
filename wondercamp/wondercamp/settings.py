@@ -32,11 +32,6 @@ INSTALLED_APPS = [
     'backend.bookings',
     'backend.payments',
     'backend.accounts',
-<<<<<<< HEAD
-    'backend.vehicles',
-    #'backend.notifications'
-=======
->>>>>>> sahil
     'backend.campsites',
     'backend.admin_dashboard',
     'backend.notifications.apps.NotificationsConfig',
@@ -65,14 +60,11 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-<<<<<<< HEAD
-=======
         "APP": {
             "client_id": os.getenv("GOOGLE_CLIENT_ID", ""),
             "secret": os.getenv("GOOGLE_CLIENT_SECRET", ""),
             "key": "",
         },
->>>>>>> sahil
     }
 }
 
@@ -147,13 +139,4 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR.parent / 'frontend' / 'static' / 'media'
 
-<<<<<<< HEAD
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
-=======
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
->>>>>>> sahil
