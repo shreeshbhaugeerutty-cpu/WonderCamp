@@ -4,104 +4,186 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/rvdetails.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="rv-detail-container">
 
-  <!-- Main Hero Image -->
-  <div class="rv-hero-image">
-    {% if rv.image %}
-      <img src="{{ rv.image }}" alt="{{ rv.title }}" onerror="this.onerror=null; this.src='{% static rv.static_fallback %}';">
-    {% else %}
-      <img src="{% static rv.static_fallback %}" alt="{{ rv.title }}" onerror="this.onerror=null; this.src='{{ rv.fallback_image }}';">
-    {% endif %}
-  </div>
-
-  <!-- Title Pill and Price Row -->
-  <div class="rv-title-bar">
-    <h1 class="rv-title-pill">{{ rv.title }}</h1>
-    <div class="rv-price-box">
-      <span class="rv-price-val">{{ rv.price|default:"Rs 9,990" }}</span>
-      <span class="rv-price-unit">/day</span>
-    </div>
-  </div>
-
-  <!-- Specs & Action Row -->
-  <div class="rv-info-row">
-    <div class="rv-specs">
-      <div class="rv-spec-item">🚐 {{ rv.subtitle }}</div>
-      <div class="rv-spec-item">📞 Call | 💬 Whatsapp</div>
-      <div class="rv-spec-item">👤 {{ rv.capacity }}</div>
+    <!-- Oval Capsule Hero Image -->
+    <div class="rv-hero-wrapper">
+        {% if rv.image %}
+            <img src="{{ rv.image.url }}" alt="{{ rv.name }}" class="rv-hero-img">
+        {% else %}
+            <img src="{% static 'images/image ' %}{{ rv.id }}.png" alt="{{ rv.name }}" class="rv-hero-img">
+        {% endif %}
     </div>
 
-    <div style="text-align: right;">
-      <a href="#" class="rv-book-btn">Book Now</a>
-      <div class="rv-stars" style="margin-top: 8px;">★★★★★</div>
-    </div>
-  </div>
-
-  <!-- Amenities -->
-  <div class="rv-amenities">
-    <strong>Amenities:</strong> {{ rv.amenities }}
-  </div>
-
-  <hr class="rv-divider">
-
-  <!-- Interactive Price Chart -->
-  <h3 class="rv-section-title">Price trends over the past 30 days</h3>
-  <div class="rv-chart-wrapper">
-    <canvas id="priceChart" data-prices="{{ rv.price_history|default:'[]'|safe }}"></canvas>
-  </div>
-
-  <hr class="rv-divider">
-
-  <!-- Guest Reviews Horizontal Scroll -->
-  <h3 class="rv-section-title">Why guests love this campsite?</h3>
-  <div class="rv-reviews-grid">
-    {% for review in rv.reviews %}
-      <div class="rv-review-card">
-        <div class="rv-review-header">
-          <div class="rv-reviewer">
-            <span>👤</span> {{ review.author }}
-          </div>
-          <div class="rv-stars" style="font-size: 0.9rem;">★★★★★</div>
+    <!-- Header Row Layout -->
+    <div class="rv-header-row">
+        <div class="rv-header-left">
+            <div class="rv-title-pill">{{ rv.name }}</div>
+            <div class="rv-meta-item">
+                <span class="icon">🚌</span>
+                <span>{{ rv.luxury_level|default:"High luxury RV" }}</span>
+            </div>
+            <div class="rv-meta-item">
+                <span class="icon">📞</span> <span>Call</span>
+                <span class="icon whatsapp-icon">💬</span> <span>Whatsapp</span>
+            </div>
+            <div class="rv-meta-item">
+                <span class="icon">👤</span> <span>{{ rv.capacity|default:"6 - 7 persons" }}</span>
+            </div>
         </div>
-        <div class="rv-review-body">
-          "{{ review.comment }}"
+
+        <div class="rv-header-right">
+            <div class="rv-price-tag">
+                <span class="price-val">{{ rv.price_per_day|default:"Rs 9,990" }}</span>
+                <span class="price-period">/day</span>
+            </div>
+           <a href="{% url 'bookings:create_booking' campsite_id=rv.id %}" 
+           class="btn-book-now" 
+           style="text-decoration: none; display: inline-block; text-align: center;">
+           Book Now</a>
+            <div class="rv-star-rating">★★★★<span class="half-star">★</span></div>
         </div>
-      </div>
-    {% empty %}
-      <p style="color: #666; font-style: italic;">No reviews yet for this RV.</p>
-    {% endfor %}
-  </div>
-
-  <hr class="rv-divider">
-
-  <!-- About & Ratings Breakdown -->
-  <h3 class="rv-section-title">About</h3>
-  <div class="rv-about-score">
-    <span style="font-size: 1.5rem;">{{ rv.rating|default:"4.5" }}</span>
-    <span class="rv-stars">★★★★★</span>
-    <span style="color: #3b6025;">Good</span>
-  </div>
-
-  <!-- Breakdown Bars -->
-  {% for key, value in rv.ratings_breakdown.items %}
-    <div class="rv-rating-row">
-      <span>{% if key == 'sleep_quality' %}Sleep Quality{% else %}{{ key|title }}{% endif %}</span>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div class="rv-progress-bar-bg">
-          <div class="rv-progress-bar-fill" style="width: {% widthratio value 5 100 %}%;"></div>
-        </div>
-        <span>{{ value }}</span>
-      </div>
     </div>
-  {% empty %}
-    <p style="color: #666; font-style: italic; margin-top: 10px;">No detailed rating breakdown available for this RV in Django Admin.</p>
-  {% endfor %}
+
+    <!-- Amenities Line -->
+    <p class="rv-amenities-info">
+        <strong>Amenities:</strong> {{ rv.amenities|default:"1 Bathroom, 4 beds, 500L water tank for daily use, 1 Kitchen." }}
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- Price Trends Section -->
+    <section class="section-block">
+        <h3 class="section-title">Price trends over the past 30 days</h3>
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Reviews Section -->
+    <section class="section-block">
+        <h3 class="section-title">Why guests love this campsite?</h3>
+        <div class="reviews-scroll-container">
+            {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="avatar-circle">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="#446e2a"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                        <span class="review-author">{{ review.author }}</span>
+                        <div class="card-star-rating">★★★★<span class="half-star">★</span></div>
+                    </div>
+                    <p class="review-comment">{{ review.comment }}</p>
+                </div>
+            {% empty %}
+                <p class="no-data">No reviews yet for this campsite.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- About Section & Rating Breakdown -->
+    <section class="section-block">
+        <h3 class="section-title">About</h3>
+        <div class="overall-rating-header">
+            <span class="rating-number">{{ rv.overall_rating|default:"4.5" }}</span>
+            <div class="card-star-rating">★★★★<span class="half-star">★</span></div>
+            <span class="rating-label">Good</span>
+        </div>
+
+        {% if rating_breakdown %}
+        <div class="rating-bars-container">
+            <div class="rating-row">
+                <span class="rating-name">Location</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.location 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.location|floatformat:1 }}</span>
+            </div>
+            <div class="rating-row">
+                <span class="rating-name">Rooms</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.rooms 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.rooms|floatformat:1 }}</span>
+            </div>
+            <div class="rating-row">
+                <span class="rating-name">Value</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.value 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.value|floatformat:1 }}</span>
+            </div>
+            <div class="rating-row">
+                <span class="rating-name">Cleanliness</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.cleanliness 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.cleanliness|floatformat:1 }}</span>
+            </div>
+            <div class="rating-row">
+                <span class="rating-name">Service</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.service 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.service|floatformat:1 }}</span>
+            </div>
+            <div class="rating-row">
+                <span class="rating-name">Sleep Quality</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {% widthratio rating_breakdown.sleep_quality 5 100 %}%;"></div>
+                </div>
+                <span class="rating-score">{{ rating_breakdown.sleep_quality|floatformat:1 }}</span>
+            </div>
+        </div>
+        {% else %}
+            <p class="no-data">No detailed rating breakdown available.</p>
+        {% endif %}
+    </section>
 
 </div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'js/rvdetails1.js' %}"></script>
+<script>
+    const days = {{ days_json|safe }};
+    const prices = {{ prices_json|safe }};
+
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+    gradient.addColorStop(0, '#4a792d');
+    gradient.addColorStop(1, '#819c5c');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: days.length ? days : [0, 10, 20, 30],
+            datasets: [{
+                data: prices.length ? prices : [40, 65, 30, 50, 35, 75, 55, 80, 50, 40],
+                borderColor: '#446e2a',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                fill: true,
+                tension: 0.45,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: true } },
+            scales: {
+                x: {
+                    grid: { color: '#c5d0ba', lineWidth: 1 },
+                    ticks: { color: '#446e2a', font: { weight: 'bold', size: 13 } }
+                },
+                y: { display: false }
+            }
+        }
+    });
+</script>
 {% endblock %}

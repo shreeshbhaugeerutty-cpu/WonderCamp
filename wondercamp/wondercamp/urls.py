@@ -1,41 +1,24 @@
-
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-from backend.map import views as map_views
-from django.views.generic import TemplateView
-from . import views
+from django.conf import settings
+from django.conf.urls.static import static
+from backend.vehicles import views
 
 urlpatterns = [
-    # 1. Django standard admin (renamed to avoid prefix collision with custom admin)
-    path('django-admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('', views.placeholder, name='home'),
+    path('list/', views.placeholder, name='list'),
+    path('camping-vans/', views.placeholder, name='camping_vans'),
+    path('rv-details/<int:pk>/', views.rv_detail, name='rv_detail'),
+    path('rv-details/<int:pk>/', views.rv_detail, name='rv_details_id'),
+    path('notifications/', include(('backend.notifications.urls', 'notifications'), namespace='notifications')),
+    path('bookings/', include('backend.bookings.urls', namespace='bookings')),
 
-    # 2. Main Landing & Auth
-    path('', views.landing, name='home'),
-    path('campsites/', include('backend.campsites.urls')),
-    path('', include('backend.vehicles.urls')),
-    path('', include('backend.accounts.urls')),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
-    path('', include('backend.bookings.urls')),
-    path('notifications/',include ('backend.notifications.urls')),
-    #  Map & SOS Routes
-    path('map/', map_views.map_view, name='map'),
-    path('sos/', map_views.sos_view, name='sos'),
-    path('sos/trigger/', map_views.sos_trigger, name='sos_trigger'),
-
-    #  Payment Routes
-    path('payment/', include('backend.payments.urls')),
-
-    # 3. Custom Admin Dashboard (FR 6.1 - FR 6.6)
-    path('admin-dashboard/', include('backend.admin_dashboard.urls')),
-
-    # 4. Teammate App Routes (Untouched)
-    path('vehicles/', include('backend.vehicles.urls')),
-    path('accounts/', include('backend.accounts.urls')),
-    path('bookings/', include('backend.bookings.urls', namespace='bookings_prefixed')),
-
-    # 5. Google OAuth2 Login
-    path("accounts/", include("allauth.urls")),
+    # Auth placeholders to resolve template links
+    path('register/', views.placeholder, name='register'),
+    path('logout/', views.placeholder, name='logout'),
+    path('profile/', views.placeholder, name='profile'),
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
