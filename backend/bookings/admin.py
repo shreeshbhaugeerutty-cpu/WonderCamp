@@ -1,3 +1,2 @@
 from django.contrib import admin
-
-# Register your models here.
+# Keep any booking model registrations here if you have them, otherwise leave default

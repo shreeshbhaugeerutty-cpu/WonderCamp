@@ -1,22 +1,65 @@
+import random
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Create your models here.
+
 class RV(models.Model):
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=200, help_text="e.g. High luxury RV")
-    price = models.CharField(max_length=50, help_text="e.g. Rs 9,990")
+    name = models.CharField(max_length=200)
+    rv_class = models.CharField(max_length=100, help_text="e.g. Class A Motorhome, Class B Motorhome")
+    luxury_level = models.CharField(max_length=100, help_text="e.g. High luxury RV, Medium luxury RV")
+    price_per_day = models.CharField(max_length=50, help_text="e.g. Rs 9,990")
     capacity = models.CharField(max_length=100, help_text="e.g. 6 - 7 persons")
     amenities = models.TextField(help_text="Comma separated list of amenities")
     image = models.ImageField(upload_to='rv_images/', blank=True, null=True)
-    fallback_image = models.URLField(default="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=1000&auto=format&fit=crop")
+    fallback_image = models.URLField(
+        default="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=1000&auto=format&fit=crop"
+    )
     overall_rating = models.FloatField(
         default=4.5,
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
     )
 
     def __str__(self):
-        return self.title
+        return self.name
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+
+        # 1. Automatically generate 30 days of price history if none exists
+        if is_new and not self.price_history.exists():
+            digits_only = ''.join(c for c in self.price_per_day if c.isdigit())
+            base_price = int(digits_only) if digits_only else 9990
+            
+            for day_idx in range(1, 31, 5):
+                price_var = base_price + random.choice([-500, -200, 0, 200, 400])
+                RVPriceHistory.objects.create(
+                    rv=self,
+                    day=day_idx,
+                    price=max(1000, price_var)  # Ensure price stays positive
+                )
+
+        # 2. Automatically generate default reviews matching your design mockup
+        if is_new and not self.reviews.exists():
+            sample_reviews = [
+                {
+                    "author": "Thor Odinson",
+                    "comment": "Comfortable living while still being connected to mother nature. I loved everything about the experience, would definitely recommend!",
+                    "rating": 4.5
+                },
+                {
+                    "author": "Tony Stark",
+                    "comment": "Incredible amenity setup, smooth ride, and high quality comfort. Everything exceeded expectations throughout the entire trip.",
+                    "rating": 5.0
+                }
+            ]
+            for rev in sample_reviews:
+                RVReview.objects.create(
+                    rv=self,
+                    author=rev["author"],
+                    comment=rev["comment"],
+                    rating=rev["rating"]
+                )
 
 
 class RVRatingBreakdown(models.Model):
@@ -29,7 +72,7 @@ class RVRatingBreakdown(models.Model):
     sleep_quality = models.FloatField(default=5.0)
 
     def __str__(self):
-        return f"Ratings for {self.rv.title}"
+        return f"Ratings for {self.rv.name}"
 
 
 class RVReview(models.Model):
@@ -40,7 +83,7 @@ class RVReview(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Review by {self.author} for {self.rv.title}"
+        return f"Review by {self.author} for {self.rv.name}"
 
 
 class RVPriceHistory(models.Model):
@@ -52,4 +95,4 @@ class RVPriceHistory(models.Model):
         ordering = ['day']
 
     def __str__(self):
-        return f"{self.rv.title} - Day {self.day}: Rs {self.price}"
+        return f"{self.rv.name} - Day {self.day}: Rs {self.price}"
