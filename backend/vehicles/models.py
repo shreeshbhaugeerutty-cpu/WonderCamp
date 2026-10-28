@@ -1,6 +1,16 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
+# 1. Define RATING_CHOICES at the module level before models use it
+RATING_CHOICES = [
+    (1, '1 Star'),
+    (2, '2 Stars'),
+    (3, '3 Stars'),
+    (4, '4 Stars'),
+    (5, '5 Stars'),
+]
+
 # Create your models here.
 class RV(models.Model):
     title = models.CharField(max_length=200)
@@ -53,3 +63,30 @@ class RVPriceHistory(models.Model):
 
     def __str__(self):
         return f"{self.rv.title} - Day {self.day}: Rs {self.price}"
+
+    class Comment(models.Model):
+    
+ 
+     RATING_CHOICES = [
+        (5, "5 - Excellent"),
+        (4, "4 - Very good"),
+        (3, "3 - Average"),
+        (2, "2 - Poor"),
+        (1, "1 - Terrible"),
+     ]
+ 
+    name = models.CharField(max_length=60)
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, default=5)
+    text = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+ 
+    class Meta:
+        ordering = ["-created_at"]
+ 
+    @property
+    def star_pct(self):
+        """How much of the 5-star row to colour in (e.g. 4 stars = 80)."""
+        return self.rating * 20
+ 
+    def __str__(self):
+        return f"{self.name} ({self.rating}/5)"
