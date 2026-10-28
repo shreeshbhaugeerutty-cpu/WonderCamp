@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from .models import SystemAuditLog, SystemHealthLog, EmergencyAlert
 from .forms import AdminProfileForm
+from backend.notifications.models import Notification
 from backend.notifications.utils import create_notification
 
 
@@ -38,30 +39,19 @@ def get_formatted_admin_name(user):
 @user_passes_test(is_admin, login_url='/login/')
 def operational_dashboard(request):
     """
-    Main Operational Admin Dashboard view.
+    Main Operational Admin Dashboard view with dynamic database notifications.
     """
-    pending_notifications = [
-        {
-            'title': 'Awaiting Payment Confirmation',
-            'details': 'Client Sarah Smith submitted receipt for Black River Gorges booking.',
-            'time': '10 mins ago',
-            'urgent': True
-        },
-        {
-            'title': 'Pending Campsite Approval',
-            'details': 'New listing submitted for Pieter Both site review.',
-            'time': '45 mins ago',
-            'urgent': False
-        }
-    ]
-
+    notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')[:5]
+    unread_count = notifications.filter(is_read=False).count()
+    
     audit_logs = SystemAuditLog.objects.all().order_by('-timestamp')[:10]
     health_logs = SystemHealthLog.objects.all().order_by('-timestamp')[:5]
     admin_name = get_formatted_admin_name(request.user)
 
     context = {
         'admin_name': admin_name,
-        'notifications': pending_notifications,
+        'notifications': notifications,
+        'unread_count': unread_count,
         'audit_logs': audit_logs,
         'health_logs': health_logs,
     }
@@ -156,11 +146,38 @@ def business_policies(request):
     return render(request, 'admin_dashboard/business_policies.html', {'admin_name': get_formatted_admin_name(request.user)})
 
 
+from backend.campsites.models import Campsite  # Adjust import path if needed
+from .forms import CampsiteForm
+
+
 @user_passes_test(is_admin, login_url='/login/')
 def manage_catalogue(request):
-    return render(request, 'admin_dashboard/manage_catalogue.html', {'admin_name': get_formatted_admin_name(request.user)})
+    """
+    Manage Campsite and RV Catalogue Explorer entries.
+    """
+    campsites = Campsite.objects.all().order_by('-id')
+    campsite_form = CampsiteForm()
 
+    if request.method == 'POST':
+        if 'create_campsite' in request.POST:
+            campsite_form = CampsiteForm(request.POST, request.FILES)
+            if campsite_form.is_valid():
+                campsite_form.save()
+                messages.success(request, "New campsite listing added successfully!")
+                return redirect('admin_dashboard:manage_catalogue')
+        elif 'delete_campsite' in request.POST:
+            campsite_id = request.POST.get('campsite_id')
+            campsite = get_object_or_404(Campsite, pk=campsite_id)
+            campsite.delete()
+            messages.success(request, "Campsite listing removed.")
+            return redirect('admin_dashboard:manage_catalogue')
 
+    context = {
+        'admin_name': get_formatted_admin_name(request.user),
+        'campsites': campsites,
+        'campsite_form': campsite_form,
+    }
+    return render(request, 'admin_dashboard/manage_catalogue.html', context)
 @user_passes_test(is_admin, login_url='/login/')
 def audit_logs(request):
     return render(request, 'admin_dashboard/audit_logs.html', {
