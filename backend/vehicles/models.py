@@ -25,7 +25,7 @@ class RV(models.Model):
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
     )
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
 
@@ -38,7 +38,7 @@ class RVRatingBreakdown(models.Model):
     service = models.FloatField(default=4.9)
     sleep_quality = models.FloatField(default=5.0)
 
-    def __str__(self):
+    def _str_(self):
         return f"Ratings for {self.rv.title}"
 
 
@@ -49,7 +49,7 @@ class RVReview(models.Model):
     rating = models.FloatField(default=4.5)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return f"Review by {self.author} for {self.rv.title}"
 
 
@@ -61,7 +61,7 @@ class RVPriceHistory(models.Model):
     class Meta:
         ordering = ['day']
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.rv.title} - Day {self.day}: Rs {self.price}"
 
     class Comment(models.Model):
@@ -88,5 +88,37 @@ class RVPriceHistory(models.Model):
         """How much of the 5-star row to colour in (e.g. 4 stars = 80)."""
         return self.rating * 20
  
-    def __str__(self):
+    def _str_(self):
         return f"{self.name} ({self.rating}/5)"
+
+
+class RVComment(models.Model):
+    """A guest review left on an RV detail page.
+
+    The RVs shown on the site are hard-coded in data.py, so each comment
+    stores the RV's slug (e.g. "class-a") to know where it belongs.
+    """
+
+    STAR_CHOICES = [
+        (5, "5 - Excellent"),
+        (4, "4 - Very good"),
+        (3, "3 - Average"),
+        (2, "2 - Poor"),
+        (1, "1 - Terrible"),
+    ]
+
+    rv_slug = models.SlugField(max_length=100)
+    name = models.CharField(max_length=60)
+    rating = models.PositiveSmallIntegerField(choices=STAR_CHOICES, default=5)
+    text = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    @property
+    def star_pct(self):
+        return self.rating * 20
+
+    def _str_(self):
+        return f"{self.name} on {self.rv_slug} ({self.rating}/5)"

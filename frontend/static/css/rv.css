@@ -1,0 +1,52 @@
+.rv-card__image {
+  background: transparent;
+  border-radius: 0;
+  aspect-ratio: 3 / 2;
+}
+
+.rv-card__image img {
+  object-fit: contain;
+}
+
+.rv-van-icon {
+  width: 18px !important;
+  height: 18px !important;
+  margin-top: 1px !important;
+  color: var(--wc-green) !important;
+}
+
+/* ---------- Detail page ---------- */
+.rv-hero {
+  height: clamp(240px, 40vw, 520px);
+  padding: 24px 24px 0;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.rv-hero img {
+  object-fit: contain;
+}
+
+.rv-per-day {
+  margin-left: 4px;
+  font-size: 0.5em;
+  font-weight: 600;
+  color: var(--wc-green);
+}
+
+.rv-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rv-amenities li {
+  padding: 8px 16px;
+  border: 1.5px solid var(--wc-green);
+  border-radius: 999px;
+  font: 500 15px "Inter", sans-serif;
+  color: var(--wc-green);
+}
