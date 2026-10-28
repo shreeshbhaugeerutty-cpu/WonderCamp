@@ -3,50 +3,399 @@
 
 {% block title %}Manage Catalogue - WonderCamp{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
-{% endblock %}
+{% block navbar %}{% endblock %}
 
 {% block content %}
-<div class="admin-wrapper" style="display: flex; gap: 30px; background-color: #fbf8e7; padding: 40px; font-family: sans-serif; min-height: 100vh;">
+<style>
+  body {
+    background-color: #fbf8e7 !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  .admin-layout {
+    display: flex;
+    gap: 32px;
+    background-color: #fbf8e7;
+    padding: 32px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  .admin-sidebar {
+    width: 270px;
+    background-color: #32521e;
+    border-radius: 28px;
+    padding: 32px 24px;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0 0 32px 0;
+    color: #ffffff;
+  }
+
+  .sidebar-section-title {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sidebar-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .welcome-title {
+    font-size: 40px;
+    font-weight: 900;
+    font-style: italic;
+    color: #32521e;
+    margin: 0 0 6px 0;
+  }
+
+  .green-card {
+    background-color: #658a4e;
+    border-radius: 28px;
+    padding: 28px 36px;
+    color: white;
+  }
+
+  .green-card-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+  }
+
+  .white-inner-box {
+    background-color: #ffffff;
+    border-radius: 18px;
+    padding: 24px;
+    color: #333333;
+    max-height: 750px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .section-divider {
+    border: none;
+    border-top: 2px dashed #cbd5e1;
+    margin: 10px 0;
+  }
+
+  .catalogue-section-header {
+    font-size: 20px;
+    font-weight: 800;
+    color: #32521e;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: #f8faf6;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .form-group-full {
+    grid-column: span 2;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    box-sizing: border-box;
+  }
+
+  .btn-submit {
+    background-color: #32521e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .item-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+  }
+
+  .item-table th, .item-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+  }
+
+  .item-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+  }
+
+  .badge-active {
+    background-color: #dcfce7;
+    color: #15803d;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .badge-inactive {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+
+<div class="admin-layout">
   <!-- Sidebar -->
-  <aside style="width: 280px; background-color: #32521e; border-radius: 24px; padding: 30px; color: white;">
-    <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 40px;">WonderCamp</h2>
-    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">General</div>
-    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 18px;">
-      <li><a href="{% url 'admin_dashboard:dashboard' %}" style="color: white; text-decoration: none; font-weight: 600;">Operational Overview</a></li>
-      <li><a href="{% url 'admin_dashboard:master_data' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Client Profile & Master Data</a></li>
-      <li><a href="{% url 'admin_dashboard:business_policies' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Business Policies</a></li>
-      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}" style="color: white; text-decoration: none; font-weight: 700; opacity: 1;">Edit Catalogue</a></li>
-      <li><a href="{% url 'admin_dashboard:audit_logs' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Audit Records</a></li>
-    </ul>
-    <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">Tools</div>
-    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 18px;">
-      <li><a href="{% url 'admin_dashboard:health' %}" style="color: white; text-decoration: none; font-weight: 600; opacity: 0.9;">Settings & Health</a></li>
-      <li>
-        <form action="{% url 'logout' %}" method="post">
-          {% csrf_token %}
-          <button type="submit" style="background: none; border: none; color: white; font-weight: 600; cursor: pointer; padding: 0;">Log Out</button>
-        </form>
-      </li>
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">WonderCamp</div>
+    <div class="sidebar-section-title">General</div>
+    <ul class="sidebar-nav">
+      <li><a href="{% url 'admin_dashboard:dashboard' %}">Operational Overview</a></li>
+      <li><a href="{% url 'admin_dashboard:manage_catalogue' %}" style="text-decoration: underline;">Edit Catalogue</a></li>
+      <li><a href="{% url 'admin_dashboard:audit_logs' %}">Audit Records</a></li>
     </ul>
   </aside>
 
   <!-- Main Content -->
-  <main style="flex: 1;">
-    <h1 style="font-size: 42px; font-weight: 800; color: #658a4e; margin-bottom: 5px;">Catalogue Content Management</h1>
-    <p style="color: #4a5d3e; margin-bottom: 30px;">Manage public campsite listings, activities, and campervan rentals.</p>
-
-    <div style="background-color: #658a4e; border-radius: 24px; padding: 30px; color: white;">
-      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 20px;">CAMPSITE & VEHICLE CATALOGUE</h2>
-      <div style="background-color: white; border-radius: 16px; padding: 30px; color: #333; text-align: center;">
-        <p style="font-size: 18px; margin-bottom: 20px; font-weight: 600; color: #32521e;">Catalogue Module Sync Ready</p>
-        <p style="color: #666; max-width: 500px; margin: 0 auto 20px auto;">Integrated with the Campsite Explorer app models. Edit campsite locations, price rates, and uploaded images directly.</p>
-      </div>
+  <main class="admin-main">
+    <div>
+      <h1 class="welcome-title">Catalogue Content Management</h1>
+      <p style="color: #4a5d3e; font-size: 15px; font-weight: 600; margin: 0;">
+        Manage public campsite listings and RV campervan rentals.
+      </p>
     </div>
 
-    <div style="margin-top: 40px;">
-      <a href="{% url 'home' %}" style="color: #32521e; text-decoration: none; font-size: 20px; font-weight: 800;">&lt; Back to Home</a>
+    <section class="green-card">
+      <h2 class="green-card-title">Campsite & Vehicle Catalogue</h2>
+      
+      <div class="white-inner-box">
+        
+        <!-- SECTION 1: CAMPSITE EXPLORER MANAGEMENT -->
+        <div>
+          <div class="catalogue-section-header">
+            <span>⛺ Campsite Explorer Management</span>
+          </div>
+
+          <!-- Add Campsite Form -->
+          <form method="post" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Name</label>
+              {{ campsite_form.name }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Location</label>
+              {{ campsite_form.location }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Price / Night ($)</label>
+              {{ campsite_form.price_per_night }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Capacity</label>
+              {{ campsite_form.capacity }}
+            </div>
+            <div class="form-group-full">
+              <label style="font-size: 12px; font-weight: 700;">Description</label>
+              {{ campsite_form.description }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Image Upload</label>
+              {{ campsite_form.image }}
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              {{ campsite_form.is_available }}
+              <label style="font-size: 13px; font-weight: 700;">Available for Booking</label>
+            </div>
+            <div class="form-group-full" style="text-align: right;">
+              <button type="submit" name="create_campsite" class="btn-submit">+ Add Campsite</button>
+            </div>
+          </form>
+
+          <!-- Campsite Table List -->
+          <table class="item-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Price/Night</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in campsites %}
+              <tr>
+                <td><strong>{{ item.name }}</strong></td>
+                <td>{{ item.location }}</td>
+                <td>${{ item.price_per_night }}</td>
+                <td>{{ item.capacity }} Persons</td>
+                <td>
+                  {% if item.is_available %}
+                    <span class="badge-active">Available</span>
+                  {% else %}
+                    <span class="badge-inactive">Unavailable</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="campsite_id" value="{{ item.pk }}">
+                    <button type="submit" name="delete_campsite" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">
+                  No campsites added yet. Use the form above to add your first campsite!
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- SECTION 2: RV EXPLORER MANAGEMENT -->
+        <div>
+          <div class="catalogue-section-header">
+            <span>🚐 RV & Campervan Explorer Management</span>
+          </div>
+
+          <!-- Add RV Form -->
+          <form method="post" enctype="multipart/form-data" class="form-grid">
+            {% csrf_token %}
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Title</label>
+              {{ rv_form.title }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Subtitle</label>
+              {{ rv_form.subtitle }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Price</label>
+              {{ rv_form.price }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Capacity</label>
+              {{ rv_form.capacity }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Rating (1.0 - 5.0)</label>
+              {{ rv_form.overall_rating }}
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 700;">Fallback Image URL</label>
+              {{ rv_form.fallback_image }}
+            </div>
+            <div class="form-group-full">
+              <label style="font-size: 12px; font-weight: 700;">Amenities</label>
+              {{ rv_form.amenities }}
+            </div>
+            <div class="form-group-full">
+              <label style="font-size: 12px; font-weight: 700;">Image Upload</label>
+              {{ rv_form.image }}
+            </div>
+            <div class="form-group-full" style="text-align: right;">
+              <button type="submit" name="create_rv" class="btn-submit">+ Add RV Campervan</button>
+            </div>
+          </form>
+
+          <!-- RV Table List -->
+          <table class="item-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Price</th>
+                <th>Capacity</th>
+                <th>Rating</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in rvs %}
+              <tr>
+                <td><strong>{{ item.title }}</strong></td>
+                <td>{{ item.subtitle }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.capacity }}</td>
+                <td>⭐ {{ item.overall_rating }}</td>
+                <td>
+                  <form method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="rv_id" value="{{ item.pk }}">
+                    <button type="submit" name="delete_rv" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">
+                  No RV campervans added yet. Use the form above to list your first RV!
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <div>
+      <a href="{% url 'home' %}" style="color: #32521e; font-weight: 800; text-decoration: none;">&lt; Back to Home</a>
     </div>
   </main>
 </div>

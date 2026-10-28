@@ -5,9 +5,25 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.utils import timezone
 
+# Model & Form Imports
 from .models import SystemAuditLog, SystemHealthLog, EmergencyAlert
-from .forms import AdminProfileForm
+from .forms import AdminProfileForm, CampsiteForm, RVForm
+from backend.notifications.models import Notification
 from backend.notifications.utils import create_notification
+
+# Resilient model imports supporting both app structures
+try:
+    from backend.campsites.models import Campsite
+except ImportError:
+    from campsites.models import Campsite
+
+try:
+    from backend.vehicles.models import RV
+except ImportError:
+    try:
+        from vehicles.models import RV
+    except ImportError:
+        from backend.rvs.models import RV
 
 
 def is_admin(user):
@@ -38,30 +54,20 @@ def get_formatted_admin_name(user):
 @user_passes_test(is_admin, login_url='/login/')
 def operational_dashboard(request):
     """
-    Main Operational Admin Dashboard view.
+    Main Operational Admin Dashboard view with dynamic database notifications.
+    Filters on recipient/user first, calculates count on unsliced QuerySet, then slices.
     """
-    pending_notifications = [
-        {
-            'title': 'Awaiting Payment Confirmation',
-            'details': 'Client Sarah Smith submitted receipt for Black River Gorges booking.',
-            'time': '10 mins ago',
-            'urgent': True
-        },
-        {
-            'title': 'Pending Campsite Approval',
-            'details': 'New listing submitted for Pieter Both site review.',
-            'time': '45 mins ago',
-            'urgent': False
-        }
-    ]
-
+    user_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
+    unread_count = user_notifications.filter(is_read=False).count()
+    
     audit_logs = SystemAuditLog.objects.all().order_by('-timestamp')[:10]
     health_logs = SystemHealthLog.objects.all().order_by('-timestamp')[:5]
     admin_name = get_formatted_admin_name(request.user)
 
     context = {
         'admin_name': admin_name,
-        'notifications': pending_notifications,
+        'notifications': user_notifications[:5],
+        'unread_count': unread_count,
         'audit_logs': audit_logs,
         'health_logs': health_logs,
     }
@@ -126,7 +132,7 @@ def emergency_alerts(request):
             details=f"Resolved emergency alert #{alert_obj.pk} for client {alert_obj.client_name}"
         )
 
-        # 2. Dynamic Notification Dispatch using helper function
+        # 2. Dynamic Notification Dispatch
         create_notification(
             user=request.user,
             title="Emergency SOS Resolved",
@@ -147,18 +153,67 @@ def emergency_alerts(request):
 
 
 @user_passes_test(is_admin, login_url='/login/')
+def manage_catalogue(request):
+    """
+    Manage Campsite and RV Catalogue Explorer entries independently.
+    """
+    campsites = Campsite.objects.all().order_by('-id')
+    rvs = RV.objects.all().order_by('-id')
+
+    campsite_form = CampsiteForm()
+    rv_form = RVForm()
+
+    if request.method == 'POST':
+        # Campsite Actions
+        if 'create_campsite' in request.POST:
+            campsite_form = CampsiteForm(request.POST, request.FILES)
+            if campsite_form.is_valid():
+                campsite_form.save()
+                messages.success(request, "New campsite listing added successfully!")
+                return redirect('admin_dashboard:manage_catalogue')
+        elif 'delete_campsite' in request.POST:
+            campsite_id = request.POST.get('campsite_id')
+            campsite = get_object_or_404(Campsite, pk=campsite_id)
+            campsite.delete()
+            messages.success(request, "Campsite listing removed.")
+            return redirect('admin_dashboard:manage_catalogue')
+
+        # RV / Vehicle Actions
+        elif 'create_rv' in request.POST:
+            rv_form = RVForm(request.POST, request.FILES)
+            if rv_form.is_valid():
+                rv_form.save()
+                messages.success(request, "New RV listing added successfully!")
+                return redirect('admin_dashboard:manage_catalogue')
+        elif 'delete_rv' in request.POST:
+            rv_id = request.POST.get('rv_id')
+            rv = get_object_or_404(RV, pk=rv_id)
+            rv.delete()
+            messages.success(request, "RV listing removed.")
+            return redirect('admin_dashboard:manage_catalogue')
+
+    context = {
+        'admin_name': get_formatted_admin_name(request.user),
+        'campsites': campsites,
+        'rvs': rvs,
+        'campsite_form': campsite_form,
+        'rv_form': rv_form,
+    }
+    return render(request, 'admin_dashboard/manage_catalogue.html', context)
+
+
+@user_passes_test(is_admin, login_url='/login/')
 def master_data(request):
-    return render(request, 'admin_dashboard/master_data.html', {'admin_name': get_formatted_admin_name(request.user)})
+    return render(request, 'admin_dashboard/master_data.html', {
+        'admin_name': get_formatted_admin_name(request.user)
+    })
 
 
 @user_passes_test(is_admin, login_url='/login/')
 def business_policies(request):
-    return render(request, 'admin_dashboard/business_policies.html', {'admin_name': get_formatted_admin_name(request.user)})
-
-
-@user_passes_test(is_admin, login_url='/login/')
-def manage_catalogue(request):
-    return render(request, 'admin_dashboard/manage_catalogue.html', {'admin_name': get_formatted_admin_name(request.user)})
+    return render(request, 'admin_dashboard/business_policies.html', {
+        'admin_name': get_formatted_admin_name(request.user)
+    })
 
 
 @user_passes_test(is_admin, login_url='/login/')
