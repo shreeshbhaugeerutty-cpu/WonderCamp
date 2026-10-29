@@ -13,3 +13,5 @@ def notification_list(request):
     return render(request, 'notifications/notif.html', {
         'notifications': notifications
     })
+
+

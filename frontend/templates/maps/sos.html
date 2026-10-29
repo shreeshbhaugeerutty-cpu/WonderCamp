@@ -1,158 +1,307 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Explore Mauritius | WonderCamp{% endblock %}
+{% block title %}I'm Safe | WonderCamp{% endblock %}
+
+{# Solid green nav bar, same as the other inner pages (see body.solid-navbar in style.css). #}
+{% block body_class %}solid-navbar{% endblock %}
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
 {% endblock %}
 
+{% block extra_css %}
+    <style>
+        /* Only what style.css doesn't already provide for the SOS page
+           (.sos-page, .sos-head, .banner, #map-sos, .dock, .sos-btn, .you live there). */
+        .sos-head em { display: block; }
+        .banner { font-size: 0.95rem; line-height: 1.35; }
+        .banner a { color: #fff; text-decoration: underline; }
+
+        .sos-map-wrap { position: relative; isolation: isolate; flex: 1; display: flex; min-height: 380px; }
+        .sos-map-wrap #map-sos { flex: 1; }
+
+        .sos-notice, .sos-status {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            z-index: 1000;
+            border-radius: var(--radius-md);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        .sos-notice { top: 10px; margin: 0; padding: 10px 14px; background: #fff3cd; color: #5c4400; font-size: 0.8rem; font-weight: 600; }
+        .sos-status { bottom: 10px; padding: 14px 16px; background: var(--cream); color: var(--forest-dark); }
+        .sos-notice[hidden], .sos-status[hidden] { display: none; }
+        .sos-status strong { display: block; font-size: 1rem; }
+        .sos-status p { margin: 6px 0 10px; font-size: 0.85rem; line-height: 1.4; }
+        .sos-status[data-kind="ok"] strong { color: var(--forest); }
+        .sos-status[data-kind="error"] strong { color: var(--orange-dark); }
+        .sos-stop { padding: 0; background: none; color: var(--forest-dark); font-size: 0.8rem; text-decoration: underline; }
+
+        .dock button:disabled { opacity: 0.6; cursor: progress; }
+        .dock a:focus-visible, .dock button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+
+        /* "You are here!" marker: the label style comes from .leaflet-container .you in style.css */
+        .leaflet-container .you { display: flex; align-items: center; gap: 6px; white-space: nowrap; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
+        .you__pin { flex: none; width: 16px; height: 16px; border-radius: 50% 50% 50% 0; background: #000; transform: rotate(-45deg); }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <main class="wrap container">
-        <h1>Explore Mauritius</h1>
-        <p class="lead">
-            A curated map of the island's most breathtaking spots, pristine beaches, protected forests, 
-            cultural landmarks and WonderCamp campsites. Click any pin to reveal its story.
-        </p>
-
-        <div class="chips" role="group" aria-label="Filter spots">
-            <button class="chip" data-cat="all" aria-pressed="true">All Spot Categories</button>
-            <button class="chip" data-cat="sightseeing" aria-pressed="false">Sightseeing</button>
-            <button class="chip" data-cat="nature" aria-pressed="false">Nature Trails</button>
-            <button class="chip" data-cat="beaches" aria-pressed="false">Pristine Beaches</button>
-            <button class="chip" data-cat="adventure" aria-pressed="false">Adventure Activities</button>
-        </div>
-
-        <div class="map-box">
-            <div id="map"></div>
-            <div class="legend">
-                <i style="background:#f08a24"></i>Sightseeing<br>
-                <i style="background:#2e7d32"></i>Nature<br>
-                <i style="background:#1e88e5"></i>Beaches<br>
-                <i style="background:#e53935"></i>Adventure
+    <div class="sos-page">
+        <div class="sos-head">
+            <div>
+                <h1>I'M SAFE</h1>
+                <em>Your safety while camping matters.</em>
             </div>
+            <a href="{% url 'home' %}" class="logo">WonderCamp</a>
         </div>
 
-        <div class="hl-head">
-            <h2>Explore Highlights</h2>
-            <a href="#">Show All {{ spots_json|length }} Locations</a>
+        <div class="banner">
+            If you feel you are in danger, press the SOS button below to alert WonderCamp staff
+            with your live location. For emergency services, call
+            <a href="tel:999">999</a> or <a href="tel:112">112</a>.
         </div>
 
-        <div class="cards">
-            {% for s in spots %}
-                <article class="card">
-                    <img src="{% static s.image %}" alt="{{ s.name }}" loading="lazy">
-                    <div class="card-body">
-                        <span class="tag">{{ s.category|title }}</span>
-                        <h3>{{ s.name }}</h3>
-                        <p style="font-size:.8rem;color:#555">{{ s.blurb }}</p>
-                    </div>
-                    <button data-focus="{{ s.id }}">View on Map →</button>
-                </article>
-            {% endfor %}
-        </div>
-    </main>
+        <div class="sos-map-wrap">
+            <div id="map-sos"></div>
 
-    {{ spots_json|json_script:"spots-data" }}
+            <p id="sos-notice" class="sos-notice" hidden>
+                Your location is off or unavailable. SOS will still alert staff, but they won't
+                see where you are. Turn on location for this site in your browser settings.
+            </p>
+
+            <section id="sos-status" class="sos-status" role="status" aria-live="polite" hidden>
+                <strong id="sos-status-title"></strong>
+                <p id="sos-status-text"></p>
+                <button type="button" id="sos-stop" class="sos-stop" hidden>Stop sharing my location</button>
+            </section>
+        </div>
+
+        <nav class="dock" aria-label="Safety navigation">
+            <a href="{% url 'campsites:explorer' %}">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Explorer page
+            </a>
+
+            <button type="button" id="sos-send" class="sos-btn" aria-label="Send SOS alert">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                SOS
+            </button>
+
+            <a href="{% url 'notifications:list' %}">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Notifications
+            </a>
+        </nav>
+    </div>
+
+    {{ spots|json_script:"spots-data" }}
 {% endblock %}
 
 {% block extra_scripts %}
     <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
     <script>
-        const spots = JSON.parse(document.getElementById('spots-data').textContent);
-        
-        const colors = {
-            sightseeing: '#f08a24', 
-            nature: '#2e7d32', 
-            beaches: '#1e88e5', 
-            adventure: '#e53935'
-        };
-        
-        const esc = s => String(s).replace(/[&<>"']/g, c => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[c]));
+        (() => {
+            const triggerUrl = "{% url 'map:sos_trigger' %}";
+            const csrfToken = "{{ csrf_token }}";
+            const spots = JSON.parse(document.getElementById('spots-data').textContent);
+            const colors = {sightseeing: '#f08a24', nature: '#2e7d32', beaches: '#1e88e5', adventure: '#e53935'};
 
-        const map = L.map('map', {zoomControl: true});
-        
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            referrerPolicy: 'strict-origin-when-cross-origin',
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            const sendBtn = document.getElementById('sos-send');
+            const stopBtn = document.getElementById('sos-stop');
+            const statusBox = document.getElementById('sos-status');
+            const statusTitle = document.getElementById('sos-status-title');
+            const statusText = document.getElementById('sos-status-text');
+            const notice = document.getElementById('sos-notice');
 
-        function popupHtml(s) {
-            return `
-                <div class="iw">
-                    <img src="${esc(s.image_url)}" alt="">
-                    <h3>${esc(s.name)}</h3>
-                    <p>${esc(s.blurb)}</p>
-                    <a href="${esc(s.url)}">Learn more</a>
-                </div>
-            `;
-        }
+            // ---------- Map ----------
+            const map = L.map('map-sos', {zoomControl: false});
+            L.control.zoom({position: 'topright'}).addTo(map);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                referrerPolicy: 'strict-origin-when-cross-origin',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            map.setView([-20.28, 57.55], 10); // Mauritius, until we have a GPS fix
 
-        const layer = L.layerGroup().addTo(map);
-        
-        const markers = spots.map(s => {
-            const m = L.circleMarker([s.lat, s.lng], {
-                radius: 9, 
-                fillColor: colors[s.category], 
-                fillOpacity: 1, 
-                color: '#fff', 
-                weight: 2
-            })
-            .bindTooltip(s.name)
-            .bindPopup(popupHtml(s), {minWidth: 220});
-            
-            m.spot = s;
-            m.addTo(layer);
-            return m;
-        });
-
-        map.fitBounds(L.latLngBounds(spots.map(s => [s.lat, s.lng])), {padding: [40, 40]});
-
-        function setFilter(cat) {
-            document.querySelectorAll('.chip').forEach(x => {
-                x.setAttribute('aria-pressed', x.dataset.cat === cat);
+            spots.forEach(s => {
+                L.circleMarker([s.lat, s.lng], {
+                    radius: 6,
+                    fillColor: colors[s.category] || '#555',
+                    fillOpacity: 0.9,
+                    color: '#fff',
+                    weight: 2
+                }).bindTooltip(s.name).addTo(map);
             });
-            
-            map.closePopup();
-            
-            markers.forEach(m => {
-                const show = cat === 'all' || m.spot.category === cat;
-                if (show) {
-                    layer.addLayer(m);
+
+            const youIcon = L.divIcon({
+                className: 'you',
+                html: '<span class="you__pin"></span><span>You are here!</span>',
+                iconSize: [130, 24],
+                iconAnchor: [10, 22]
+            });
+
+            window.addEventListener('load', () => map.invalidateSize());
+
+            // ---------- Live position ----------
+            let lastPos = null;
+            let youMarker = null;
+            let firstFix = true;
+
+            function onPosition(p) {
+                lastPos = {lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy};
+                const latlng = [lastPos.lat, lastPos.lng];
+                if (youMarker) {
+                    youMarker.setLatLng(latlng);
                 } else {
-                    layer.removeLayer(m);
+                    youMarker = L.marker(latlng, {icon: youIcon, keyboard: false}).addTo(map);
                 }
-            });
-        }
-        
-        document.querySelectorAll('.chip').forEach(c => {
-            c.onclick = () => setFilter(c.dataset.cat);
-        });
+                if (firstFix) {
+                    map.setView(latlng, 14);
+                    firstFix = false;
+                }
+                notice.hidden = true;
+            }
 
-        document.querySelectorAll('[data-focus]').forEach(b => {
-            b.onclick = () => {
-                const m = markers.find(m => m.spot.id == b.dataset.focus);
-                if (!m) return;
-                
-                if (!layer.hasLayer(m)) {
-                    setFilter('all'); 
-                }
-                
-                document.getElementById('map').scrollIntoView({
-                    behavior: 'smooth', 
-                    block: 'center'
+            function onPositionError() {
+                if (!lastPos) notice.hidden = false;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(onPosition, onPositionError, {
+                    enableHighAccuracy: true,
+                    maximumAge: 5000,
+                    timeout: 20000
                 });
-                
-                map.setView(m.getLatLng(), 13);
-                m.openPopup();
-            };
-        });
+            } else {
+                notice.hidden = false;
+            }
+
+            function waitForFix(ms) {
+                return new Promise(resolve => {
+                    const started = Date.now();
+                    (function poll() {
+                        if (lastPos || !navigator.geolocation || Date.now() - started > ms) return resolve();
+                        setTimeout(poll, 200);
+                    })();
+                });
+            }
+
+            // ---------- Talking to the server ----------
+            async function post(extra) {
+                const body = Object.assign(
+                    lastPos ? {lat: lastPos.lat, lng: lastPos.lng, accuracy: lastPos.accuracy} : {},
+                    extra || {}
+                );
+                const response = await fetch(triggerUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+                    body: JSON.stringify(body)
+                });
+                let data = {};
+                try { data = await response.json(); } catch (e) { /* not JSON, e.g. an HTML error page */ }
+                if (response.status === 403) {
+                    throw new Error('Your session expired. Reload this page and try again.');
+                }
+                if (!response.ok) throw new Error(data.message || ('Server error ' + response.status));
+                return data;
+            }
+
+            function showStatus(title, text, kind, canStop) {
+                statusTitle.textContent = title;
+                statusText.textContent = text;
+                statusBox.dataset.kind = kind || '';
+                stopBtn.hidden = !canStop;
+                statusBox.hidden = false;
+            }
+
+            // Keep the admin's copy of our position fresh while the alert is open.
+            let tracking = false;
+            let timer = null;
+            let pushing = false;
+
+            function startTracking() {
+                if (tracking) return;
+                tracking = true;
+                timer = setInterval(pushUpdate, 15000);
+            }
+
+            function stopTracking() {
+                tracking = false;
+                clearInterval(timer);
+            }
+
+            async function pushUpdate() {
+                if (!tracking || !lastPos || pushing) return;
+                pushing = true;
+                try {
+                    const data = await post({update: true});
+                    if (data.status === 'closed') {
+                        stopTracking();
+                        showStatus(
+                            'Alert resolved',
+                            'WonderCamp staff have marked this alert as resolved. If you still need help, press SOS again.',
+                            'ok',
+                            false
+                        );
+                    }
+                } catch (err) {
+                    /* network blip: try again on the next tick */
+                } finally {
+                    pushing = false;
+                }
+            }
+
+            async function sendSOS() {
+                sendBtn.disabled = true;
+                showStatus('Sending your alert…', 'Getting your location and contacting WonderCamp staff.', '', false);
+                await waitForFix(8000);
+
+                try {
+                    await post();
+                    startTracking();
+                    if (lastPos) {
+                        showStatus(
+                            'SOS sent',
+                            'WonderCamp staff have been alerted with your live location. We keep updating it while this page stays open.',
+                            'ok',
+                            true
+                        );
+                    } else {
+                        showStatus(
+                            'SOS sent, but no location',
+                            'WonderCamp staff have been alerted, but we could not read your location.',
+                            'error',
+                            false
+                        );
+                    }
+                } catch (err) {
+                    showStatus('SOS not sent', err.message, 'error', false);
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            }
+
+            sendBtn.addEventListener('click', sendSOS);
+            stopBtn.addEventListener('click', () => {
+                stopTracking();
+                showStatus(
+                    'Location sharing stopped',
+                    'WonderCamp staff keep the last location we sent.',
+                    '',
+                    false
+                );
+            });
+        })();
     </script>
 {% endblock %}

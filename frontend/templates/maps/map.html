@@ -7,11 +7,18 @@
     <link rel="stylesheet" href="{% static 'vendor/leaflet/leaflet.css' %}">
 {% endblock %}
 
+{% block extra_css %}
+    <style>
+        /* Cards past the first four stay hidden until "Show All" is clicked. */
+        .card[hidden] { display: none !important; }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <main class="wrap container">
+    <div class="wrap container">
         <h1>Explore Mauritius</h1>
         <p class="lead">
-            A curated map of the island's most breathtaking spots, pristine beaches, protected forests, 
+            A curated map of the island's most breathtaking spots, pristine beaches, protected forests,
             cultural landmarks and WonderCamp campsites. Click any pin to reveal its story.
         </p>
 
@@ -35,13 +42,13 @@
 
         <div class="hl-head">
             <h2>Explore Highlights</h2>
-            <a href="#">Show All {{ spots_json|length }} Locations</a>
+            <a href="#" id="toggle-all">Show All {{ spots|length }} Locations</a>
         </div>
 
         <div class="cards">
             {% for s in spots %}
-                <article class="card">
-                    <img src="{% static s.image %}" alt="{{ s.name }}" loading="lazy">
+                <article class="card"{% if forloop.counter > 4 %} data-extra hidden{% endif %}>
+                    <img src="{{ s.image_url }}" alt="{{ s.name }}" loading="lazy">
                     <div class="card-body">
                         <span class="tag">{{ s.category|title }}</span>
                         <h3>{{ s.name }}</h3>
@@ -49,25 +56,27 @@
                     </div>
                     <button data-focus="{{ s.id }}">View on Map →</button>
                 </article>
+            {% empty %}
+                <p>No locations have been added yet.</p>
             {% endfor %}
         </div>
-    </main>
+    </div>
 
-    {{ spots_json|json_script:"spots-data" }}
+    {{ spots|json_script:"spots-data" }}
 {% endblock %}
 
 {% block extra_scripts %}
     <script src="{% static 'vendor/leaflet/leaflet.js' %}"></script>
     <script>
         const spots = JSON.parse(document.getElementById('spots-data').textContent);
-        
+
         const colors = {
-            sightseeing: '#f08a24', 
-            nature: '#2e7d32', 
-            beaches: '#1e88e5', 
+            sightseeing: '#f08a24',
+            nature: '#2e7d32',
+            beaches: '#1e88e5',
             adventure: '#e53935'
         };
-        
+
         const esc = s => String(s).replace(/[&<>"']/g, c => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -77,7 +86,7 @@
         }[c]));
 
         const map = L.map('map', {zoomControl: true});
-        
+
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             referrerPolicy: 'strict-origin-when-cross-origin',
@@ -85,43 +94,54 @@
         }).addTo(map);
 
         function popupHtml(s) {
+            const link = s.url && s.url !== '#'
+                ? `<a href="${esc(s.url)}">Learn more</a>`
+                : '';
             return `
                 <div class="iw">
                     <img src="${esc(s.image_url)}" alt="">
                     <h3>${esc(s.name)}</h3>
                     <p>${esc(s.blurb)}</p>
-                    <a href="${esc(s.url)}">Learn more</a>
+                    ${link}
                 </div>
             `;
         }
 
         const layer = L.layerGroup().addTo(map);
-        
+
         const markers = spots.map(s => {
             const m = L.circleMarker([s.lat, s.lng], {
-                radius: 9, 
-                fillColor: colors[s.category], 
-                fillOpacity: 1, 
-                color: '#fff', 
+                radius: 9,
+                fillColor: colors[s.category] || '#555',
+                fillOpacity: 1,
+                color: '#fff',
                 weight: 2
             })
             .bindTooltip(s.name)
             .bindPopup(popupHtml(s), {minWidth: 220});
-            
+
             m.spot = s;
             m.addTo(layer);
             return m;
         });
 
-        map.fitBounds(L.latLngBounds(spots.map(s => [s.lat, s.lng])), {padding: [40, 40]});
+        if (spots.length) {
+            map.fitBounds(L.latLngBounds(spots.map(s => [s.lat, s.lng])), {
+                padding: [40, 40],
+                maxZoom: 13
+            });
+        } else {
+            // No spots in the database yet: centre on Mauritius instead of crashing.
+            map.setView([-20.28, 57.55], 10);
+        }
 
         function setFilter(cat) {
             document.querySelectorAll('.chip').forEach(x => {
                 x.setAttribute('aria-pressed', x.dataset.cat === cat);
             });
-            
+
             map.closePopup();
-            
+
             markers.forEach(m => {
                 const show = cat === 'all' || m.spot.category === cat;
                 if (show) {
@@ -131,7 +151,7 @@
                 }
             });
         }
-        
+
         document.querySelectorAll('.chip').forEach(c => {
             c.onclick = () => setFilter(c.dataset.cat);
         });
@@ -140,19 +160,37 @@
             b.onclick = () => {
                 const m = markers.find(m => m.spot.id == b.dataset.focus);
                 if (!m) return;
-                
+
                 if (!layer.hasLayer(m)) {
-                    setFilter('all'); 
+                    setFilter('all');
                 }
-                
+
                 document.getElementById('map').scrollIntoView({
-                    behavior: 'smooth', 
+                    behavior: 'smooth',
                     block: 'center'
                 });
-                
+
                 map.setView(m.getLatLng(), 13);
                 m.openPopup();
             };
+        });
+
+        // "Show All N Locations" reveals the cards beyond the first four.
+        const toggle = document.getElementById('toggle-all');
+        const extraCards = document.querySelectorAll('.card[data-extra]');
+
+        if (!extraCards.length) {
+            toggle.style.display = 'none';
+        }
+
+        toggle.addEventListener('click', e => {
+            e.preventDefault();
+            const expanding = toggle.dataset.expanded !== 'true';
+            extraCards.forEach(c => { c.hidden = !expanding; });
+            toggle.dataset.expanded = String(expanding);
+            toggle.textContent = expanding
+                ? 'Show fewer locations'
+                : `Show All ${spots.length} Locations`;
         });
     </script>
 {% endblock %}

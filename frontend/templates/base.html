@@ -25,18 +25,21 @@
         {% if user.is_authenticated %}
           <li>
             <a href="{% url 'notifications:list' %}" aria-label="Notifications" class="nav-icon">
-              <img src="{% static 'images/notifss.png' %}" alt="Notifications" class="nav-icon__img">
+              <img src="{% static 'images/notifss.png' %}" alt="" class="nav-icon__img">
             </a>
           </li>
-        {% endif %}
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'profile' %}" aria-label="Account" class="nav-icon">
-              <img src="{% static 'images/user-profile.png' %}" alt="" class="nav-icon__img"></a></li>
+          <li>
+            <a href="{% url 'profile' %}" aria-label="Account" class="nav-icon">
+              <img src="{% static 'images/user-profile.png' %}" alt="" class="nav-icon__img">
+            </a>
+          </li>
           <li>
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
               {% csrf_token %}
-              <a href="{% url 'logout' %}" onclick="this.closest('form').submit(); return false;" aria-label="Logout" class="nav-icon">
-              <img src="{% static 'images/logouticon.png' %}" alt="" class="nav-icon__img"></a></li>
+              <button type="submit" aria-label="Logout" class="nav-icon"
+                      style="background:none;border:0;padding:0;cursor:pointer;">
+                <img src="{% static 'images/logouticon.png' %}" alt="" class="nav-icon__img">
+              </button>
             </form>
           </li>
         {% else %}
@@ -65,7 +68,7 @@
         <h3>Explore</h3>
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'map' %}">Map</a></li>
+          <li><a href="{% url 'map:map' %}">Map</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Help</a></li>
         </ul>
@@ -96,11 +99,8 @@
     const scrollThreshold = 80; // pixels scrolled before the nav turns solid
 
     function updateHeaderState() {
-      if (window.scrollY > scrollThreshold) {
-        siteHeader.classList.add('is-scrolled');
-      } else {
-        siteHeader.classList.remove('is-scrolled');
-      }
+      if (!siteHeader) return; // pages that override the navbar block have no header
+      siteHeader.classList.toggle('is-scrolled', window.scrollY > scrollThreshold);
     }
 
     window.addEventListener('scroll', updateHeaderState);
@@ -158,12 +158,8 @@
   <!-- JS: Auto-Dismiss Pop-Up After 4 Seconds -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const toasts = document.querySelectorAll('.toast-popup');
-      
-      toasts.forEach(toast => {
-        setTimeout(() => {
-          toast.remove();
-        }, 4000);
+      document.querySelectorAll('.toast-popup').forEach(toast => {
+        setTimeout(() => toast.remove(), 4000);
       });
     });
   </script>

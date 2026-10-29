@@ -4,8 +4,6 @@ URL configuration for WonderCamp project.
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from backend.map import views as map_views
-from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
@@ -19,24 +17,20 @@ urlpatterns = [
     path('', include('backend.accounts.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
-    path('', include('backend.bookings.urls')),
-    path('notifications/',include ('backend.notifications.urls')),
-    #  Map & SOS Routes
-    path('map/', map_views.map_view, name='map'),
-    path('sos/', map_views.sos_view, name='sos'),
-    path('sos/trigger/', map_views.sos_trigger, name='sos_trigger'),
-
-    #  Payment Routes
-    path('payment/', include('backend.payments.urls')),
 
     # 3. Custom Admin Dashboard (FR 6.1 - FR 6.6)
     path('admin-dashboard/', include('backend.admin_dashboard.urls')),
 
     # 4. Teammate App Routes (Untouched)
+    path('notifications/', include('backend.notifications.urls')),
+    path('campsites/', include('backend.campsites.urls')),
     path('vehicles/', include('backend.vehicles.urls')),
     path('accounts/', include('backend.accounts.urls')),
-    path('bookings/', include('backend.bookings.urls', namespace='bookings_prefixed')),
+    path('bookings/', include('backend.bookings.urls')),
 
     # 5. Google OAuth2 Login
     path("accounts/", include("allauth.urls")),
+
+    # 6. Map & SOS Feature
+    path('map/', include('backend.map.urls')),
 ]

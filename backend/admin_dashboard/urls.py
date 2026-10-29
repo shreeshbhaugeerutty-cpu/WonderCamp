@@ -11,5 +11,6 @@ urlpatterns = [
     path('audit-logs/', views.audit_logs, name='audit_logs'),
     path('health/', views.health, name='health'),
     path('emergency-alerts/', views.emergency_alerts, name='emergency_alerts'),
+    path('emergency-alerts/<int:pk>/resolve/', views.resolve_emergency_alert, name='resolve_emergency_alert'),
     path('profile/', views.admin_profile, name='profile'),
 ]
