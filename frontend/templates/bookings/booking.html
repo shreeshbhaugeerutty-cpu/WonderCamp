@@ -108,7 +108,7 @@
       </form>
 
       <div class="booking-bottom">
-        <a href="{% url 'campsites:detail' campsite.slug %}" class="back-link">← Back to campsite</a>
+        <a href="{% if campsite.is_van %}{% url 'rv_detail' campsite.rv_slug %}{% else %}{% url 'campsites:detail' campsite.slug %}{% endif %}" class="back-link">← Back to {% if campsite.is_van %}camping van{% else %}campsite{% endif %}</a>
         <button type="button" class="bottom-review-button" id="bottom-review-button" disabled>Continue to Review →</button>
       </div>
     </div>
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const capacityMessage=$("capacity-message"), reviewButton=$("review-button"), bottomReviewButton=$("bottom-review-button");
   const saveLaterButton=$("save-later-button");
   const pricePerNight={{ campsite.price }};
-  const minimums={campers:{{ campsite.min_campers }},vehicles:0,pets:0,tents:1};
+  const minimums={campers:{{ campsite.min_campers }},vehicles:0,pets:0,tents:{% if campsite.is_van %}0{% else %}1{% endif %}};
   let values={...minimums};
   const limits={campers:{{ campsite.max_campers }},vehicles:{{ campsite.max_vehicles }},pets:{{ campsite.max_pets }},tents:{{ campsite.max_tents }}};
   const initialBooking=JSON.parse($("initial-booking-data").textContent);
@@ -337,8 +337,8 @@ function updateCalendar() {
     $("campers-limit").textContent=`${minimums.campers}–${limits.campers} campers`;
     $("vehicles-limit").textContent=`Maximum ${limits.vehicles} vehicle${limits.vehicles===1?"":"s"}`;
     $("pets-limit").textContent=limits.pets?`Maximum ${limits.pets} pet${limits.pets===1?"":"s"}`:"Pets not allowed";
-    $("tents-limit").textContent=`1–${limits.tents} tents`;
-    capacityMessage.textContent="Campers, vehicles, pets and tents must stay within this campsite’s limits.";
+    $("tents-limit").textContent=limits.tents?`1–${limits.tents} tents`:"Tents not allowed";
+    capacityMessage.textContent="Campers, vehicles, pets and tents must stay within this accommodation’s limits.";
   }
 
   document.querySelectorAll(".counter button").forEach(btn=>btn.addEventListener("click",()=>{

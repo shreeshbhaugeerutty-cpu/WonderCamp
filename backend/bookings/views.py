@@ -13,6 +13,7 @@ from .models import Booking, BookingLine
 from django.utils import timezone
 
 from backend.campsites.data import CAMPSITES_BY_SLUG
+from .catalogue import BOOKABLES_BY_SLUG
 
 
 def validate_booking_dates(arrival_date, departure_date):
@@ -60,7 +61,7 @@ def create_booking(request, campsite_id=None, campsite_slug=None):
     # Preserve existing bookmarks while new links identify the campsite by slug.
     if campsite_slug is None:
         campsite_slug = {76: 'bois-cheri', 77: 'black-river'}.get(campsite_id)
-    campsite = CAMPSITES_BY_SLUG.get(campsite_slug)
+    campsite = BOOKABLES_BY_SLUG.get(campsite_slug)
     if campsite is None:
         raise Http404("Campsite not found")
 
@@ -84,11 +85,11 @@ def create_booking(request, campsite_id=None, campsite_slug=None):
 @login_required(login_url='login')
 def confirmation(request):
     review = request.session.get('booking_review')
-    if not review or review.get('campsite_slug') not in CAMPSITES_BY_SLUG:
+    if not review or review.get('campsite_slug') not in BOOKABLES_BY_SLUG:
         from django.shortcuts import redirect
         return redirect('campsites:explorer')
     return render(request, 'bookings/confirmation.html', {
-        'campsite': CAMPSITES_BY_SLUG[review['campsite_slug']], 'booking_review': review,
+        'campsite': BOOKABLES_BY_SLUG[review['campsite_slug']], 'booking_review': review,
     })
 
 
@@ -103,11 +104,11 @@ def validate_review(data, campsite, exclude_booking_id=None):
         context['error'] = 'Please enter valid whole numbers for your party.'
         return context['error'], None
 
-    minimums = {'campers': campsite['min_campers'], 'vehicles': 0, 'pets': 0, 'tents': 1}
+    minimums = {'campers': campsite['min_campers'], 'vehicles': 0, 'pets': 0, 'tents': campsite.get('min_tents', 1)}
     for key, minimum in minimums.items():
         maximum = campsite['max_' + key]
         if not minimum <= counts[key] <= maximum:
-            context['error'] = f'{key.capitalize()} must be between {minimum} and {maximum} for this campsite.'
+            context['error'] = f'{key.capitalize()} must be between {minimum} and {maximum} for this accommodation.'
             return context['error'], None
     try:
         arrival = date.fromisoformat(data.get('arrival_date', ''))
@@ -124,7 +125,7 @@ def validate_review(data, campsite, exclude_booking_id=None):
         arrival_date__lt=departure, departure_date__gt=arrival,
     )
     if overlapping.exists():
-        return ('This campsite is already booked for your selected dates. '
+        return (f"This {'camping van' if campsite.get('is_van') else 'campsite'} is already booked for your selected dates. "
                 'Please choose different dates.'), None
 
     nights = (departure - arrival).days
@@ -168,7 +169,7 @@ def save_lines(booking, review, campsite):
 def booking_context(booking):
     lines = {line.line_type: line for line in booking.bookingline_set.all()}
     stay = lines.get('accommodation') or lines.get('pitch')
-    campsite = CAMPSITES_BY_SLUG.get(stay.item_name) if stay else None
+    campsite = BOOKABLES_BY_SLUG.get(stay.item_name) if stay else None
     if not campsite:
         campsite = next((site for site in CAMPSITES_BY_SLUG.values()
                          if site['name'] == booking.campsite_name), None)
@@ -196,7 +197,7 @@ def booking_context(booking):
 @require_POST
 @transaction.atomic
 def save_booking(request, campsite_slug):
-    campsite = CAMPSITES_BY_SLUG.get(campsite_slug)
+    campsite = BOOKABLES_BY_SLUG.get(campsite_slug)
     if campsite is None:
         raise Http404('Campsite not found')
     error, review = validate_review(request.POST, campsite)

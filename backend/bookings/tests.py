@@ -24,7 +24,7 @@ class BookingFlowTests(TestCase):
 
     def test_create_review_save_modify_and_cancel(self):
         response = self.client.get(self.create_url)
-        self.assertContains(response, 'class="create-booking-body"')
+        self.assertContains(response, 'class="bookings-body"')
         response = self.client.post(self.create_url, self.data)
         self.assertTemplateUsed(response, 'bookings/confirmation.html')
         self.assertContains(response, 'class="booking-summary-body"')
@@ -154,3 +154,78 @@ class BookingFlowTests(TestCase):
         output = StringIO()
         call_command('expire_bookings', stdout=output)
         self.assertIn('Expired 1 unpaid booking(s).', output.getvalue())
+
+
+class CampingVanBookingTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(email='van@example.com', password='test')
+        self.client.force_login(self.user)
+        arrival = timezone.localdate() + timedelta(days=30)
+        self.data = {
+            'arrival_date': arrival.isoformat(),
+            'departure_date': (arrival + timedelta(days=3)).isoformat(),
+            'campers': 6, 'vehicles': 1, 'pets': 0, 'tents': 0,
+        }
+        self.create_url = reverse('bookings:create_booking', kwargs={'campsite_slug': 'rv-class-a'})
+        self.save_url = reverse('bookings:save_booking', args=['rv-class-a'])
+
+    def test_all_vans_link_to_booking_and_review(self):
+        from backend.bookings.catalogue import VANS_BY_SLUG
+        for van in VANS_BY_SLUG.values():
+            with self.subTest(van=van['slug']):
+                url = reverse('bookings:create_booking', kwargs={'campsite_slug': van['slug']})
+                detail = self.client.get(reverse('rv_detail', args=[van['rv_slug']]))
+                self.assertContains(detail, f'href="{url}"')
+                page = self.client.get(url)
+                self.assertTemplateUsed(page, 'bookings/booking.html')
+                self.assertEqual(page.context['campsite']['max_tents'], 0)
+                self.assertEqual(page.context['campsite']['max_pets'], 0)
+                review = self.client.post(url, {**self.data, 'campers': van['min_campers']})
+                self.assertTemplateUsed(review, 'bookings/confirmation.html')
+                self.assertEqual(review.context['booking_review']['accommodationFee'], van['price'] * 3)
+                self.assertContains(self.client.get(reverse('bookings:confirmation')), van['name'])
+
+    def test_save_modify_availability_cancel_and_payment(self):
+        response = self.client.post(self.save_url, {**self.data, 'action': 'save_for_later'})
+        self.assertRedirects(response, reverse('bookings:my_bookings'))
+        booking = Booking.objects.get()
+        self.assertEqual(booking.bookingline_set.get(line_type='pets').quantity, 0)
+        self.assertEqual(booking.bookingline_set.get(line_type='tents').quantity, 0)
+        self.assertEqual(booking.bookingline_set.get(line_type='accommodation').item_name, 'rv-class-a')
+        self.assertContains(self.client.get(reverse('bookings:booking_detail', args=[booking.pk])), 'Camping van')
+        self.assertTrue(self.client.get(self.create_url).context['booked_ranges'])
+        self.assertIn('camping van is already booked', self.client.post(self.save_url, self.data).context['error'])
+        # Another van can still be booked for the same dates.
+        other_url = reverse('bookings:create_booking', kwargs={'campsite_slug': 'rv-class-c'})
+        self.assertTemplateUsed(self.client.post(other_url, self.data), 'bookings/confirmation.html')
+        modify_url = reverse('bookings:modify_booking', args=[booking.pk])
+        self.assertEqual(self.client.get(modify_url).status_code, 200)
+        changed = {**self.data, 'campers': 7}
+        self.assertTemplateUsed(self.client.post(modify_url, changed), 'bookings/confirmation.html')
+        self.client.post(reverse('bookings:update_booking', args=[booking.pk]), changed)
+        booking.refresh_from_db()
+        self.assertEqual(booking.no_of_adults, 7)
+        self.client.post(reverse('bookings:cancel_booking', args=[booking.pk]))
+        self.assertEqual(self.client.get(self.create_url).context['booked_ranges'], [])
+        self.client.post(self.save_url, self.data)
+        booking = Booking.objects.filter(status='pending').get()
+        response = self.client.post(reverse('secure_checkout', args=[booking.pk]), {
+            'method': 'mcb_juice', 'mobile': '+230 55555555',
+            'email': self.user.email, 'country': 'Mauritius',
+        }, follow=True)
+        self.assertTemplateUsed(response, 'payments/payment_confirmation.html')
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, 'completed')
+        self.assertEqual(booking.amount_paid, booking.total_cost)
+
+    def test_nonzero_pets_and_tents_rejected_on_create_save_and_update(self):
+        self.client.post(self.save_url, self.data)
+        booking = Booking.objects.get()
+        for field in ('pets', 'tents'):
+            for url in (self.create_url, self.save_url,
+                        reverse('bookings:update_booking', args=[booking.pk])):
+                with self.subTest(field=field, url=url):
+                    response = self.client.post(url, {**self.data, field: 1})
+                    self.assertIn(f'{field.capitalize()} must be between 0 and 0', response.context['error'])
+        self.assertEqual(Booking.objects.count(), 1)
+        self.assertEqual(booking.bookingline_set.get(line_type='tents').quantity, 0)
