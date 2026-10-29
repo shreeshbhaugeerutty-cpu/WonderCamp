@@ -1,14 +1,17 @@
-{# Shared header for the explorer and detail pages. Included with {% include "campsites/_header.html" %} #}
+{% comment %}
+  Shared header for the campsite and camping van pages.
+  Optional: pass search_url="camping_vans" search_label="Search camping vans" so the search bar searches RVs.
+{% endcomment %}
 <header class="site-header explorer-header">
   <div class="explorer-container explorer-header__inner">
     <a href="{% url 'home' %}" class="explorer-logo">WonderCamp</a>
  
-    <form class="explorer-search" action="{% url 'campsites:explorer' %}" method="get" role="search">
+    <form class="explorer-search" action="{% url search_url|default:'campsites:explorer' %}" method="get" role="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <circle cx="10.5" cy="10.5" r="7"/>
         <path d="M16 16l5 5"/>
       </svg>
-      <input type="search" name="q" placeholder="Search" value="{{ request.GET.q|default:'' }}" aria-label="Search campsites">
+      <input type="search" name="q" placeholder="Search" value="{{ request.GET.q|default:'' }}" aria-label="{{ search_label|default:'Search campsites' }}">
     </form>
  
     <nav class="explorer-icons" aria-label="Quick links">

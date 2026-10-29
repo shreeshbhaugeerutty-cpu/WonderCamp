@@ -352,39 +352,40 @@
         <!-- Action Items / Pending Notifications Icon -->
         <button class="header-icon-btn" onclick="toggleNotificationDropdown()" title="Pending Actions">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          <span class="notification-badge"></span>
+          {% if unread_count %}
+            <span class="notification-badge"></span>
+          {% endif %}
         </button>
 
-        <!-- Dropdown for Actions Awaiting Admin Confirmation -->
+        <!-- Dynamic Notification Dropdown -->
         <div class="notification-dropdown" id="notificationDropdown">
           <h3 style="margin: 0 0 14px 0; color: #32521e; font-size: 16px; display: flex; justify-content: space-between; align-items: center;">
             Pending Actions
-            <span style="font-size: 11px; background-color: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Action Required</span>
+            {% if unread_count %}
+              <span style="font-size: 11px; background-color: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: bold;">{{ unread_count }} Action Required</span>
+            {% else %}
+              <span style="font-size: 11px; background-color: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 10px; font-weight: bold;">All Clear</span>
+            {% endif %}
           </h3>
           <div style="display: flex; flex-direction: column; gap: 12px;">
             {% for item in notifications %}
-            <div style="background-color: #f8fbf6; border-left: 4px solid {% if item.urgent %}#ff9900{% else %}#658a4e{% endif %}; padding: 10px 12px; border-radius: 8px;">
+            <div style="background-color: #f8fbf6; border-left: 4px solid {% if not item.is_read %}#ff9900{% else %}#658a4e{% endif %}; padding: 10px 12px; border-radius: 8px;">
               <strong style="color: #32521e; font-size: 13px; display: block;">{{ item.title }}</strong>
-              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">{{ item.details }}</p>
-              <span style="font-size: 10px; color: #888;">{{ item.time }}</span>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">{{ item.message }}</p>
+              <span style="font-size: 10px; color: #888;">{{ item.created_at|timesince }} ago</span>
             </div>
             {% empty %}
-            <div style="background-color: #f8fbf6; border-left: 4px solid #ff9900; padding: 10px 12px; border-radius: 8px;">
-              <strong style="color: #32521e; font-size: 13px; display: block;">Awaiting Payment Confirmation</strong>
-              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">Client Sarah Smith submitted receipt for Black River Gorges booking.</p>
-              <span style="font-size: 10px; color: #888;">10 mins ago</span>
-            </div>
-            <div style="background-color: #f8fbf6; border-left: 4px solid #658a4e; padding: 10px 12px; border-radius: 8px;">
-              <strong style="color: #32521e; font-size: 13px; display: block;">Pending Campsite Approval</strong>
-              <p style="margin: 2px 0 0 0; font-size: 12px; color: #444;">New listing submitted for Pieter Both site review.</p>
-              <span style="font-size: 10px; color: #888;">45 mins ago</span>
+            <div style="background-color: #f8fbf6; padding: 12px; border-radius: 8px; text-align: center;">
+              <p style="margin: 0; font-size: 13px; color: #666;">No pending notifications.</p>
             </div>
             {% endfor %}
           </div>
+          <div style="margin-top: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 10px;">
+            <a href="{% url 'notifications:list' %}" style="color: #32521e; font-weight: 700; font-size: 12px; text-decoration: none;">View All Notifications &rarr;</a>
+          </div>
         </div>
 
-        <!-- Profile Avatar -->
-       <!-- Profile Avatar Button -->
+        <!-- Profile Avatar Button -->
         <a href="/admin-dashboard/profile/" style="text-decoration: none;">
           <div style="width: 44px; height: 44px; border-radius: 50%; background-color: #32521e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; cursor: pointer; transition: transform 0.15s ease;" title="Edit Profile - {{ admin_name }}">
             {{ admin_name|slice:":1"|default:"A" }}
