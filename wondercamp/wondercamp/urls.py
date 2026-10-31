@@ -25,6 +25,7 @@ urlpatterns = [
     path('vehicles/', include('backend.vehicles.urls')),
     path('accounts/', include('backend.accounts.urls')),
     path('bookings/', include('backend.bookings.urls')),
+    path('payments/', include('backend.payments.urls')),
 
     # 5. Google OAuth2 Login
     path("accounts/", include("allauth.urls")),

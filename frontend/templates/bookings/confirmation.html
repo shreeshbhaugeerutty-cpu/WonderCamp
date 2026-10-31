@@ -15,7 +15,7 @@
 
   <section class="summary-reference" aria-label="Booking reference and campsite">
     <div><span>Booking Reference</span><strong id="review-reference">{% if booking %}{{ booking.reference_no }}{% else %}Generated when saved{% endif %}</strong></div>
-    <div><span>Campsite</span><strong>{{ campsite.name }}</strong></div>
+    <div><span>{% if campsite.is_van %}Camping van{% else %}Campsite{% endif %}</span><strong>{{ campsite.name }}</strong></div>
     <span class="summary-status">{% if booking %}{{ booking.get_status_display }}{% else %}Pending Payment{% endif %}</span>
   </section>
 
@@ -68,7 +68,7 @@
             <p>⌖ {{ campsite.location }}</p>
           </div>
 
-          <span class="summary-tag">⛺ Campsite</span>
+          <span class="summary-tag">{% if campsite.is_van %}🚐 Camping van{% else %}⛺ Campsite{% endif %}</span>
           <p class="summary-availability">✓ Selected booking details</p>
         </div>
       </section>
