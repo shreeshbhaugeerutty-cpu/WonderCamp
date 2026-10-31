@@ -46,11 +46,20 @@
       <p style="color: #4a5d3e; font-size: 16px; font-weight: 600; margin-top: 4px;">Real-time camper emergency location dispatches and ranger response center.</p>
     </div>
 
+    <!-- Django Messages (Success/Error feedback from backend) -->
+    {% if messages %}
+      {% for message in messages %}
+        <div style="padding: 12px; border-radius: 8px; font-weight: bold; background-color: #e2f0d9; color: #28a745; margin-bottom: 16px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <!-- Filter Pills & Search -->
     <div style="display: flex; gap: 12px; align-items: center;">
       <button class="filter-pill active" onclick="filterAlerts('ALL', this)">All Alerts</button>
-      <button class="filter-pill" onclick="filterAlerts('ACTIVE', this)">Active (1)</button>
-      <button class="filter-pill" onclick="filterAlerts('RESOLVED', this)">Resolved (1)</button>
+      <button class="filter-pill" onclick="filterAlerts('ACTIVE', this)">Active ({{ active_sos_count }})</button>
+      <button class="filter-pill" onclick="filterAlerts('RESOLVED', this)">Resolved</button>
     </div>
 
     <div style="background-color: #658a4e; border-radius: 28px; padding: 32px; color: white;">
@@ -66,7 +75,13 @@
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #777;">
           <span>Contact: <strong style="color: #333;">{{ alert.contact }}</strong> | Transmitted: {{ alert.timestamp }}</span>
           {% if alert.status == 'ACTIVE' %}
-            <button class="btn-dispatch" onclick="dispatchRanger('{{ alert.client_name }}')">Dispatch Emergency Ranger</button>
+            <!-- Proper Backend Form Submission -->
+            <form action="{% url 'admin_dashboard:resolve_emergency_alert' alert.id %}" method="POST" style="margin: 0;">
+              {% csrf_token %}
+              <button type="submit" class="btn-dispatch">Dispatch Emergency Ranger</button>
+            </form>
+          {% else %}
+            <span style="color: #28a745; font-weight: 700;">✓ Dispatched</span>
           {% endif %}
         </div>
       </div>
@@ -92,10 +107,6 @@
         card.style.display = 'none';
       }
     });
-  }
-
-  function dispatchRanger(name) {
-    alert('🚨 Emergency Ranger Team dispatched to ' + name + '\'s campsite location! System notification sent.');
   }
 </script>
 {% endblock %}

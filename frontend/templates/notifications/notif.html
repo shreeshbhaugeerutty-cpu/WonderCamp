@@ -102,6 +102,20 @@
     margin: 0 0 12px 0;
     line-height: 1.1;
     letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .unread-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    background-color: #84cc16;
+    color: #1f3d14;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    vertical-align: middle;
   }
 
   .notifications-subtitle {
@@ -113,28 +127,19 @@
     opacity: 0.95;
   }
 
-  /* List & Card Layout with Scrollable Overflow */
+  /* List & Card Layout */
   .notifications-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-height: 620px; /* Controls max expansion before scrolling kicks in */
+    max-height: 620px;
     overflow-y: auto;
-    padding-right: 8px; /* Room for scrollbar */
+    padding-right: 8px;
   }
 
-  /* Custom Scrollbar Styling */
-  .notifications-list::-webkit-scrollbar {
-    width: 6px;
-  }
-  .notifications-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-  }
-  .notifications-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
-  }
+  .notifications-list::-webkit-scrollbar { width: 6px; }
+  .notifications-list::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+  .notifications-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); border-radius: 10px; }
 
   .notification-card {
     background: rgba(255, 255, 255, 0.14);
@@ -146,9 +151,7 @@
     transition: all 0.25s ease;
   }
 
-  .notification-card.unread {
-    border-left: 4px solid #84cc16; /* Visual indicator for unread notifications */
-  }
+  .notification-card.unread { border-left: 4px solid #84cc16; }
 
   .notification-card:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -157,81 +160,38 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
-  .notification-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
+  .notification-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .notification-title-group { display: flex; align-items: center; gap: 14px; }
+  .notification-icon { width: 28px; height: 28px; stroke: #FEFBEB; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  
+  .notification-card-title { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; color: #FEFBEB; margin: 0; }
+  .notification-time { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 700; color: #FEFBEB; opacity: 0.9; white-space: nowrap; }
+  .notification-body { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 700; color: #FEFBEB; margin: 0; padding-left: 42px; line-height: 1.35; opacity: 0.92; }
 
-  .notification-title-group {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .notification-icon {
-    width: 28px;
-    height: 28px;
-    stroke: #FEFBEB;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-  }
-
-  .notification-card-title {
+  .btn-mark-read {
+    display: inline-block;
+    background: #84cc16;
+    color: #1f3d14;
+    padding: 8px 20px;
+    border-radius: 12px;
+    text-decoration: none;
     font-family: 'Inter', sans-serif;
-    font-size: 24px;
     font-weight: 700;
-    color: #FEFBEB;
-    margin: 0;
+    font-size: 16px;
+    margin-top: 16px;
+    margin-left: 42px;
+    transition: opacity 0.2s;
   }
-
-  .notification-time {
-    font-family: 'Inter', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #FEFBEB;
-    opacity: 0.9;
-    white-space: nowrap;
-  }
-
-  .notification-body {
-    font-family: 'Inter', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: #FEFBEB;
-    margin: 0;
-    padding-left: 42px;
-    line-height: 1.35;
-    opacity: 0.92;
-  }
+  .btn-mark-read:hover { opacity: 0.85; }
 
   @media (max-width: 768px) {
-    .notifications-container {
-      padding: 28px 20px;
-      border-radius: 20px;
-    }
-    .notifications-title {
-      font-size: 42px;
-    }
-    .notifications-subtitle {
-      font-size: 18px;
-    }
-    .notification-card {
-      padding: 18px 20px;
-    }
-    .notification-card-title,
-    .notification-time,
-    .notification-body {
-      font-size: 18px;
-    }
-    .notification-body {
-      padding-left: 0;
-      margin-top: 8px;
-    }
+    .notifications-container { padding: 28px 20px; border-radius: 20px; }
+    .notifications-title { font-size: 42px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .notifications-subtitle { font-size: 18px; }
+    .notification-card { padding: 18px 20px; }
+    .notification-card-title, .notification-time, .notification-body { font-size: 18px; }
+    .notification-body { padding-left: 0; margin-top: 8px; }
+    .btn-mark-read { margin-left: 0; font-size: 14px; padding: 6px 16px; }
   }
 </style>
 {% endblock %}
@@ -240,9 +200,7 @@
 <div class="notifications-page-wrapper">
   <div class="notifications-container">
     
-    <!-- Top Header -->
     <header class="notifications-header">
-      <!-- Requirement #5: Back Arrow to Landing Page -->
       <a href="{% url 'home' %}" class="back-link">
         <svg class="back-arrow-icon" viewBox="0 0 24 24">
           <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -251,20 +209,24 @@
         Back to Home
       </a>
 
-      <h1 class="notifications-title">Notifications</h1>
+      <!-- Updated Title with Unread Badge Logic -->
+      <h1 class="notifications-title">
+        Notifications
+        {% if unread_count > 0 %}
+          <span class="unread-badge">{{ unread_count }} Unread</span>
+        {% endif %}
+      </h1>
       <p class="notifications-subtitle">All your camping alerts in one place.</p>
     </header>
 
-    <!-- Notification Cards Container -->
     <div class="notifications-list">
-      
       {% for notification in notifications %}
         <article class="notification-card {% if not notification.is_read %}unread{% endif %}">
           <div class="notification-header-row">
             <div class="notification-title-group">
               
               {% if notification.icon_class %}
-                <i class="{{ notification.icon_class }} notification-icon"></i>
+                <i class="{{ notification.icon_class }} notification-icon" style="font-size: 24px;"></i>
               {% else %}
                 <svg class="notification-icon" viewBox="0 0 24 24">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -279,14 +241,18 @@
           </div>
 
           <p class="notification-body">{{ notification.message }}</p>
+
+          <!-- Added Mark As Read Button -->
+          {% if not notification.is_read %}
+            <a href="{% url 'notifications:mark_as_read' notification.id %}" class="btn-mark-read">Mark as Read</a>
+          {% endif %}
+          
         </article>
       {% empty %}
-        <!-- Requirement #1: Clean Empty State for New Users -->
         <div class="notification-card" style="text-align: center; padding: 40px;">
           <p class="notification-body" style="padding-left: 0; opacity: 0.8;">You have no notifications right now.</p>
         </div>
       {% endfor %}
-
     </div>
   </div>
 </div>
