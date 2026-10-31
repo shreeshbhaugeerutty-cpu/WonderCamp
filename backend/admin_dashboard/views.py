@@ -57,13 +57,12 @@ def get_formatted_admin_name(user):
 
 
 # ---------------------------------------------------------------------------
-# SOS helpers
+# SOS Helpers
 # ---------------------------------------------------------------------------
 
 def _ago(moment):
     if (timezone.now() - moment).total_seconds() < 60:
         return 'just now'
-    # timesince() gives "2 hours, 5 minutes"; keep the largest unit only.
     return f"{timesince(moment).split(',')[0]} ago"
 
 
@@ -87,9 +86,7 @@ def _nearest_spot(alert, spots):
 
 def _alert_to_dict(alert, spots):
     """
-    Shape an SOSAlert like the dicts the Emergency Alerts template already
-    renders (id, client_name, campsite, timestamp, status, details, contact),
-    plus location fields for map links.
+    Shape an SOSAlert like the dicts the Emergency Alerts template expects.
     """
     if alert.has_location:
         coords = f"{alert.latitude:.5f}, {alert.longitude:.5f}"
@@ -121,7 +118,6 @@ def _alert_to_dict(alert, spots):
             or 'N/A'
         )
 
-    # Safe fallback for client_name if the model doesn't explicitly store it
     client_name = getattr(alert, 'client_name', f"User {user.id}" if user else "Unknown Camper")
 
     return {
@@ -139,21 +135,23 @@ def _alert_to_dict(alert, spots):
     }
 
 
+# ---------------------------------------------------------------------------
+# View Handlers
+# ---------------------------------------------------------------------------
+
 @user_passes_test(is_admin, login_url='/login/')
 def operational_dashboard(request):
     """
     Main Operational Admin Dashboard view with dynamic database notifications.
-    Filters on recipient/user first, calculates count on unsliced QuerySet, then slices.
     """
     user_notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
     unread_count = user_notifications.filter(is_read=False).count()
     
     audit_logs = SystemAuditLog.objects.all().order_by('-timestamp')[:10]
     health_logs = SystemHealthLog.objects.all().order_by('-timestamp')[:5]
-    admin_name = get_formatted_admin_name(request.user)
 
     context = {
-        'admin_name': admin_name,
+        'admin_name': get_formatted_admin_name(request.user),
         'notifications': user_notifications[:5],
         'unread_count': unread_count,
         'audit_logs': audit_logs,
@@ -164,107 +162,23 @@ def operational_dashboard(request):
 
 
 @user_passes_test(is_admin, login_url='/login/')
-def admin_profile(request):
+def master_data(request):
     """
-    Admin Profile & Account Settings view (edit names, email, change password).
+    Client Profile & Master Data view.
     """
-    admin_name = get_formatted_admin_name(request.user)
-
-    if request.method == 'POST':
-        if 'update_profile' in request.POST:
-            profile_form = AdminProfileForm(request.POST, instance=request.user)
-            password_form = PasswordChangeForm(request.user)
-            if profile_form.is_valid():
-                profile_form.save()
-                messages.success(request, 'Profile details updated successfully.')
-                return redirect('admin_dashboard:profile')
-        elif 'change_password' in request.POST:
-            profile_form = AdminProfileForm(instance=request.user)
-            password_form = PasswordChangeForm(request.user, request.POST)
-            if password_form.is_valid():
-                user = password_form.save()
-                update_session_auth_hash(request, user)
-                messages.success(request, 'Password changed successfully.')
-                return redirect('admin_dashboard:profile')
-    else:
-        profile_form = AdminProfileForm(instance=request.user)
-        password_form = PasswordChangeForm(request.user)
-
-    context = {
-        'admin_name': admin_name,
-        'profile_form': profile_form,
-        'password_form': password_form,
-    }
-    return render(request, 'admin_dashboard/admin_profile.html', context)
+    return render(request, 'admin_dashboard/master_data.html', {
+        'admin_name': get_formatted_admin_name(request.user)
+    })
 
 
 @user_passes_test(is_admin, login_url='/login/')
-def emergency_alerts(request):
+def business_policies(request):
     """
-    Emergency SOS Alerts Management & Dispatch View, fed by real SOSAlert rows
-    created from the camper-facing SOS page (active alerts first, newest first).
+    Business Policies management view.
     """
-    admin_name = get_formatted_admin_name(request.user)
-
-    spots = list(Spot.objects.only('name', 'latitude', 'longitude'))
-    # Optional field handling just in case 'user' or 'resolved_by' was removed
-    alerts_qs = SOSAlert.objects.order_by('is_resolved', '-timestamp')[:100]
-    
-    # Try to prefetch related fields if they exist in the model
-    try:
-        alerts_qs = alerts_qs.select_related('user', 'resolved_by')
-    except Exception:
-        pass
-
-    context = {
-        'admin_name': admin_name,
-        'emergency_alerts': [_alert_to_dict(a, spots) for a in alerts_qs],
-        'active_sos_count': SOSAlert.objects.filter(is_resolved=False).count(),
-    }
-    return render(request, 'admin_dashboard/emergency_alerts.html', context)
-
-
-@user_passes_test(is_admin, login_url='/login/')
-@require_POST
-def resolve_emergency_alert(request, pk):
-    """
-    Mark an SOS alert as resolved. Logs the audit event and creates a notification.
-    """
-    alert = get_object_or_404(SOSAlert, pk=pk)
-    
-    if not alert.is_resolved:
-        alert.is_resolved = True
-        alert.resolved_at = timezone.now()
-        
-        # Safely set resolved_by and updated_at if the fields exist on the model
-        update_fields = ['is_resolved', 'resolved_at']
-        if hasattr(alert, 'resolved_by'):
-            alert.resolved_by = request.user
-            update_fields.append('resolved_by')
-        if hasattr(alert, 'updated_at'):
-            update_fields.append('updated_at')
-
-        alert.save(update_fields=update_fields)
-        
-        client_name = getattr(alert, 'client_name', f"User {getattr(alert, 'user_id', '')}")
-
-        # 1. System Audit Logging
-        SystemAuditLog.objects.create(
-            actor=request.user,
-            action_type='SECURITY',
-            details=f"Resolved emergency alert #{alert.pk} for {client_name.strip() or 'Camper'}"
-        )
-
-        # 2. Dynamic Notification Dispatch
-        create_notification(
-            user=request.user,
-            title="Emergency SOS Resolved",
-            message=f"Unit dispatched & alert resolved for {client_name.strip() or 'Camper'}.",
-            request=request
-        )
-
-        messages.success(request, 'SOS alert marked as resolved.')
-    return redirect('admin_dashboard:emergency_alerts')
+    return render(request, 'admin_dashboard/business_policies.html', {
+        'admin_name': get_formatted_admin_name(request.user)
+    })
 
 
 @user_passes_test(is_admin, login_url='/login/')
@@ -318,21 +232,10 @@ def manage_catalogue(request):
 
 
 @user_passes_test(is_admin, login_url='/login/')
-def master_data(request):
-    return render(request, 'admin_dashboard/master_data.html', {
-        'admin_name': get_formatted_admin_name(request.user)
-    })
-
-
-@user_passes_test(is_admin, login_url='/login/')
-def business_policies(request):
-    return render(request, 'admin_dashboard/business_policies.html', {
-        'admin_name': get_formatted_admin_name(request.user)
-    })
-
-
-@user_passes_test(is_admin, login_url='/login/')
 def audit_logs(request):
+    """
+    System Audit Records view.
+    """
     return render(request, 'admin_dashboard/audit_logs.html', {
         'admin_name': get_formatted_admin_name(request.user),
         'audit_logs': SystemAuditLog.objects.all().order_by('-timestamp')
@@ -341,7 +244,111 @@ def audit_logs(request):
 
 @user_passes_test(is_admin, login_url='/login/')
 def health(request):
+    """
+    System Health Monitoring log view.
+    """
     return render(request, 'admin_dashboard/system_health.html', {
         'admin_name': get_formatted_admin_name(request.user),
         'health_logs': SystemHealthLog.objects.all().order_by('-timestamp')
     })
+
+
+@user_passes_test(is_admin, login_url='/login/')
+def emergency_alerts(request):
+    """
+    Emergency SOS Alerts Management & Dispatch View, fed by real SOSAlert rows.
+    """
+    admin_name = get_formatted_admin_name(request.user)
+    spots = list(Spot.objects.only('name', 'latitude', 'longitude'))
+    alerts_qs = SOSAlert.objects.order_by('is_resolved', '-timestamp')[:100]
+    
+    try:
+        alerts_qs = alerts_qs.select_related('user', 'resolved_by')
+    except Exception:
+        pass
+
+    context = {
+        'admin_name': admin_name,
+        'emergency_alerts': [_alert_to_dict(a, spots) for a in alerts_qs],
+        'active_sos_count': SOSAlert.objects.filter(is_resolved=False).count(),
+    }
+    return render(request, 'admin_dashboard/emergency_alerts.html', context)
+
+
+@user_passes_test(is_admin, login_url='/login/')
+@require_POST
+def resolve_emergency_alert(request, pk):
+    """
+    Mark an SOS alert as resolved. Logs the audit event and creates a notification.
+    """
+    alert = get_object_or_404(SOSAlert, pk=pk)
+    
+    if not alert.is_resolved:
+        alert.is_resolved = True
+        alert.resolved_at = timezone.now()
+        
+        update_fields = ['is_resolved', 'resolved_at']
+        if hasattr(alert, 'resolved_by'):
+            alert.resolved_by = request.user
+            update_fields.append('resolved_by')
+        if hasattr(alert, 'updated_at'):
+            update_fields.append('updated_at')
+
+        alert.save(update_fields=update_fields)
+        
+        client_name = getattr(alert, 'client_name', f"User {getattr(alert, 'user_id', '')}")
+
+        # 1. System Audit Logging
+        SystemAuditLog.objects.create(
+            actor=request.user,
+            action_type='SECURITY',
+            details=f"Resolved emergency alert #{alert.pk} for {client_name.strip() or 'Camper'}"
+        )
+
+        # 2. Dynamic Notification Dispatch
+        create_notification(
+            user=request.user,
+            title="Emergency SOS Resolved",
+            message=f"Unit dispatched & alert resolved for {client_name.strip() or 'Camper'}.",
+            request=request,
+            notification_type=Notification.NotificationType.EMERGENCY_ALERT
+        )
+
+        messages.success(request, f"Emergency alert for {client_name.strip() or 'Camper'} marked as RESOLVED.")
+        
+    return redirect('admin_dashboard:emergency_alerts')
+
+
+@user_passes_test(is_admin, login_url='/login/')
+def admin_profile(request):
+    """
+    Admin Profile & Account Settings view.
+    """
+    admin_name = get_formatted_admin_name(request.user)
+
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            profile_form = AdminProfileForm(request.POST, instance=request.user)
+            password_form = PasswordChangeForm(request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile details updated successfully.')
+                return redirect('admin_dashboard:profile')
+        elif 'change_password' in request.POST:
+            profile_form = AdminProfileForm(instance=request.user)
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Password changed successfully.')
+                return redirect('admin_dashboard:profile')
+    else:
+        profile_form = AdminProfileForm(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+
+    context = {
+        'admin_name': admin_name,
+        'profile_form': profile_form,
+        'password_form': password_form,
+    }
+    return render(request, 'admin_dashboard/admin_profile.html', context)
